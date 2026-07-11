@@ -1,0 +1,17 @@
+[
+  {
+    "question": "What AI practices are completely prohibited under the EU AI Act?",
+    "ground_truth_answer": "Article 5 prohibits: social scoring by public authorities, real-time remote biometric identification in public spaces (with narrow exceptions), AI that exploits vulnerabilities of persons, subliminal manipulation techniques, emotion recognition in workplaces and educational institutions, untargeted facial image scraping, and biometric categorisation inferring protected characteristics.",
+    "expected_article": "5"
+  },
+  {
+    "question": "What is the maximum fine for deploying a prohibited AI system?",
+    "ground_truth_answer": "Under Article 99, the fine for prohibited AI practices is up to 35,000,000 EUR or 7% of total worldwide annual turnover, whichever is higher.",
+    "expected_article": "99"
+  },
+  {
+    "question": "When did prohibitions on AI practices under the EU AI Act come into force?",
+    "ground_truth_answer": "The prohibitions in Article 5 became applicable on 2 February 2025, six months after the regulation entered into force on 2 August 2024.",
+    "expected_article": "5"
+  }
+]

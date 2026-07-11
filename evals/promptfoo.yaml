@@ -1,0 +1,39 @@
+# Prompt regression test suite
+# Run with: npx promptfoo eval
+# Install: npm install -g promptfoo
+
+prompts:
+  - file://src/regulation_advisor/prompts/system_prompt.txt
+
+providers:
+  - id: python:scripts/eval_pipeline.py:run_query
+
+tests:
+  - description: "Article 5 — prohibited practices"
+    vars:
+      question: "What AI practices are completely prohibited?"
+    assert:
+      - type: contains
+        value: "Article 5"
+      - type: contains
+        value: "social scoring"
+      - type: llm-rubric
+        value: "The answer names at least 3 of the prohibited practices from Article 5"
+
+  - description: "Maximum fine amount"
+    vars:
+      question: "What is the maximum fine for prohibited AI?"
+    assert:
+      - type: contains
+        value: "35,000,000"
+      - type: contains
+        value: "7%"
+
+  - description: "GPAI model definition"
+    vars:
+      question: "How does the EU AI Act define a general-purpose AI model?"
+    assert:
+      - type: contains
+        value: "Article 3"
+      - type: llm-rubric
+        value: "The answer includes trained on large data, performs general tasks, and can be integrated in downstream systems"

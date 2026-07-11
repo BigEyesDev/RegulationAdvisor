@@ -1,0 +1,29 @@
+# Never commit these
+.env
+*.pyc
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Data and models (too large for git)
+data/*.pdf
+data/*.csv
+*.faiss
+*.pkl
+outputs/
+models/
+
+# Python packaging
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.DS_Store
+
+# Notebooks (optional — decide per notebook)
+notebooks/.ipynb_checkpoints/

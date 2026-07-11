@@ -1,0 +1,33 @@
+# Week 5 — run with: docker compose up
+# Week 1-4: run the app directly with uvicorn
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      chromadb:
+        condition: service_healthy
+    environment:
+      - VECTOR_STORE_BACKEND=chromadb
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8001
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  chroma_data:

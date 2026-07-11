@@ -13,7 +13,6 @@ from pathlib import Path
 import gradio as gr
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq
 
 from regulation_advisor.config import settings
 from regulation_advisor.retrieval.retriever import Retriever
@@ -23,14 +22,51 @@ logger = logging.getLogger(__name__)
 _PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
 
 
+def _build_llm():
+    """
+    LLM provider factory — reads LLM_PROVIDER from .env.
+
+    To switch models, change two lines in .env:
+        LLM_PROVIDER=openrouter   (or groq / google)
+        LLM_MODEL=deepseek/deepseek-v4-flash
+
+    Supported providers and example model slugs:
+        openrouter  →  deepseek/deepseek-v4-flash
+                       deepseek/deepseek-v4-pro
+                       qwen/qwen3-32b
+                       moonshotai/kimi-k2
+        groq        →  llama-3.3-70b-versatile
+                       qwen/qwen3-32b   (6k TPM on free tier — hits limits fast)
+        google      →  gemini-2.5-flash
+                       gemini-2.5-pro
+    """
+    provider = settings.llm_provider
+    model = settings.llm_model
+    logger.info("Building LLM: provider=%s model=%s", provider, model)
+
+    if provider == "openrouter":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=settings.openrouter_base_url,
+            api_key=settings.openrouter_api_key,
+        )
+    if provider == "google":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        return ChatGoogleGenerativeAI(model=model, google_api_key=settings.google_api_key)
+    # default: groq
+    from langchain_groq import ChatGroq
+    return ChatGroq(model=model, api_key=settings.groq_api_key)
+
+
 def _build_chain():
     """
     Assemble the LangChain RAG chain:
-        ChatPromptTemplate | ChatGroq | StrOutputParser
+        ChatPromptTemplate | <LLM> | StrOutputParser
     The chain accepts {context} and {question} as inputs and returns a plain string.
     """
     system_prompt = (_PROMPTS_DIR / "system_prompt.txt").read_text()
-    llm = ChatGroq(model=settings.llm_model, api_key=settings.groq_api_key)
+    llm = _build_llm()
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", system_prompt),

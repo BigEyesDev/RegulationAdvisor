@@ -13,8 +13,11 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     google_api_key: str = ""
     openrouter_api_key: str = ""
-    llm_provider: str = "groq"
-    llm_model: str = "qwen/qwen3-32b"
+    # Provider: "openrouter" | "groq" | "google"
+    # Switch by changing LLM_PROVIDER in .env — no code changes needed.
+    llm_provider: str = "openrouter"
+    llm_model: str = "deepseek/deepseek-v4-flash"
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
 
     # Web search
     tavily_api_key: str = ""

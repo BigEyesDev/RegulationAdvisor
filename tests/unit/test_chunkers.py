@@ -24,3 +24,12 @@ def test_article_aware_chunker_sets_source():
 def test_recursive_chunker_produces_output():
     chunks = RecursiveCharacterChunker(size=200, overlap=20).chunk(SAMPLE, source="test")
     assert len(chunks) > 0
+
+def test_article_aware_chunker_title_extracted():
+    """Every chunk produced from well-formed article text must have a non-empty title."""
+    chunks = ArticleAwareChunker().chunk(SAMPLE, source="test")
+    assert len(chunks) > 0, "Expected at least one chunk"
+    for chunk in chunks:
+        assert chunk.article_title != "", (
+            f"Article {chunk.article_number} has an empty title"
+        )

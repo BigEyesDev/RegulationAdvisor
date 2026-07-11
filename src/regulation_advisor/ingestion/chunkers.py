@@ -40,7 +40,9 @@ class ArticleAwareChunker:
     Splits by EU AI Act Article boundaries — each chunk = one complete article.
     """
 
-    ARTICLE_PATTERN = re.compile(r"(Article\s+(\d+[a-z]?)\s*\n([^\n]+)\n)", re.IGNORECASE)
+    # Leading \n anchors the match to a standalone "Article N" header line,
+    # avoiding false matches on inline citations like "see Article 5(1)".
+    ARTICLE_PATTERN = re.compile(r"\n(Article\s+(\d+[a-z]?)\s*\n([^\n]+)\n)", re.IGNORECASE)
 
     def chunk(self, text: str, source: str) -> list[RegulationChunk]:
         chunks: list[RegulationChunk] = []

@@ -9,6 +9,7 @@ __pycache__/
 # Data and models (too large for git)
 data/*.pdf
 data/*.csv
+data/index/
 *.faiss
 *.pkl
 outputs/

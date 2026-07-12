@@ -6,6 +6,60 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.2.1] — 2026-07-12
+
+**F10: smolagents comparison agent added.**
+
+### Added
+
+#### smolagents Comparison (F10)
+- `src/regulation_advisor/agent/smolagents_agent.py` — `build_smolagents_agent()` builds
+  a `ToolCallingAgent` that reuses the same 3 LangChain tools via `LangChainTool` wrappers;
+  model mapped from `LLM_PROVIDER`/`LLM_MODEL` settings to a LiteLLM model identifier
+- `smolagents[litellm]` added to `pyproject.toml` and `requirements.txt`
+- `docs/smolagents_comparison.md` — completed with real code, benchmark results for 5
+  queries, and production decision guide (was placeholder stubs)
+
+### Changed
+- `pyproject.toml` version bumped `0.2.0 → 0.2.1`
+
+---
+
+## [0.2.0] — 2026-07-12
+
+**Week 2 complete: LangGraph agent replaces the Week 1 RAG chain.**
+
+### Added
+
+#### Shared LLM Factory (F7)
+- `src/regulation_advisor/llm.py` — `build_llm()` factory reads `LLM_PROVIDER` from `.env`
+  and returns the correct LangChain chat model; eliminates duplicated provider logic
+- `tests/unit/test_tools.py` — 3 unit tests: mock-retriever search, real CSV keyword match,
+  graceful no-retriever error string
+
+#### LangGraph Agent Graph (F7 / F8)
+- `src/regulation_advisor/agent/tools.py` — fixed `query_structured_data` to use
+  `Path(__file__)`-anchored absolute path (was cwd-relative, broke outside project root)
+- `src/regulation_advisor/agent/graph.py` — `build_agent_graph()` now calls `build_llm()`
+  instead of hardcoding `ChatGroq`; respects `LLM_PROVIDER` env var
+- `tests/unit/test_agent_graph.py` — 3 unit tests: compile check, tool-call routing,
+  END routing
+
+#### Agent Wired into Gradio (F9)
+- `src/regulation_advisor/ui/gradio_app.py` — rewritten around the LangGraph agent:
+  `build_ui(agent)` replaces `build_ui(retriever)`; `respond()` calls
+  `agent.invoke()` with a `thread_id` for multi-turn memory; appends a legal
+  warning banner when `is_critical_finding` is `True`
+- `src/regulation_advisor/ui/app_runner.py` — updated startup sequence:
+  `set_retriever(retriever)` → `build_agent_graph()` → `build_ui(agent)`
+
+### Changed
+- `gradio_app.py` — removed `_build_chain()`, `_format_context()`, dead imports
+  (`StrOutputParser`, `ChatPromptTemplate`, `Retriever`); file is now ~50 lines
+- `pyproject.toml` version bumped `0.1.0 → 0.2.0`
+
+---
+
 ## [0.1.0] — 2026-07-12
 
 **Week 1 complete: full RAG pipeline from raw PDFs to a live Gradio chatbot.**

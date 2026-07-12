@@ -1,3 +1,14 @@
+---
+title: RegulationAdvisor
+emoji: ⚖️
+colorFrom: blue
+colorTo: indigo
+sdk: gradio
+sdk_version: "6.20.0"
+app_file: src/regulation_advisor/ui/app_runner.py
+pinned: false
+---
+
 # RegulationAdvisor
 
 **Agentic RAG system for EU AI Act compliance.**
@@ -96,7 +107,7 @@ Validated Answer with citations
 | Layer | Tool |
 |-------|------|
 | Package manager | **uv** |
-| LLM (free) | Qwen3-32B via Groq |
+| LLM | DeepSeek V4 Flash via OpenRouter (swap in .env) |
 | Embeddings | sentence-transformers/all-MiniLM-L6-v2 (local) |
 | Vector store | FAISS (dev) → ChromaDB (prod) |
 | Orchestration | LangGraph |

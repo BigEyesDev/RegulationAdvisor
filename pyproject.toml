@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "regulation-advisor"
-version = "0.2.0"
+version = "0.2.1"
 description = "Agentic RAG advisor for EU AI Act compliance — LangGraph agent with 3 tools, human-in-the-loop, and multi-turn memory"
 requires-python = ">=3.11"
 
@@ -40,6 +40,9 @@ dependencies = [
 
     # Web search tool
     "tavily-python",
+
+    # Agent framework comparison (Week 2 F10)
+    "smolagents[litellm]",
 
     # Utilities
     "datasets",

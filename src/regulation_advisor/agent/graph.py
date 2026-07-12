@@ -8,12 +8,16 @@ from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
 
 from regulation_advisor.agent.state import RegAdvisorState, CRITICAL_KEYWORDS
-from regulation_advisor.agent.tools import search_regulations, query_structured_data, search_web
+from regulation_advisor.agent.tools import search_regulations, query_structured_data
 from regulation_advisor.llm import build_llm
 
 logger = logging.getLogger(__name__)
 
-TOOLS = [search_regulations, query_structured_data, search_web]
+# search_web is intentionally excluded — this agent answers only from the
+# authoritative regulation texts (FAISS index) and structured CSV data.
+# Internet search would introduce non-authoritative sources into legal answers.
+# Re-add search_web here only if you build a clearly-labelled "news" tab.
+TOOLS = [search_regulations, query_structured_data]
 
 
 def build_agent_graph():

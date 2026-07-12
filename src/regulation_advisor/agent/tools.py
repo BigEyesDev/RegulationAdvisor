@@ -1,4 +1,15 @@
-"""Agent tools — RAG search, CSV query, and web search."""
+"""
+Agent tools — RAG search and CSV query.
+
+Active tools (registered in graph.py TOOLS list):
+  - search_regulations      semantic search over FAISS index (EU AI Act + GDPR PDFs)
+  - query_structured_data   keyword search over CSV files (timelines, penalties, risk tiers)
+
+Inactive tools (defined here but NOT in TOOLS — not exposed to the LLM):
+  - search_web              Tavily internet search — excluded by design. This agent
+                            answers only from authoritative regulation texts. Internet
+                            sources are not authoritative for legal compliance answers.
+"""
 from __future__ import annotations
 
 import csv

@@ -1,5 +1,5 @@
 """
-Entry point for the Gradio application.
+Application entry point — RegulationAdvisor v0.2
 
 Local run:
     uv run python src/regulation_advisor/ui/app_runner.py
@@ -9,11 +9,13 @@ HuggingFace Spaces:
     The app_file in README.md front-matter points here.
     API keys are read from HF Space Secrets (set via the Space Settings UI).
 
-Startup sequence:
+Startup sequence (v0.2):
     1. Auto-run ingestion if data/index/ is missing (HF cold start or fresh clone)
-    2. Load FAISS index + embedding model into memory
-    3. Build Gradio UI
-    4. Launch web server
+    2. Load FAISS index + embedding model into a Retriever
+    3. Wire the retriever into the agent tools module (dependency injection)
+    4. Build the LangGraph agent graph
+    5. Build the Gradio UI around the agent
+    6. Launch the web server
 """
 from __future__ import annotations
 
@@ -22,8 +24,7 @@ import os
 import sys
 from pathlib import Path
 
-# Ensure the package is importable whether run via `uv run` or plain `python`
-_SRC = Path(__file__).parent.parent.parent  # .../src/
+_SRC = Path(__file__).parent.parent.parent
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
@@ -34,31 +35,24 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Resolve paths relative to this file so they work regardless of cwd
-_ROOT = Path(__file__).parent.parent.parent.parent  # project root
+_ROOT = Path(__file__).parent.parent.parent.parent
 _DATA_DIR = _ROOT / "data"
 _INDEX_DIR = _ROOT / "data" / "index"
 
 
 def _ensure_index() -> None:
-    """
-    Build the FAISS index if it does not exist yet.
-    This runs automatically on first HF Spaces cold start, or on a fresh local clone.
-    On subsequent startups the index is already on disk — this is a no-op.
-    """
+    """Build the FAISS index on first run; no-op if it already exists."""
     if (_INDEX_DIR / "index.faiss").exists():
-        logger.info("Index already built at %s — skipping ingestion.", _INDEX_DIR)
+        logger.info("Index already built — skipping ingestion.")
         return
-
-    logger.info("Index not found — running ingestion (this takes ~20 s on first run)…")
+    logger.info("Index not found — running ingestion (~20 s on first run)…")
     from regulation_advisor.ingestion.pipeline import run_ingestion
-
     run_ingestion(data_dir=_DATA_DIR, index_dir=_INDEX_DIR)
     logger.info("Ingestion complete.")
 
 
 def _load_retriever():
-    """Load the persisted FAISS index and wrap it in a Retriever."""
+    """Load the persisted FAISS index and return a Retriever."""
     from regulation_advisor.retrieval.embeddings import SentenceTransformerEmbedder
     from regulation_advisor.retrieval.retriever import Retriever
     from regulation_advisor.retrieval.store import FAISSVectorStore
@@ -74,15 +68,17 @@ def _load_retriever():
 
 
 if __name__ == "__main__":
+    from regulation_advisor.agent.tools import set_retriever
+    from regulation_advisor.agent.graph import build_agent_graph
+    from regulation_advisor.ui.gradio_app import build_ui
+
     _ensure_index()
     retriever = _load_retriever()
 
-    from regulation_advisor.ui.gradio_app import build_ui
+    set_retriever(retriever)
+    agent = build_agent_graph()
+    demo = build_ui(agent)
 
-    demo = build_ui(retriever)
-
-    # HF Spaces injects PORT env var; fall back to 7860 locally.
     port = int(os.environ.get("PORT", 7860))
-    # server_name="0.0.0.0" makes the server reachable from outside the container.
-    logger.info("Launching Gradio UI on 0.0.0.0:%d", port)
+    logger.info("Launching on 0.0.0.0:%d", port)
     demo.launch(server_name="0.0.0.0", server_port=port)

@@ -9,6 +9,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 from regulation_advisor.agent.state import RegAdvisorState, CRITICAL_KEYWORDS
 from regulation_advisor.agent.tools import search_regulations, query_structured_data, search_web
+from regulation_advisor.llm import build_llm
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +18,7 @@ TOOLS = [search_regulations, query_structured_data, search_web]
 
 def build_agent_graph():
     """Build and compile the LangGraph StateGraph. Called once at startup."""
-    from langchain_groq import ChatGroq
-    from regulation_advisor.config import settings
-
-    llm = ChatGroq(model=settings.llm_model, api_key=settings.groq_api_key)
+    llm = build_llm()
     llm_with_tools = llm.bind_tools(TOOLS)
 
     def agent_node(state: RegAdvisorState) -> dict:

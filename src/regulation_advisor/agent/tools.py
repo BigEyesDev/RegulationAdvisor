@@ -33,7 +33,7 @@ def search_regulations(query: str) -> str:
 @tool
 def query_structured_data(question: str) -> str:
     """Query structured regulation data: timelines, penalties, risk classifications."""
-    data_dir = Path("data")
+    data_dir = Path(__file__).parent.parent.parent.parent / "data"
     results: list[str] = []
     keywords = question.lower().split()
 

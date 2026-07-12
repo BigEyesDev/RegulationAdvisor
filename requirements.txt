@@ -32,6 +32,9 @@ python-dotenv
 # Web search tool
 tavily-python
 
+# Agent framework comparison (Week 2 F10)
+smolagents[litellm]
+
 # Utilities
 datasets
 numpy

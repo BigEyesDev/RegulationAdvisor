@@ -6,6 +6,25 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.2.1] — 2026-07-12
+
+**F10: smolagents comparison agent added.**
+
+### Added
+
+#### smolagents Comparison (F10)
+- `src/regulation_advisor/agent/smolagents_agent.py` — `build_smolagents_agent()` builds
+  a `ToolCallingAgent` that reuses the same 3 LangChain tools via `LangChainTool` wrappers;
+  model mapped from `LLM_PROVIDER`/`LLM_MODEL` settings to a LiteLLM model identifier
+- `smolagents[litellm]` added to `pyproject.toml` and `requirements.txt`
+- `docs/smolagents_comparison.md` — completed with real code, benchmark results for 5
+  queries, and production decision guide (was placeholder stubs)
+
+### Changed
+- `pyproject.toml` version bumped `0.2.0 → 0.2.1`
+
+---
+
 ## [0.2.0] — 2026-07-12
 
 **Week 2 complete: LangGraph agent replaces the Week 1 RAG chain.**

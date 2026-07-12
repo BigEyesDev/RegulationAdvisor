@@ -28,7 +28,7 @@ _CRITICAL_WARNING = (
 _DATE_CONTEXT_TEMPLATE = (
     "Today's date is {today}. "
     "When discussing regulatory deadlines, always calculate exactly how many days, "
-    "weeks, or months remain from today's date — do not use approximate or static figures."
+    "weeks, or months remain from today's date — do not use approximate or static figures when calculating dates and times."
 )
 
 

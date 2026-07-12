@@ -1,26 +1,37 @@
 """
-Day 1 gate check — verifies Settings loads correctly from environment.
+Gate check — verifies Settings class defaults and that the live settings load
+without error.
+
+We test Settings.model_fields (code-level defaults) rather than the live
+settings instance so the tests are independent of whatever .env file is on
+disk. The .env file is user/machine configuration — not something we assert.
 """
-from regulation_advisor.config import settings
+from regulation_advisor.config import Settings, settings
 
 
 def test_llm_provider_default():
-    assert settings.llm_provider == "groq"
+    assert Settings.model_fields["llm_provider"].default == "openrouter"
 
 
 def test_llm_model_default():
-    assert settings.llm_model == "qwen/qwen3-32b"
+    assert Settings.model_fields["llm_model"].default == "deepseek/deepseek-v4-flash"
 
 
 def test_embedding_model_default():
-    assert settings.embedding_model == "all-MiniLM-L6-v2"
+    assert Settings.model_fields["embedding_model"].default == "all-MiniLM-L6-v2"
 
 
 def test_vector_store_backend_default():
-    assert settings.vector_store_backend == "faiss"
+    assert Settings.model_fields["vector_store_backend"].default == "faiss"
 
 
 def test_retrieval_defaults():
-    assert settings.chunk_size == 1000
-    assert settings.chunk_overlap == 200
-    assert settings.retrieval_k == 5
+    assert Settings.model_fields["chunk_size"].default == 1000
+    assert Settings.model_fields["chunk_overlap"].default == 200
+    assert Settings.model_fields["retrieval_k"].default == 5
+
+
+def test_settings_loads_without_error():
+    assert settings.llm_provider != ""
+    assert settings.llm_model != ""
+    assert settings.embedding_model != ""

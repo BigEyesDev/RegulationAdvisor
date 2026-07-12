@@ -8,16 +8,16 @@ from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
 
 from regulation_advisor.agent.state import RegAdvisorState, CRITICAL_KEYWORDS
-from regulation_advisor.agent.tools import search_regulations, query_structured_data
+from regulation_advisor.agent.tools import search_regulations, query_structured_data, search_web
 from regulation_advisor.llm import build_llm
 
 logger = logging.getLogger(__name__)
 
-# search_web is intentionally excluded — this agent answers only from the
-# authoritative regulation texts (FAISS index) and structured CSV data.
-# Internet search would introduce non-authoritative sources into legal answers.
-# Re-add search_web here only if you build a clearly-labelled "news" tab.
-TOOLS = [search_regulations, query_structured_data]
+# Tool priority is communicated via each tool's docstring (what the LLM reads):
+#   1. search_regulations      — always try first (authoritative regulation text)
+#   2. query_structured_data   — timelines, penalties, risk tiers from CSVs
+#   3. search_web              — last resort only for recent news not in the PDFs
+TOOLS = [search_regulations, query_structured_data, search_web]
 
 
 def build_agent_graph():

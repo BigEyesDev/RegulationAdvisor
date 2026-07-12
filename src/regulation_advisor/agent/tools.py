@@ -1,14 +1,13 @@
 """
-Agent tools — RAG search and CSV query.
+Agent tools — RAG search, CSV query, and web search for enforcement news.
 
 Active tools (registered in graph.py TOOLS list):
   - search_regulations      semantic search over FAISS index (EU AI Act + GDPR PDFs)
   - query_structured_data   keyword search over CSV files (timelines, penalties, risk tiers)
-
-Inactive tools (defined here but NOT in TOOLS — not exposed to the LLM):
-  - search_web              Tavily internet search — excluded by design. This agent
-                            answers only from authoritative regulation texts. Internet
-                            sources are not authoritative for legal compliance answers.
+  - search_web              Tavily web search — narrow scope: only for recent enforcement
+                            decisions, official guidance, or news NOT covered in the PDFs.
+                            The LLM is instructed via tight docstring to prefer the two
+                            document tools and only fall back to web when necessary.
 """
 from __future__ import annotations
 
@@ -63,7 +62,11 @@ def query_structured_data(question: str) -> str:
 
 @tool
 def search_web(query: str) -> str:
-    """Search the web for recent EU AI Act enforcement news and official guidance."""
+    """Search the web for RECENT enforcement decisions, regulator announcements, or official
+    guidance published AFTER the regulation texts were written. Use this tool ONLY when the
+    question explicitly asks about recent news, enforcement actions, or developments not
+    covered by the regulation PDFs. Do NOT use this for questions that can be answered from
+    the regulation text itself — always prefer search_regulations and query_structured_data."""
     from tavily import TavilyClient
     from regulation_advisor.config import settings
     client = TavilyClient(api_key=settings.tavily_api_key)

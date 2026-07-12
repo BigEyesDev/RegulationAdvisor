@@ -1,7 +1,9 @@
 # Never commit these
 .env
 
-# Internal learning and planning docs — local only
+# Internal learning, planning, and retrospective docs — local only
+notebooks/week1_notes.md
+notebooks/week2_notes.md
 learning_map.md
 masterplan_updates.md
 RegulationAdvisor_MasterPlan.md

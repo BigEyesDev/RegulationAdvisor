@@ -21,46 +21,56 @@ pinned: false
 
 ## What it does
 
-You type a question. The app finds the most relevant articles from the EU AI Act and GDPR,
-passes them to an LLM, and returns a cited answer — grounded in the actual regulation text, not model memory.
+You type a question. A LangGraph agent decides which tools to call — semantic search over the
+regulation PDFs, a structured CSV lookup for timelines and penalties, or a live web search
+for recent enforcement news. The LLM writes a cited answer grounded in the actual text.
+Critical findings (prohibited practices, large fines) are flagged with a legal review warning.
 
 ```
-"What AI practices are completely prohibited?"
+"Is emotion recognition in the workplace allowed under the EU AI Act?"
         ↓
-FAISS retrieves: Article 5, Article 6, Article 7 …
+Agent calls search_regulations("emotion recognition workplace")
         ↓
-LLM reads those articles and answers:
-"According to Article 5, the following AI practices are prohibited: ..."
+Retrieves Article 5(1)(f) — prohibited practice
+        ↓
+Agent calls query_structured_data("enforcement date prohibited AI")
+        ↓
+Returns: enforcement date 2025-02-02 from ai_act_timeline.csv
+        ↓
+LLM writes answer citing Article 5(1)(f) + enforcement date
+        ↓
+⚠️ Critical finding warning appended — verify with legal professional
 ```
-
-No hallucination. Every claim is traceable to a specific Article.
 
 ---
 
-## Architecture
+## Architecture (v0.2 — LangGraph agent)
 
 ```
 User question
       │
       ▼
-SentenceTransformer encodes question → 384-dimensional vector
+  agent node  ←──────────────────────┐
+  LLM decides: call tool or answer?  │
+      │                              │
+      ├── tool call ──► ToolNode ────┘  (loops until done)
+      │                 ├── search_regulations   (FAISS semantic search)
+      │                 ├── query_structured_data (CSV: timelines, penalties)
+      │                 └── search_web            (Tavily live search)
       │
-      ▼
-FAISS searches 213 pre-indexed regulation chunks (EU AI Act + GDPR)
+      ├── critical finding ──► human_review node (interrupt — ⚠️ banner shown)
       │
-      ▼
-Top 5 chunks passed to LLM with system prompt:
-"Answer ONLY from the provided text. Always cite the Article number."
-      │
-      ▼
-Cited answer displayed in Gradio ChatInterface
+      └── done ──► answer displayed in Gradio
 ```
+
+Multi-turn memory: `MemorySaver` checkpoints state per `thread_id` — the agent
+remembers the conversation across follow-up questions.
 
 ---
 
 ## Run locally
 
-**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/), an [OpenRouter API key](https://openrouter.ai)
+**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/), regulation PDFs in `data/`
 
 ```bash
 # 1. Clone and install
@@ -70,16 +80,19 @@ uv sync --group dev
 
 # 2. Configure API keys
 cp .env.example .env
-# Edit .env — set OPENROUTER_API_KEY
+# Edit .env — set at minimum:
+#   OPENROUTER_API_KEY  (or GROQ_API_KEY / GOOGLE_API_KEY)
+#   TAVILY_API_KEY      (needed for the web search tool)
 
-# 3. Download the regulation documents into data/
-#    eu_ai_act.pdf, gdpr.pdf, and three CSV files
+# 3. Add the regulation documents to data/
+#    eu_ai_act.pdf, gdpr.pdf, ai_act_timeline.csv,
+#    risk_classification.csv, penalty_structure.csv
 #    (see data/README.md for download links)
 
-# 4. Build the FAISS index (~20 seconds, one time only)
+# 4. Build the FAISS index — one time only, ~20 seconds
 uv run python scripts/ingest.py
 
-# 5. Launch the chatbot
+# 5. Launch the agent chatbot
 uv run python src/regulation_advisor/ui/app_runner.py
 # Open http://localhost:7860
 ```
@@ -92,8 +105,50 @@ Edit two lines in `.env` — no code changes needed:
 
 ```bash
 LLM_PROVIDER=openrouter          # openrouter | groq | google
-LLM_MODEL=deepseek/deepseek-v4-flash   # any model slug for that provider
+LLM_MODEL=deepseek/deepseek-v4-flash
 ```
+
+The agent and the Gradio UI both read from the same factory (`build_llm()` in `llm.py`).
+
+---
+
+## Run tests
+
+```bash
+# Unit tests — no data files or API keys needed (21 tests)
+uv run pytest tests/unit/ -v
+
+# Integration tests — requires FAISS index to be built first
+uv run pytest tests/integration/ -v
+
+# Week 2 gate checks specifically
+uv run pytest tests/unit/test_tools.py tests/unit/test_agent_graph.py -v
+```
+
+---
+
+## Deploy to HuggingFace Spaces
+
+```
+Settings → Variables and Secrets → add each key from .env.example
+```
+
+Required secrets for the agent to work:
+
+| Secret name | Where to get it | Required for |
+|---|---|---|
+| `OPENROUTER_API_KEY` | openrouter.ai | LLM (default provider) |
+| `TAVILY_API_KEY` | tavily.com (1000 req/month free) | `search_web` tool |
+
+Optional (if switching providers):
+
+| Secret name | Where to get it |
+|---|---|
+| `GROQ_API_KEY` | console.groq.com |
+| `GOOGLE_API_KEY` | aistudio.google.com |
+
+The Space also needs the PDF and CSV data files committed or uploaded — see `data/README.md`.
+On cold start, `_ensure_index()` builds the FAISS index automatically from those files (~20 s).
 
 ---
 
@@ -102,19 +157,12 @@ LLM_MODEL=deepseek/deepseek-v4-flash   # any model slug for that provider
 | Layer | Tool |
 |---|---|
 | Package manager | uv |
-| LLM | DeepSeek V4 Flash via OpenRouter |
+| Agent framework | LangGraph — stateful graph with `MemorySaver` checkpointing |
+| LLM | DeepSeek V4 Flash via OpenRouter (swappable via `.env`) |
 | Embeddings | sentence-transformers `all-MiniLM-L6-v2` (local, no API) |
 | Vector store | FAISS |
-| LLM framework | LangChain (LCEL chain) |
+| Tools | LangChain `@tool` — semantic search, CSV lookup, Tavily web search |
+| LLM framework | LangChain (tool binding, message types) |
 | Document loading | LlamaIndex + PyMuPDF |
 | UI | Gradio 6 |
 | Deployment | HuggingFace Spaces |
-
----
-
-## Run tests
-
-```bash
-uv run pytest tests/unit/ -v          # 14 unit tests, no data files needed
-uv run pytest tests/integration/ -v  # requires index to be built first
-```

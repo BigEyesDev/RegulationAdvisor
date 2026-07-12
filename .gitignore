@@ -1,5 +1,17 @@
 # Never commit these
 .env
+
+# Internal learning and planning docs — local only
+learning_map.md
+masterplan_updates.md
+RegulationAdvisor_MasterPlan.md
+SETUP_DAY1.md
+docs/f2-chunking-strategy-comparison.md
+docs/f3-full-corpus-ingestion.md
+docs/f4-langchain-rag-chain.md
+docs/f5-gradio-chat-ui.md
+docs/f6-huggingface-spaces.md
+docs/smolagents_comparison.md
 *.pyc
 __pycache__/
 .pytest_cache/
@@ -9,6 +21,7 @@ __pycache__/
 # Data and models (too large for git)
 data/*.pdf
 data/*.csv
+data/index/
 *.faiss
 *.pkl
 outputs/

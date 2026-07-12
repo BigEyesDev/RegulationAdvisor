@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "regulation-advisor"
 version = "0.1.0"
-description = "Agentic RAG system for EU AI Act compliance"
+description = "RAG chatbot for EU AI Act compliance — cited answers via FAISS + LangChain + Gradio"
 requires-python = ">=3.11"
 
 dependencies = [

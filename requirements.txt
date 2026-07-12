@@ -1,0 +1,37 @@
+# Runtime dependencies for HuggingFace Spaces.
+# This mirrors the [project.dependencies] section of pyproject.toml.
+# HF Spaces runs: pip install -r requirements.txt
+# Local dev uses:  uv sync --group dev  (reads pyproject.toml directly)
+
+# Document loading
+llama-index-readers-file
+pymupdf
+
+# LangChain ecosystem
+langchain>=1.0.0
+langchain-groq
+langchain-google-genai
+langchain-openai
+langchain-text-splitters
+langgraph>=1.0.0
+
+# Embeddings + Vector store
+sentence-transformers
+faiss-cpu
+
+# API + UI
+gradio
+fastapi
+uvicorn[standard]
+
+# Config + validation
+pydantic>=2.0
+pydantic-settings
+python-dotenv
+
+# Web search tool
+tavily-python
+
+# Utilities
+datasets
+numpy

@@ -1,14 +1,17 @@
 """
-Gradio UI — RegulationAdvisor v0.2
+Gradio UI — RegulationAdvisor v0.3
 
 v0.1 (Week 1): simple RAG chain — retrieve chunks → stuff context → LLM.
 v0.2 (Week 2): LangGraph agent — the agent decides when to call tools and
                how many times, and surfaces a warning on critical findings.
                Streaming: tokens are yielded as they arrive via agent.stream().
+v0.3 (Week 3): Guardrail layer — after streaming completes, the guardrail chain
+               inspects the answer for hallucinated citations and legal claims.
 """
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from datetime import date
 from typing import Generator
@@ -17,8 +20,12 @@ import gradio as gr
 from langchain_core.messages import AIMessageChunk, SystemMessage
 
 from regulation_advisor.agent.state import CRITICAL_KEYWORDS
+from regulation_advisor.evaluation.guardrails import build_guardrail_chain
+from regulation_advisor.models import RegulationChunk
 
 logger = logging.getLogger(__name__)
+
+_guardrails = build_guardrail_chain()
 
 _CRITICAL_WARNING = (
     "\n\n---\n⚠️ **Critical finding** — this topic involves prohibited practices "
@@ -30,6 +37,31 @@ _DATE_CONTEXT_TEMPLATE = (
     "When discussing regulatory deadlines, always calculate exactly how many days, "
     "weeks, or months remain from today's date — do not use approximate or static figures when calculating dates and times."
 )
+
+
+def _context_chunks_from_state(agent, config: dict) -> list[RegulationChunk]:
+    """
+    Pull the article numbers the agent actually retrieved during this turn.
+
+    After agent.stream() finishes, the LangGraph checkpointer holds the full
+    message history. Tool messages contain the regulation text returned by
+    search_regulations. We parse article numbers from that text and build
+    lightweight RegulationChunk objects so the citation guardrail can check
+    whether the LLM cited an article that was never retrieved.
+    """
+    try:
+        state = agent.get_state(config)
+        tool_texts = " ".join(
+            m.content for m in state.values.get("messages", [])
+            if hasattr(m, "type") and m.type == "tool"
+        )
+        article_numbers = set(re.findall(r"Article\s+(\d+[a-z]?)", tool_texts, re.IGNORECASE))
+        return [
+            RegulationChunk(content="", article_number=a, article_title="", source_document="")
+            for a in article_numbers
+        ]
+    except Exception:
+        return []
 
 
 def build_ui(agent) -> gr.Blocks:
@@ -66,13 +98,23 @@ def build_ui(agent) -> gr.Blocks:
                 yield partial
 
         if any(kw.lower() in partial.lower() for kw in CRITICAL_KEYWORDS):
-            yield partial + _CRITICAL_WARNING
+            partial = partial + _CRITICAL_WARNING
+            yield partial
 
-        logger.info("Streamed answer (%d chars, critical=%s)", len(partial), bool(partial) and any(
-            kw.lower() in partial.lower() for kw in CRITICAL_KEYWORDS
-        ))
+        # Run guardrails on the complete answer.
+        # confidence=1.0 skips the faithfulness check (no real-time RAGAS score);
+        # citation and legal-claim checks still run.
+        chunks = _context_chunks_from_state(agent, config)
+        guard = _guardrails.check(partial, chunks, confidence=1.0)
+        if guard.warnings:
+            yield partial + "\n\n" + "\n\n".join(guard.warnings)
 
-    with gr.Blocks(title="RegulationAdvisor v0.2") as demo:
+        logger.info(
+            "Streamed answer (%d chars, guardrail_passed=%s, warnings=%d)",
+            len(partial), guard.passed, len(guard.warnings),
+        )
+
+    with gr.Blocks(title="RegulationAdvisor v0.3") as demo:
         gr.Markdown(
             "## EU AI Act Compliance Advisor\n"
             "Ask any question about the EU AI Act or GDPR. "

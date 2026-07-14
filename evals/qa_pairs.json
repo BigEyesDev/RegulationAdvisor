@@ -5,13 +5,98 @@
     "expected_article": "5"
   },
   {
+    "question": "Is real-time facial recognition in a shopping centre allowed under the EU AI Act?",
+    "ground_truth_answer": "No. Article 5(1)(d) prohibits the use of real-time remote biometric identification systems in publicly accessible spaces, with narrow exceptions granted by law enforcement authorities only under strict conditions. A commercial shopping centre does not qualify for any exception.",
+    "expected_article": "5"
+  },
+  {
+    "question": "Can an employer use AI to detect employees' emotions at work?",
+    "ground_truth_answer": "No. Article 5(1)(f) explicitly prohibits the use of AI systems that infer emotions of natural persons in workplaces and educational institutions, except for medical or safety reasons.",
+    "expected_article": "5"
+  },
+  {
+    "question": "Is it allowed to build a social scoring system for EU citizens using AI?",
+    "ground_truth_answer": "No. Article 5(1)(c) prohibits public authorities from operating AI systems that evaluate or classify the trustworthiness of natural persons based on their social behaviour or personal characteristics, leading to detrimental treatment.",
+    "expected_article": "5"
+  },
+  {
     "question": "What is the maximum fine for deploying a prohibited AI system?",
     "ground_truth_answer": "Under Article 99, the fine for prohibited AI practices is up to 35,000,000 EUR or 7% of total worldwide annual turnover, whichever is higher.",
     "expected_article": "99"
   },
   {
-    "question": "When did prohibitions on AI practices under the EU AI Act come into force?",
-    "ground_truth_answer": "The prohibitions in Article 5 became applicable on 2 February 2025, six months after the regulation entered into force on 2 August 2024.",
-    "expected_article": "5"
+    "question": "What is the fine for supplying incorrect or misleading information to authorities?",
+    "ground_truth_answer": "Under Article 99(4), supplying incorrect, incomplete, or misleading information to notified bodies or national competent authorities carries a fine of up to 7,500,000 EUR or 1% of total worldwide annual turnover, whichever is higher.",
+    "expected_article": "99"
+  },
+  {
+    "question": "Can SMEs face reduced fines under the EU AI Act?",
+    "ground_truth_answer": "Yes. Article 99(7) states that when deciding on fines for SMEs including startups, national authorities shall take into account the economic viability and interests of the SME, and the fine shall not exceed the lower of the percentage of turnover or the fixed EUR amount.",
+    "expected_article": "99"
+  },
+  {
+    "question": "When did the EU AI Act enter into force?",
+    "ground_truth_answer": "The EU AI Act entered into force on 1 August 2024, twenty days after its publication in the Official Journal of the European Union on 12 July 2024.",
+    "expected_article": "113"
+  },
+  {
+    "question": "When did the prohibition on unacceptable-risk AI practices become enforceable?",
+    "ground_truth_answer": "The prohibitions in Article 5 became applicable on 2 February 2025, six months after the regulation entered into force on 1 August 2024.",
+    "expected_article": "113"
+  },
+  {
+    "question": "When do the full obligations for high-risk AI systems under Annex III apply?",
+    "ground_truth_answer": "The obligations for high-risk AI systems listed in Annex III become applicable on 2 August 2026, two years after the regulation entered into force.",
+    "expected_article": "113"
+  },
+  {
+    "question": "Is an AI system used for CV screening of job applicants considered high-risk?",
+    "ground_truth_answer": "Yes. Annex III, point 4(a) lists AI systems used for recruitment or selection of natural persons — including CV screening and filtering of job applications — as high-risk AI systems subject to the full Chapter III obligations.",
+    "expected_article": "Annex III"
+  },
+  {
+    "question": "What makes an AI system qualify as high-risk under Article 6?",
+    "ground_truth_answer": "Under Article 6, an AI system is high-risk if it is a safety component of a product covered by Union harmonisation legislation listed in Annex I, or if it falls within one of the use-case categories listed in Annex III, such as biometric identification, critical infrastructure, education, employment, essential services, law enforcement, migration, or justice.",
+    "expected_article": "6"
+  },
+  {
+    "question": "Is a spam email filter considered a high-risk AI system?",
+    "ground_truth_answer": "No. A spam filter does not fall within any of the use-case categories in Annex III and is not a safety component of a regulated product under Annex I. It would typically be considered a minimal-risk AI system with no mandatory obligations.",
+    "expected_article": "6"
+  },
+  {
+    "question": "What risk management obligations apply to high-risk AI systems?",
+    "ground_truth_answer": "Article 9 requires providers of high-risk AI systems to establish, implement, document, and maintain a risk management system throughout the entire lifecycle of the system. This includes identifying and analysing known and foreseeable risks, estimating risks from intended use and reasonably foreseeable misuse, and implementing appropriate risk mitigation measures.",
+    "expected_article": "9"
+  },
+  {
+    "question": "What data governance requirements apply to training data for high-risk AI?",
+    "ground_truth_answer": "Article 10 requires that training, validation, and testing data for high-risk AI systems must be subject to data governance practices: data must be relevant, sufficiently representative, and free of errors to the extent possible. Providers must also address potential biases and ensure data is collected with regard to applicable law, including GDPR.",
+    "expected_article": "10"
+  },
+  {
+    "question": "Do high-risk AI systems require technical documentation?",
+    "ground_truth_answer": "Yes. Article 11 requires providers to draw up technical documentation before placing a high-risk AI system on the market. The documentation must contain the information specified in Annex IV, including a general description, a description of the development process, information on monitoring and functioning, and validation and testing results.",
+    "expected_article": "11"
+  },
+  {
+    "question": "What human oversight requirements exist for high-risk AI systems?",
+    "ground_truth_answer": "Article 14 requires that high-risk AI systems be designed and developed to allow effective human oversight during their use. Natural persons assigned to oversight must be able to fully understand the system's capabilities and limitations, detect anomalies, and intervene or halt the system when necessary.",
+    "expected_article": "14"
+  },
+  {
+    "question": "How does the EU AI Act interact with GDPR for biometric data processing?",
+    "ground_truth_answer": "The EU AI Act does not replace or override GDPR. Where an AI system processes personal data, including biometric data, both regulations apply simultaneously. Article 2(7) of the AI Act clarifies that it does not affect the obligations laid down in GDPR. Providers must comply with both: AI Act obligations (risk management, technical documentation, human oversight) and GDPR obligations (lawful basis, data subject rights, data minimisation).",
+    "expected_article": "2"
+  },
+  {
+    "question": "What transparency obligations exist for AI systems that interact with humans?",
+    "ground_truth_answer": "Article 50(1) requires that providers of AI systems intended to interact with natural persons must ensure those systems are designed so that natural persons are informed they are interacting with an AI system, unless this is obvious from context. The disclosure must happen at the beginning of the interaction.",
+    "expected_article": "50"
+  },
+  {
+    "question": "What is a general-purpose AI model and how is it regulated under the EU AI Act?",
+    "ground_truth_answer": "A general-purpose AI (GPAI) model is defined in Article 3(63) as an AI model trained on large amounts of data that displays significant generality and is capable of performing a wide range of tasks. Chapter V (Articles 51–56) sets obligations for GPAI providers: technical documentation, compliance with copyright law, and a summary of training data. GPAI models with systemic risk (above 10^25 FLOPs) face additional obligations including adversarial testing and incident reporting.",
+    "expected_article": "51"
   }
 ]

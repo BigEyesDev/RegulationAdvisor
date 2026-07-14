@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Callable
 
@@ -18,13 +18,20 @@ class RAGASResult:
     context_recall: float
 
     def summary(self) -> str:
-        return (f"Faithfulness: {self.faithfulness:.3f} | "
-                f"Relevancy: {self.answer_relevancy:.3f} | "
-                f"Precision: {self.context_precision:.3f} | "
-                f"Recall: {self.context_recall:.3f}")
+        status = "PASS" if self.is_acceptable() else "FAIL"
+        return (f"[{status}] Faithfulness={self.faithfulness:.3f} | "
+                f"Relevancy={self.answer_relevancy:.3f} | "
+                f"Precision={self.context_precision:.3f} | "
+                f"Recall={self.context_recall:.3f}")
 
-    def is_acceptable(self, threshold: float = 0.7) -> bool:
-        return self.faithfulness >= threshold and self.answer_relevancy >= threshold
+    def is_acceptable(self) -> bool:
+        # Faithfulness threshold is stricter (0.80) because hallucinated legal
+        # claims are more dangerous than generic chatbot errors.
+        return self.faithfulness >= 0.80 and self.answer_relevancy >= 0.70
+
+    def save(self, path: Path) -> None:
+        path.write_text(json.dumps(asdict(self), indent=2))
+        logger.info("Saved RAGAS results to %s", path)
 
 
 class EvaluationHarness:

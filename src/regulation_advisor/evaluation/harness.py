@@ -1,4 +1,4 @@
-"""RAGAS evaluation harness — built in Week 3."""
+"""RAGAS evaluation harness."""
 from __future__ import annotations
 
 import json

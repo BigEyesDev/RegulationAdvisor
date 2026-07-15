@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # Web search
     tavily_api_key: str = ""
 
-    # OpenAI (used by RAGAS evaluation in Week 3)
+    # OpenAI (used by RAGAS evaluation harness)
     openai_api_key: str = ""
 
     # HuggingFace
@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     # "recursive"     uses RecursiveCharacterChunker with chunk_size / chunk_overlap
     chunker_strategy: str = "article_aware"
 
-    # Vector store — swap "faiss" → "chromadb" in Week 4
+    # Vector store — swap "faiss" → "chromadb" for persistence
     vector_store_backend: str = "faiss"
     chroma_host: str = "localhost"
     chroma_port: int = 8001

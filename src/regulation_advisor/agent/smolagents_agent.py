@@ -1,5 +1,5 @@
 """
-smolagents comparison agent — Week 2 F10.
+smolagents comparison agent.
 
 Implements the same 3-tool agent as the LangGraph version so we can run
 identical benchmark queries against both and compare framework behaviour.

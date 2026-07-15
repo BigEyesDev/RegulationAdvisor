@@ -1,9 +1,10 @@
 """
-Vector store — Repository pattern.
-Week 1-3: FAISSVectorStore (in-memory, fast)
-Week 4+:  ChromaDBVectorStore (persistent, production-ready)
+Vector store implementations — Repository pattern.
 
-Swap by changing VECTOR_STORE_BACKEND in .env — no other code changes needed.
+FAISSVectorStore:    in-memory, fast, no external dependency
+ChromaDBVectorStore: persistent, survives restarts, requires ChromaDB sidecar
+
+Swap by setting VECTOR_STORE_BACKEND in .env — no other code changes needed.
 """
 from __future__ import annotations
 
@@ -57,7 +58,7 @@ class FAISSVectorStore:
 
 
 class ChromaDBVectorStore:
-    """Persistent. Survives restarts. Use from Week 4 onward."""
+    """Persistent vector store backed by ChromaDB. Survives restarts."""
 
     def __init__(self, host: str = "localhost", port: int = 8001) -> None:
         import chromadb

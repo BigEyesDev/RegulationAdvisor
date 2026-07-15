@@ -1,12 +1,11 @@
 """
-Gradio UI — RegulationAdvisor v0.4
+Gradio UI — RegulationAdvisor.
 
-v0.1 (Week 1): simple RAG chain — retrieve chunks → stuff context → LLM.
-v0.2 (Week 2): LangGraph agent with tools + streaming.
-v0.3 (Week 3): Guardrail layer — citation and legal-claim checks.
-v0.4 (Week 4): build_ui() takes no argument; reads the agent lazily from
-               api.routes._agent so it can be mounted on FastAPI before
-               the lifespan fires.  Evaluation Dashboard tab added (Day 5).
+Two-tab interface: Chat (streaming LangGraph agent) and Evaluation Dashboard
+(RAGAS scores with on-demand evaluation trigger).
+
+build_ui() reads the agent lazily from api.routes._agent so the Gradio app
+can be mounted on FastAPI before the lifespan fires.
 """
 from __future__ import annotations
 

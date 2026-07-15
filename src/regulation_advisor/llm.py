@@ -1,6 +1,5 @@
 """
-Shared LLM factory — used by both the Gradio chain (Week 1) and the
-LangGraph agent (Week 2).
+Shared LLM factory — used by both the Gradio chain and the LangGraph agent.
 
 To switch models edit two lines in .env:
     LLM_PROVIDER=openrouter   (or groq / google)

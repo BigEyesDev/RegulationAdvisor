@@ -19,7 +19,7 @@ class RegulationChunk(BaseModel):
 
 
 class RegulationFinding(BaseModel):
-    """Classified output from the RegClassifier (Week 6)."""
+    """Classified output from the RegClassifier."""
 
     article: str
     risk_tier: Literal["Unacceptable", "High", "Limited", "Minimal"]

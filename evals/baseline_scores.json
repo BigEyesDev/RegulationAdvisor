@@ -1,0 +1,16 @@
+{
+  "version": "v0.3",
+  "week": 3,
+  "note": "Run `python scripts/run_evaluation.py` to populate this file with real scores.",
+  "metrics": {
+    "faithfulness": null,
+    "answer_relevancy": null,
+    "context_precision": null,
+    "context_recall": null
+  },
+  "thresholds": {
+    "faithfulness": 0.80,
+    "answer_relevancy": 0.70
+  },
+  "total_qa_pairs": 20
+}

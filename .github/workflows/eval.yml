@@ -1,0 +1,38 @@
+name: Regression Evaluation
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  promptfoo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -e ".[all]"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install promptfoo
+        run: npm install -g promptfoo
+
+      - name: Build vector index
+        run: python scripts/ingest.py
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Run regression suite
+        run: promptfoo eval --config evals/promptfoo.yaml --no-cache
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

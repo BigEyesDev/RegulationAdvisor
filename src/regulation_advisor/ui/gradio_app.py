@@ -1,14 +1,17 @@
 """
-Gradio UI — RegulationAdvisor v0.2
+Gradio UI — RegulationAdvisor v0.4
 
 v0.1 (Week 1): simple RAG chain — retrieve chunks → stuff context → LLM.
-v0.2 (Week 2): LangGraph agent — the agent decides when to call tools and
-               how many times, and surfaces a warning on critical findings.
-               Streaming: tokens are yielded as they arrive via agent.stream().
+v0.2 (Week 2): LangGraph agent with tools + streaming.
+v0.3 (Week 3): Guardrail layer — citation and legal-claim checks.
+v0.4 (Week 4): build_ui() takes no argument; reads the agent lazily from
+               api.routes._agent so it can be mounted on FastAPI before
+               the lifespan fires.  Evaluation Dashboard tab added (Day 5).
 """
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from datetime import date
 from typing import Generator
@@ -17,8 +20,12 @@ import gradio as gr
 from langchain_core.messages import AIMessageChunk, SystemMessage
 
 from regulation_advisor.agent.state import CRITICAL_KEYWORDS
+from regulation_advisor.evaluation.guardrails import build_guardrail_chain
+from regulation_advisor.models import RegulationChunk
 
 logger = logging.getLogger(__name__)
+
+_guardrails = build_guardrail_chain()
 
 _CRITICAL_WARNING = (
     "\n\n---\n⚠️ **Critical finding** — this topic involves prohibited practices "
@@ -32,26 +39,58 @@ _DATE_CONTEXT_TEMPLATE = (
 )
 
 
-def build_ui(agent) -> gr.Blocks:
+def _context_chunks_from_state(agent: object, config: dict) -> list[RegulationChunk]:
     """
-    Build the Gradio ChatInterface around a compiled LangGraph agent.
+    Pull the article numbers the agent actually retrieved during this turn.
 
-    respond() is a generator — it yields partial answer strings as tokens
-    arrive from the LLM, giving the user a live typing effect. Gradio's
-    ChatInterface handles generator functions natively.
-
-    A fresh session_id (UUID) is created per server start so each deployment
-    gets its own isolated conversation thread in MemorySaver.
-
-    Args:
-        agent: A compiled LangGraph graph (returned by build_agent_graph()).
-
-    Returns:
-        A gr.Blocks object ready for demo.launch().
+    After agent.stream() finishes, the LangGraph checkpointer holds the full
+    message history. Tool messages contain the regulation text returned by
+    search_regulations. We parse article numbers from that text and build
+    lightweight RegulationChunk objects so the citation guardrail can check
+    whether the LLM cited an article that was never retrieved.
     """
+    try:
+        state = agent.get_state(config)
+        tool_texts = " ".join(
+            m.content for m in state.values.get("messages", [])
+            if hasattr(m, "type") and m.type == "tool"
+        )
+        article_numbers = set(re.findall(r"Article\s+(\d+[a-z]?)", tool_texts, re.IGNORECASE))
+        return [
+            RegulationChunk(content="", article_number=a, article_title="", source_document="")
+            for a in article_numbers
+        ]
+    except Exception:
+        return []
+
+
+def _get_agent():
+    """Lazy agent accessor — reads from routes at call time, not import time."""
+    from regulation_advisor.api.routes import _agent
+    return _agent
+
+
+def _fetch_metrics() -> dict | None:
+    """Read the latest scores from disk. Returns None if no scores yet."""
+    from regulation_advisor.api.metrics_store import load
+    result = load()
+    if result is None:
+        return None
+    return result.model_dump()
+
+
+def build_ui() -> gr.Blocks:
+    """Build the two-tab Gradio UI. Agent is read lazily at request time."""
     session_id = str(uuid.uuid4())
 
+    # ── Chat tab ──────────────────────────────────────────────────────────────
+
     def respond(message: str, history: list) -> Generator[str, None, None]:
+        agent = _get_agent()
+        if agent is None:
+            yield "Service not ready — agent is still loading. Please retry in a moment."
+            return
+
         config = {"configurable": {"thread_id": session_id}}
 
         messages: list = [("human", message)]
@@ -66,19 +105,92 @@ def build_ui(agent) -> gr.Blocks:
                 yield partial
 
         if any(kw.lower() in partial.lower() for kw in CRITICAL_KEYWORDS):
-            yield partial + _CRITICAL_WARNING
+            partial = partial + _CRITICAL_WARNING
+            yield partial
 
-        logger.info("Streamed answer (%d chars, critical=%s)", len(partial), bool(partial) and any(
-            kw.lower() in partial.lower() for kw in CRITICAL_KEYWORDS
-        ))
+        chunks = _context_chunks_from_state(agent, config)
+        guard = _guardrails.check(partial, chunks, confidence=1.0)
+        if guard.warnings:
+            yield partial + "\n\n" + "\n\n".join(guard.warnings)
 
-    with gr.Blocks(title="RegulationAdvisor v0.2") as demo:
-        gr.Markdown(
-            "## EU AI Act Compliance Advisor\n"
-            "Ask any question about the EU AI Act or GDPR. "
-            "Every answer cites the relevant Article. "
-            "Critical findings are flagged for legal review."
+        logger.info(
+            "Streamed answer (%d chars, guardrail_passed=%s, warnings=%d)",
+            len(partial), guard.passed, len(guard.warnings),
         )
-        gr.ChatInterface(fn=respond, title="")
+
+    # ── Evaluation Dashboard tab ──────────────────────────────────────────────
+
+    def refresh_scores():
+        data = _fetch_metrics()
+        if data is None:
+            return ("No scores yet — click **Run Evaluation** to generate them.",
+                    None, None, None, None)
+        m = data
+        status = (
+            f"**v{m['version']}** — evaluated {m['evaluated_at'][:10]} — "
+            f"{'✅ PASS' if m['acceptable'] else '❌ FAIL'}"
+        )
+        return status, m["faithfulness"], m["answer_relevancy"], m["context_precision"], m["context_recall"]
+
+    def trigger_eval():
+        from regulation_advisor.api import routes, metrics_store
+        import asyncio
+        if routes._evaluation_running:
+            return "⏳ Evaluation already running — check back in a few minutes."
+        routes._evaluation_running = True
+        try:
+            asyncio.get_event_loop().run_until_complete(routes._run_evaluation())
+        except RuntimeError:
+            # Already in a running event loop (can happen in Gradio's thread)
+            import threading
+            result_holder = {}
+            def run():
+                import asyncio as _asyncio
+                loop = _asyncio.new_event_loop()
+                _asyncio.set_event_loop(loop)
+                loop.run_until_complete(routes._run_evaluation())
+                loop.close()
+            t = threading.Thread(target=run)
+            t.start()
+            return "⏳ Evaluation started in background. Click **Refresh** in a few minutes."
+        return "✅ Evaluation complete. Click **Refresh** to see updated scores."
+
+    # ── Layout ────────────────────────────────────────────────────────────────
+
+    with gr.Blocks(title="RegulationAdvisor v0.4") as demo:
+
+        with gr.Tab("Chat"):
+            gr.Markdown(
+                "## EU AI Act Compliance Advisor\n"
+                "Ask any question about the EU AI Act or GDPR. "
+                "Every answer cites the relevant Article. "
+                "Critical findings are flagged for legal review."
+            )
+            gr.ChatInterface(fn=respond, title="")
+
+        with gr.Tab("Evaluation Dashboard"):
+            gr.Markdown(
+                "## RAGAS Evaluation Scores\n"
+                "Measures how faithfully the agent answers from the regulation text.\n\n"
+                "**Targets:** Faithfulness ≥ 0.80 · All others ≥ 0.70"
+            )
+
+            with gr.Row():
+                run_btn = gr.Button("Run Evaluation", variant="primary")
+                refresh_btn = gr.Button("Refresh Scores")
+
+            status_box = gr.Markdown("*No scores loaded yet.*")
+
+            with gr.Row():
+                faith_num  = gr.Number(label="Faithfulness",      precision=3)
+                rel_num    = gr.Number(label="Answer Relevancy",  precision=3)
+                prec_num   = gr.Number(label="Context Precision", precision=3)
+                recall_num = gr.Number(label="Context Recall",    precision=3)
+
+            score_outputs = [status_box, faith_num, rel_num, prec_num, recall_num]
+
+            run_btn.click(fn=trigger_eval, outputs=[status_box])
+            refresh_btn.click(fn=refresh_scores, outputs=score_outputs)
+            demo.load(fn=refresh_scores, outputs=score_outputs)
 
     return demo

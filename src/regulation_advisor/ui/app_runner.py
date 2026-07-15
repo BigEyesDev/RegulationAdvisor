@@ -52,13 +52,14 @@ def _ensure_index() -> None:
 
 
 def _load_retriever():
-    """Load the persisted FAISS index and return a Retriever."""
+    """Load the vector store (FAISS or ChromaDB depending on config) and return a Retriever."""
     from regulation_advisor.retrieval.embeddings import SentenceTransformerEmbedder
     from regulation_advisor.retrieval.retriever import Retriever
-    from regulation_advisor.retrieval.store import FAISSVectorStore
+    from regulation_advisor.retrieval.store import build_vector_store
+    from regulation_advisor.config import settings
 
-    logger.info("Loading FAISS index from %s …", _INDEX_DIR)
-    store = FAISSVectorStore()
+    logger.info("Loading vector store (backend=%s)…", settings.vector_store_backend)
+    store = build_vector_store()
     store.load(_INDEX_DIR)
 
     logger.info("Loading embedding model …")
@@ -68,8 +69,9 @@ def _load_retriever():
 
 
 if __name__ == "__main__":
-    from regulation_advisor.agent.tools import set_retriever
     from regulation_advisor.agent.graph import build_agent_graph
+    from regulation_advisor.agent.tools import set_retriever
+    from regulation_advisor.api.routes import set_agent
     from regulation_advisor.ui.gradio_app import build_ui
 
     _ensure_index()
@@ -77,7 +79,8 @@ if __name__ == "__main__":
 
     set_retriever(retriever)
     agent = build_agent_graph()
-    demo = build_ui(agent)
+    set_agent(agent)  # makes agent available to build_ui()'s lazy _get_agent()
+    demo = build_ui()
 
     port = int(os.environ.get("PORT", 7860))
     logger.info("Launching on 0.0.0.0:%d", port)

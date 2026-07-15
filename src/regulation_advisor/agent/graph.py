@@ -1,4 +1,4 @@
-"""LangGraph agent — built in Week 2."""
+"""LangGraph agent graph."""
 from __future__ import annotations
 
 import logging

@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "regulation-advisor"
-version = "0.2.1"
-description = "Agentic RAG advisor for EU AI Act compliance — LangGraph agent with 3 tools, human-in-the-loop, and multi-turn memory"
+version = "0.4.0"
+description = "Agentic RAG advisor for EU AI Act compliance — FastAPI REST API + streaming + ChromaDB + Gradio Evaluation Dashboard"
 requires-python = ">=3.11"
 
 dependencies = [

@@ -76,13 +76,17 @@ class TestEvaluationHarness:
     def test_harness_loads_twenty_pairs(self, harness):
         assert len(harness._qa_pairs) == 20
 
+    @pytest.mark.skipif(
+        not __import__("os").environ.get("OPENAI_API_KEY"),
+        reason="RAGAS judge requires OPENAI_API_KEY — skipped in environments without it",
+    )
     def test_harness_run_with_mock_pipeline(self, harness):
         """
         Run the harness with a mock pipeline_fn that echoes the ground truth.
         Because the answer == ground_truth, RAGAS should give high scores.
 
-        We skip this in environments without the RAGAS/OpenAI dependency
-        by catching ImportError — the CI eval.yml runs this with the full deps.
+        Requires OPENAI_API_KEY (RAGAS uses it as the evaluation judge LLM).
+        Run via: OPENAI_API_KEY=... pytest tests/integration/test_week3_pipeline.py
         """
         pytest.importorskip("ragas", reason="ragas not installed in this environment")
 

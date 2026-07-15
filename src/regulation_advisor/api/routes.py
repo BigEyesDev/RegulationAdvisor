@@ -9,15 +9,18 @@ from __future__ import annotations
 import json
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
 
 from regulation_advisor.api.schemas import (
     ChatRequest,
     ChatResponse,
+    EvaluateResponse,
     HealthResponse,
+    MetricsResponse,
     SourceReference,
 )
+from regulation_advisor.api import metrics_store
 from regulation_advisor.config import settings
 
 logger = logging.getLogger(__name__)
@@ -91,3 +94,64 @@ async def chat_sync(request: ChatRequest) -> ChatResponse:
         warnings=[],
         session_id=request.session_id,
     )
+
+
+# ── Evaluation endpoints ──────────────────────────────────────────────────────
+
+_evaluation_running = False
+
+
+@router.get("/api/metrics", response_model=MetricsResponse)
+async def get_metrics() -> MetricsResponse:
+    """Return the most recent RAGAS evaluation scores from disk."""
+    result = metrics_store.load()
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No evaluation scores yet. POST /api/evaluate to run one.",
+        )
+    return result
+
+
+@router.post("/api/evaluate", response_model=EvaluateResponse)
+async def trigger_evaluation(background_tasks: BackgroundTasks) -> EvaluateResponse:
+    """Start a RAGAS evaluation in the background. Returns immediately."""
+    global _evaluation_running
+    if _evaluation_running:
+        return EvaluateResponse(status="already_running", message="Evaluation already in progress.")
+    background_tasks.add_task(_run_evaluation)
+    return EvaluateResponse(status="started", message="Evaluation started. Poll /api/metrics for results.")
+
+
+async def _run_evaluation() -> None:
+    global _evaluation_running
+    _evaluation_running = True
+    try:
+        from pathlib import Path
+        from regulation_advisor.evaluation.harness import EvaluationHarness
+
+        harness = EvaluationHarness(Path("evals/qa_pairs.json"))
+
+        def pipeline_fn(question: str) -> tuple[str, list[str]]:
+            import asyncio
+            config = {"configurable": {"thread_id": f"eval_{hash(question)}"}}
+            result = asyncio.get_event_loop().run_until_complete(
+                _agent.ainvoke({"messages": [("human", question)]}, config=config)
+            )
+            answer = result["messages"][-1].content
+            contexts = [c.content for c in result.get("retrieved_chunks", [])]
+            return answer, contexts
+
+        scores = harness.run(pipeline_fn)
+        metrics_store.save(
+            faithfulness=scores.faithfulness,
+            answer_relevancy=scores.answer_relevancy,
+            context_precision=scores.context_precision,
+            context_recall=scores.context_recall,
+            total_qa_pairs=len(harness._qa_pairs),
+        )
+        logger.info("Evaluation complete: %s", scores.summary())
+    except Exception:
+        logger.exception("Evaluation failed")
+    finally:
+        _evaluation_running = False

@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
 
     logger.info("Loading vector store (%s)…", settings.vector_store_backend)
     store = build_vector_store()
-    store.load(_ROOT / "data" / "index")
+    store.load(_ROOT / settings.index_dir)
 
     embedder = SentenceTransformerEmbedder()
     retriever = Retriever(store=store, embedder=embedder)

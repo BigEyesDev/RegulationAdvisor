@@ -68,8 +68,9 @@ def _load_retriever():
 
 
 if __name__ == "__main__":
-    from regulation_advisor.agent.tools import set_retriever
     from regulation_advisor.agent.graph import build_agent_graph
+    from regulation_advisor.agent.tools import set_retriever
+    from regulation_advisor.api.routes import set_agent
     from regulation_advisor.ui.gradio_app import build_ui
 
     _ensure_index()
@@ -77,7 +78,8 @@ if __name__ == "__main__":
 
     set_retriever(retriever)
     agent = build_agent_graph()
-    demo = build_ui(agent)
+    set_agent(agent)  # makes agent available to build_ui()'s lazy _get_agent()
+    demo = build_ui()
 
     port = int(os.environ.get("PORT", 7860))
     logger.info("Launching on 0.0.0.0:%d", port)

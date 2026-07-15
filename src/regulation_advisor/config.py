@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     chroma_host: str = "localhost"
     chroma_port: int = 8001
 
+    # Path where the FAISS index is saved / loaded (ChromaDB ignores this)
+    index_dir: str = "data/index"
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

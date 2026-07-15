@@ -1,12 +1,12 @@
 """
-Gradio UI — RegulationAdvisor v0.3
+Gradio UI — RegulationAdvisor v0.4
 
 v0.1 (Week 1): simple RAG chain — retrieve chunks → stuff context → LLM.
-v0.2 (Week 2): LangGraph agent — the agent decides when to call tools and
-               how many times, and surfaces a warning on critical findings.
-               Streaming: tokens are yielded as they arrive via agent.stream().
-v0.3 (Week 3): Guardrail layer — after streaming completes, the guardrail chain
-               inspects the answer for hallucinated citations and legal claims.
+v0.2 (Week 2): LangGraph agent with tools + streaming.
+v0.3 (Week 3): Guardrail layer — citation and legal-claim checks.
+v0.4 (Week 4): build_ui() takes no argument; reads the agent lazily from
+               api.routes._agent so it can be mounted on FastAPI before
+               the lifespan fires.  Evaluation Dashboard tab added (Day 5).
 """
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ _DATE_CONTEXT_TEMPLATE = (
 )
 
 
-def _context_chunks_from_state(agent, config: dict) -> list[RegulationChunk]:
+def _context_chunks_from_state(agent: object, config: dict) -> list[RegulationChunk]:
     """
     Pull the article numbers the agent actually retrieved during this turn.
 
@@ -64,26 +64,22 @@ def _context_chunks_from_state(agent, config: dict) -> list[RegulationChunk]:
         return []
 
 
-def build_ui(agent) -> gr.Blocks:
-    """
-    Build the Gradio ChatInterface around a compiled LangGraph agent.
+def _get_agent():
+    """Lazy agent accessor — reads from routes at call time, not import time."""
+    from regulation_advisor.api.routes import _agent
+    return _agent
 
-    respond() is a generator — it yields partial answer strings as tokens
-    arrive from the LLM, giving the user a live typing effect. Gradio's
-    ChatInterface handles generator functions natively.
 
-    A fresh session_id (UUID) is created per server start so each deployment
-    gets its own isolated conversation thread in MemorySaver.
-
-    Args:
-        agent: A compiled LangGraph graph (returned by build_agent_graph()).
-
-    Returns:
-        A gr.Blocks object ready for demo.launch().
-    """
+def build_ui() -> gr.Blocks:
+    """Build the Gradio UI. Agent is read lazily via _get_agent() at request time."""
     session_id = str(uuid.uuid4())
 
     def respond(message: str, history: list) -> Generator[str, None, None]:
+        agent = _get_agent()
+        if agent is None:
+            yield "Service not ready — agent is still loading. Please retry in a moment."
+            return
+
         config = {"configurable": {"thread_id": session_id}}
 
         messages: list = [("human", message)]
@@ -114,7 +110,7 @@ def build_ui(agent) -> gr.Blocks:
             len(partial), guard.passed, len(guard.warnings),
         )
 
-    with gr.Blocks(title="RegulationAdvisor v0.3") as demo:
+    with gr.Blocks(title="RegulationAdvisor v0.4") as demo:
         gr.Markdown(
             "## EU AI Act Compliance Advisor\n"
             "Ask any question about the EU AI Act or GDPR. "

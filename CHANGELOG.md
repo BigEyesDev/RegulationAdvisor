@@ -6,6 +6,126 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.4.0] — 2026-07-15
+
+**Week 4 complete: FastAPI REST API, streaming responses, ChromaDB, and Evaluation Dashboard.**
+
+### Added
+
+#### FastAPI Foundation (W4-D1)
+- `src/regulation_advisor/api/app.py` — FastAPI app with `lifespan` context manager for
+  startup/shutdown; Gradio UI lazy-mounted at `/`; health route at `/health`
+- `src/regulation_advisor/api/routes.py` — all API routes in one module; imports cleanly
+  from `app.py`
+- `src/regulation_advisor/api/schemas.py` — `ChatRequest`, `ChatResponse`, `MetricsResponse`
+  Pydantic models for request/response validation
+- `docs/w4-d1-fastapi-foundation.md` — learning doc explaining lifespan, route separation,
+  and Gradio mount pattern
+
+#### Streaming Chat Endpoint (W4-D2)
+- `POST /api/chat` — Server-Sent Events (SSE) streaming endpoint; streams LLM tokens via
+  `astream_events` as `data: <chunk>\n\n`
+- `POST /api/chat/sync` — synchronous fallback for clients that don't support SSE
+- `tests/unit/test_api_chat.py` — 77-line unit test covering both endpoints
+- `docs/w4-d2-streaming-chat.md` — SSE protocol explanation and async generator pattern
+
+#### ChromaDB Wiring (W4-D3)
+- `build_vector_store()` factory in `retrieval/store.py` — reads `VECTOR_STORE_BACKEND`
+  from config and returns either `FAISSVectorStore` or `ChromaDBVectorStore`; all startup
+  paths now call this factory instead of constructing stores directly
+- `index_dir` config setting added for explicit FAISS index path control
+- `src/regulation_advisor/config.py` — 3 new settings: `vector_store_backend`,
+  `chroma_host`, `chroma_port`
+- `tests/unit/test_store_factory.py` — 66-line unit test for factory routing
+- `docs/w4-d3-chromadb.md` — Repository pattern recap and swap walkthrough
+
+#### Metrics API (W4-D4)
+- `GET /api/metrics` — returns cached RAGAS scores from last evaluation run
+- `POST /api/evaluate` — triggers `EvaluationHarness.run()` as a `BackgroundTask`;
+  returns `{"status": "evaluation started"}` immediately
+- `src/regulation_advisor/api/metrics_store.py` — `MetricsStore` singleton that holds
+  the latest `RAGASResult` in memory; shared between background task and GET handler
+- `tests/unit/test_api_metrics.py` — 84-line unit test covering both endpoints
+- `docs/w4-d4-metrics-api.md` — BackgroundTasks pattern and metrics store design
+
+#### Evaluation Dashboard Tab (W4-D5)
+- `src/regulation_advisor/ui/gradio_app.py` — second `gr.Tab("Evaluation Dashboard")`
+  with Run RAGAS Evaluation button, live status textbox, and four `gr.Number` displays
+  (faithfulness, answer_relevancy, context_precision, context_recall)
+- Dashboard calls `POST /api/evaluate` and polls `GET /api/metrics` on completion
+- `docs/w4-d5-eval-dashboard.md` — Gradio multi-tab pattern and API polling approach
+
+#### Integration Test Suite (W4-D6)
+- `tests/integration/test_api_integration.py` — 179-line end-to-end tests covering
+  `/health`, `/api/metrics`, `/api/evaluate`, streaming `/api/chat`, Gradio mount
+- `evals/baseline_scores.json` — placeholder baseline RAGAS scores committed for CI
+  reference (faithfulness: 0.0, populated after first real evaluation run)
+- `docs/w4-d6-integration.md` — integration test strategy and TestClient usage
+
+### Changed
+- `src/regulation_advisor/ui/app_runner.py` — startup now calls `build_vector_store()`
+  factory; removed hardcoded `FAISSVectorStore` construction
+- `pyproject.toml` version bumped `0.3.0 → 0.4.0`; description updated
+
+---
+
+## [0.3.0] — 2026-07-14
+
+**Week 3 complete: RAGAS evaluation harness, guardrail layer, and promptfoo CI regression suite.**
+
+### Added
+
+#### Evaluation Dataset (W3-D1)
+- `evals/qa_pairs.json` — expanded from 5 seed pairs to 20 verified ground-truth Q&A pairs
+  covering prohibited practices (Article 5), high-risk obligations, GPAI rules, penalties,
+  enforcement timeline, and GDPR overlap
+- `tests/unit/test_eval_dataset.py` — validates schema of every pair (question, ground_truth_answer,
+  expected_article fields present and non-empty)
+- `learning/day1_eval_dataset.md` — notes on golden-set construction methodology
+
+#### RAGAS Evaluation Harness (W3-D2)
+- `src/regulation_advisor/evaluation/harness.py` — `EvaluationHarness` with `run()` method
+  returning `RAGASResult` dataclass (faithfulness, answer_relevancy, context_precision,
+  context_recall); `harness.save()` persists scores to JSON for CI comparison
+- Faithfulness threshold tightened from 0.7 → 0.75 in `RAGASResult.is_acceptable()`
+- `scripts/run_evaluation.py` — CLI runner: loads QA pairs, runs pipeline_fn, saves results
+- `tests/unit/test_harness.py` — 37-line unit test with mock pipeline_fn
+- `learning/day2_ragas_harness.md` — RAGAS metric definitions and observer pattern notes
+
+#### Guardrail Layer (W3-D3)
+- `src/regulation_advisor/evaluation/guardrails.py` — Chain of Responsibility:
+  `FaithfulnessCheck` → `CitationVerificationCheck` → `LegalClaimFlagCheck`;
+  `build_guardrail_chain()` factory wires all three
+- `src/regulation_advisor/ui/gradio_app.py` — `respond()` now runs the guardrail chain
+  after streaming; appends warning banners to the response when checks fail
+- `tests/unit/test_guardrail_integration.py` — 47-line unit test covering all three handlers
+  and the chain assembly
+- `learning/day3_guardrail_integration.md` — Chain of Responsibility pattern walkthrough
+
+#### promptfoo Regression Suite + CI (W3-D4)
+- `evals/promptfoo.yaml` — 30-case regression suite expanded from seed; covers Article 5
+  prohibitions, penalty amounts (35M / 7%), GPAI obligations, enforcement dates, risk
+  tiers; assertions use `contains`, `not-contains`, and `llm-rubric` types
+- `.github/workflows/eval.yml` — GitHub Actions workflow: runs `promptfoo eval` on every
+  PR to `main`; fails build if any regression case breaks
+- `scripts/eval_pipeline.py` — `run_query(prompt, options, ctx)` adapter used by promptfoo
+  `python:` provider
+- `learning/day4_promptfoo_suite.md` — promptfoo provider interface and CI integration guide
+
+#### Week 3 Integration Tests (W3-D5)
+- `tests/integration/test_week3_pipeline.py` — 110-line end-to-end tests: guardrail chain
+  pass/fail scenarios, RAGAS harness smoke-run with mock pipeline, promptfoo config
+  validation
+- `evals/baseline_scores.json` — initial placeholder committed for CI reference
+- `learning/day5_week3_integration.md` — integration test strategy notes
+
+### Changed
+- `src/regulation_advisor/evaluation/harness.py` — `RAGASResult.is_acceptable()` threshold
+  raised from 0.70 → 0.75
+- `pyproject.toml` version bumped `0.2.1 → 0.3.0`
+
+---
+
 ## [0.2.1] — 2026-07-12
 
 **F10: smolagents comparison agent added.**

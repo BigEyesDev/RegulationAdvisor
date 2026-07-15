@@ -70,9 +70,20 @@ def _get_agent():
     return _agent
 
 
+def _fetch_metrics() -> dict | None:
+    """Read the latest scores from disk. Returns None if no scores yet."""
+    from regulation_advisor.api.metrics_store import load
+    result = load()
+    if result is None:
+        return None
+    return result.model_dump()
+
+
 def build_ui() -> gr.Blocks:
-    """Build the Gradio UI. Agent is read lazily via _get_agent() at request time."""
+    """Build the two-tab Gradio UI. Agent is read lazily at request time."""
     session_id = str(uuid.uuid4())
+
+    # ── Chat tab ──────────────────────────────────────────────────────────────
 
     def respond(message: str, history: list) -> Generator[str, None, None]:
         agent = _get_agent()
@@ -97,9 +108,6 @@ def build_ui() -> gr.Blocks:
             partial = partial + _CRITICAL_WARNING
             yield partial
 
-        # Run guardrails on the complete answer.
-        # confidence=1.0 skips the faithfulness check (no real-time RAGAS score);
-        # citation and legal-claim checks still run.
         chunks = _context_chunks_from_state(agent, config)
         guard = _guardrails.check(partial, chunks, confidence=1.0)
         if guard.warnings:
@@ -110,13 +118,79 @@ def build_ui() -> gr.Blocks:
             len(partial), guard.passed, len(guard.warnings),
         )
 
-    with gr.Blocks(title="RegulationAdvisor v0.4") as demo:
-        gr.Markdown(
-            "## EU AI Act Compliance Advisor\n"
-            "Ask any question about the EU AI Act or GDPR. "
-            "Every answer cites the relevant Article. "
-            "Critical findings are flagged for legal review."
+    # ── Evaluation Dashboard tab ──────────────────────────────────────────────
+
+    def refresh_scores():
+        data = _fetch_metrics()
+        if data is None:
+            return ("No scores yet — click **Run Evaluation** to generate them.",
+                    None, None, None, None)
+        m = data
+        status = (
+            f"**v{m['version']}** — evaluated {m['evaluated_at'][:10]} — "
+            f"{'✅ PASS' if m['acceptable'] else '❌ FAIL'}"
         )
-        gr.ChatInterface(fn=respond, title="")
+        return status, m["faithfulness"], m["answer_relevancy"], m["context_precision"], m["context_recall"]
+
+    def trigger_eval():
+        from regulation_advisor.api import routes, metrics_store
+        import asyncio
+        if routes._evaluation_running:
+            return "⏳ Evaluation already running — check back in a few minutes."
+        routes._evaluation_running = True
+        try:
+            asyncio.get_event_loop().run_until_complete(routes._run_evaluation())
+        except RuntimeError:
+            # Already in a running event loop (can happen in Gradio's thread)
+            import threading
+            result_holder = {}
+            def run():
+                import asyncio as _asyncio
+                loop = _asyncio.new_event_loop()
+                _asyncio.set_event_loop(loop)
+                loop.run_until_complete(routes._run_evaluation())
+                loop.close()
+            t = threading.Thread(target=run)
+            t.start()
+            return "⏳ Evaluation started in background. Click **Refresh** in a few minutes."
+        return "✅ Evaluation complete. Click **Refresh** to see updated scores."
+
+    # ── Layout ────────────────────────────────────────────────────────────────
+
+    with gr.Blocks(title="RegulationAdvisor v0.4") as demo:
+
+        with gr.Tab("Chat"):
+            gr.Markdown(
+                "## EU AI Act Compliance Advisor\n"
+                "Ask any question about the EU AI Act or GDPR. "
+                "Every answer cites the relevant Article. "
+                "Critical findings are flagged for legal review."
+            )
+            gr.ChatInterface(fn=respond, title="")
+
+        with gr.Tab("Evaluation Dashboard"):
+            gr.Markdown(
+                "## RAGAS Evaluation Scores\n"
+                "Measures how faithfully the agent answers from the regulation text.\n\n"
+                "**Targets:** Faithfulness ≥ 0.80 · All others ≥ 0.70"
+            )
+
+            with gr.Row():
+                run_btn = gr.Button("Run Evaluation", variant="primary")
+                refresh_btn = gr.Button("Refresh Scores")
+
+            status_box = gr.Markdown("*No scores loaded yet.*")
+
+            with gr.Row():
+                faith_num  = gr.Number(label="Faithfulness",      precision=3)
+                rel_num    = gr.Number(label="Answer Relevancy",  precision=3)
+                prec_num   = gr.Number(label="Context Precision", precision=3)
+                recall_num = gr.Number(label="Context Recall",    precision=3)
+
+            score_outputs = [status_box, faith_num, rel_num, prec_num, recall_num]
+
+            run_btn.click(fn=trigger_eval, outputs=[status_box])
+            refresh_btn.click(fn=refresh_scores, outputs=score_outputs)
+            demo.load(fn=refresh_scores, outputs=score_outputs)
 
     return demo

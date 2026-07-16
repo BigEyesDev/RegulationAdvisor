@@ -1,13 +1,18 @@
 # Never commit these
 .env
 
-# Internal learning, planning, and retrospective docs — local only
+# Internal learning, planning, and retrospective docs — local only, never on GitHub
+CLAUDE.md
 notebooks/week1_notes.md
 notebooks/week2_notes.md
+notebooks/week4_notes.md
 learning_map.md
+learning/
 masterplan_updates.md
 RegulationAdvisor_MasterPlan.md
 SETUP_DAY1.md
+*_Plan.md
+Week*.md
 docs/
 *.pyc
 __pycache__/

@@ -1,0 +1,24 @@
+# Version control
+.git
+
+# Python runtime / caches
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+# Secrets — never bake into the image
+.env
+
+# Pre-built index is rebuilt inside the container via scripts/ingest.py
+data/index/
+
+# Local-only docs and planning files
+docs/
+notebooks/
+learning/
+*_Plan.md
+Week*.md
+CLAUDE.md

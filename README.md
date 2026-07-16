@@ -46,7 +46,7 @@ LLM writes answer citing Article 5(1)(f) + enforcement date
 
 ---
 
-## Architecture (v0.4)
+## Architecture (v0.5)
 
 ```
                         ┌─────────────────────────────────────┐

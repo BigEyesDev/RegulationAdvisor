@@ -23,8 +23,9 @@ pinned: false
 
 You type a question. A LangGraph agent decides which tools to call — semantic search over the
 regulation PDFs, a structured CSV lookup for timelines and penalties, or a live web search
-for recent enforcement news. The LLM writes a cited answer grounded in the actual text.
-Critical findings (prohibited practices, large fines) are flagged with a legal review warning.
+for recent enforcement news. The LLM writes a cited answer grounded in the actual regulation text.
+A guardrail layer checks every response for hallucinated article citations and flags legal claims
+before the answer reaches the user.
 
 ```
 "Is emotion recognition in the workplace allowed under the EU AI Act?"
@@ -37,6 +38,8 @@ Agent calls query_structured_data("enforcement date prohibited AI")
         ↓
 Returns: enforcement date 2025-02-02 from ai_act_timeline.csv
         ↓
+Guardrail checks: citation verified, legal claim flagged
+        ↓
 LLM writes answer citing Article 5(1)(f) + enforcement date
         ↓
 ⚠️ Critical finding warning appended — verify with legal professional
@@ -44,27 +47,46 @@ LLM writes answer citing Article 5(1)(f) + enforcement date
 
 ---
 
-## Architecture (v0.2 — LangGraph agent)
+## Architecture (v0.4)
 
 ```
-User question
-      │
-      ▼
-  agent node  ←──────────────────────┐
-  LLM decides: call tool or answer?  │
-      │                              │
-      ├── tool call ──► ToolNode ────┘  (loops until done)
-      │                 ├── search_regulations   (FAISS semantic search)
-      │                 ├── query_structured_data (CSV: timelines, penalties)
-      │                 └── search_web            (Tavily live search)
-      │
-      ├── critical finding ──► human_review node (interrupt — ⚠️ banner shown)
-      │
-      └── done ──► answer displayed in Gradio
+                        ┌─────────────────────────────────────┐
+                        │           FastAPI (port 8000)        │
+                        │                                      │
+                        │  POST /api/chat      (SSE stream)   │
+                        │  POST /api/chat/sync (sync)         │
+                        │  GET  /api/metrics                  │
+                        │  POST /api/evaluate                 │
+                        │  GET  /health                       │
+                        │                                      │
+                        │  Gradio UI  mounted at  /           │
+                        └──────────────┬──────────────────────┘
+                                       │
+                                       ▼
+                              ┌─────────────────┐
+                              │  LangGraph Agent │
+                              │   (StateGraph)   │
+                              └────────┬─────────┘
+                                       │
+               ┌───────────────────────┼───────────────────────┐
+               ▼                       ▼                        ▼
+    search_regulations        query_structured_data         search_web
+    (ChromaDB / FAISS         (CSV: timelines,             (Tavily live
+     semantic search)          penalties, risk tiers)       enforcement news)
+               │
+               ▼
+    ┌──────────────────────────────────────┐
+    │  Guardrail chain (Chain of Responsibility)  │
+    │  FaithfulnessCheck                         │
+    │  → CitationVerificationCheck               │
+    │  → LegalClaimFlagCheck                     │
+    └──────────────────────────────────────┘
+               │
+               ▼
+        Answer + warnings
 ```
 
-Multi-turn memory: `MemorySaver` checkpoints state per `thread_id` — the agent
-remembers the conversation across follow-up questions.
+Multi-turn memory: `MemorySaver` checkpoints state per `thread_id`.
 
 ---
 
@@ -87,82 +109,149 @@ cp .env.example .env
 # 3. Add the regulation documents to data/
 #    eu_ai_act.pdf, gdpr.pdf, ai_act_timeline.csv,
 #    risk_classification.csv, penalty_structure.csv
-#    (see data/README.md for download links)
 
-# 4. Build the FAISS index — one time only, ~20 seconds
+# 4. Build the vector index — one time only, ~20 seconds
 uv run python scripts/ingest.py
 
-# 5. Launch the agent chatbot
-uv run python src/regulation_advisor/ui/app_runner.py
-# Open http://localhost:7860
+# 5. Launch the FastAPI server (includes Gradio UI at /)
+uv run uvicorn regulation_advisor.api.app:app --host 0.0.0.0 --port 8000 --reload
+# Gradio UI:  http://localhost:8000/
+# REST API:   http://localhost:8000/docs
 ```
 
 ---
 
-## Swap the LLM model
+## REST API
 
-Edit two lines in `.env` — no code changes needed:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/chat` | Streaming SSE chat — streams LLM tokens as `data:` events |
+| `POST` | `/api/chat/sync` | Synchronous chat — returns full answer in one response |
+| `GET` | `/api/metrics` | Latest RAGAS scores from the last evaluation run |
+| `POST` | `/api/evaluate` | Triggers RAGAS evaluation in the background |
+| `GET` | `/health` | Health check |
 
 ```bash
-LLM_PROVIDER=openrouter          # openrouter | groq | google
-LLM_MODEL=deepseek/deepseek-v4-flash
+# Streaming chat
+curl -X POST http://localhost:8000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "What AI practices are prohibited under Article 5?"}'
+
+# Sync chat
+curl -X POST http://localhost:8000/api/chat/sync \
+  -H "Content-Type: application/json" \
+  -d '{"message": "What is the fine for a prohibited AI system?"}'
+
+# Get evaluation scores
+curl http://localhost:8000/api/metrics
 ```
 
-The agent and the Gradio UI both read from the same factory (`build_llm()` in `llm.py`).
+---
+
+## Swap the LLM or vector store
+
+Edit `.env` — no code changes needed:
+
+```bash
+# Switch LLM provider and model
+LLM_PROVIDER=openrouter          # openrouter | groq | google
+LLM_MODEL=deepseek/deepseek-v4-flash
+
+# Switch vector store (chromadb requires the sidecar to be running)
+VECTOR_STORE_BACKEND=faiss       # faiss | chromadb
+CHROMA_HOST=localhost
+CHROMA_PORT=8001
+```
+
+---
+
+## Run with ChromaDB (persistent vectors)
+
+```bash
+# Start ChromaDB sidecar
+docker run -p 8001:8000 chromadb/chroma:latest
+
+# Set backend in .env
+VECTOR_STORE_BACKEND=chromadb
+
+# Ingest once — data persists across restarts
+uv run python scripts/ingest.py
+
+uv run uvicorn regulation_advisor.api.app:app --host 0.0.0.0 --port 8000
+```
+
+---
+
+## Evaluation
+
+RAGAS scores are tracked across all answers. Run the evaluation suite against the 20-question
+golden dataset:
+
+```bash
+# Run RAGAS evaluation and save scores to evals/baseline_scores.json
+uv run python scripts/run_evaluation.py
+
+# Run the promptfoo 30-case regression suite (requires Node.js)
+npx promptfoo eval --config evals/promptfoo.yaml
+```
+
+The promptfoo suite also runs automatically on every PR to `main` via GitHub Actions.
+
+**Current baseline targets:**
+
+| Metric | Target |
+|--------|--------|
+| Faithfulness | ≥ 0.80 |
+| Answer Relevancy | ≥ 0.70 |
+| Context Precision | ≥ 0.70 |
+| Context Recall | ≥ 0.70 |
 
 ---
 
 ## Run tests
 
 ```bash
-# Unit tests — no data files or API keys needed (21 tests)
+# Unit tests — no data files or API keys needed
 uv run pytest tests/unit/ -v
 
-# Integration tests — requires FAISS index to be built first
+# Integration tests — requires index to be built first
 uv run pytest tests/integration/ -v
 
-# Week 2 gate checks specifically
-uv run pytest tests/unit/test_tools.py tests/unit/test_agent_graph.py -v
+# Full suite with coverage
+uv run pytest tests/ --cov=src -v
 ```
 
 ---
 
 ## Deploy to HuggingFace Spaces
 
-```
-Settings → Variables and Secrets → add each key from .env.example
-```
+Add secrets in **Settings → Variables and Secrets**:
 
-Required secrets for the agent to work:
-
-| Secret name | Where to get it | Required for |
-|---|---|---|
+| Secret | Source | Required for |
+|--------|--------|-------------|
 | `OPENROUTER_API_KEY` | openrouter.ai | LLM (default provider) |
-| `TAVILY_API_KEY` | tavily.com (1000 req/month free) | `search_web` tool |
+| `TAVILY_API_KEY` | tavily.com | `search_web` tool |
+| `GROQ_API_KEY` | console.groq.com | If using Groq provider |
+| `GOOGLE_API_KEY` | aistudio.google.com | If using Google provider |
 
-Optional (if switching providers):
-
-| Secret name | Where to get it |
-|---|---|
-| `GROQ_API_KEY` | console.groq.com |
-| `GOOGLE_API_KEY` | aistudio.google.com |
-
-The Space also needs the PDF and CSV data files committed or uploaded — see `data/README.md`.
-On cold start, `_ensure_index()` builds the FAISS index automatically from those files (~20 s).
+On cold start, the Spaces build runs `scripts/ingest.py` automatically (~20 s).
 
 ---
 
 ## Tech stack
 
 | Layer | Tool |
-|---|---|
+|-------|------|
 | Package manager | uv |
+| API server | FastAPI + Uvicorn (SSE streaming) |
 | Agent framework | LangGraph — stateful graph with `MemorySaver` checkpointing |
 | LLM | DeepSeek V4 Flash via OpenRouter (swappable via `.env`) |
-| Embeddings | sentence-transformers `all-MiniLM-L6-v2` (local, no API) |
-| Vector store | FAISS |
-| Tools | LangChain `@tool` — semantic search, CSV lookup, Tavily web search |
-| LLM framework | LangChain (tool binding, message types) |
+| Embeddings | sentence-transformers `all-MiniLM-L6-v2` (local, no API cost) |
+| Vector store | FAISS (dev) / ChromaDB (persistent) — swapped via config |
+| Tools | LangChain `@tool` — regulation search, CSV lookup, Tavily web search |
 | Document loading | LlamaIndex + PyMuPDF |
-| UI | Gradio 6 |
+| Guardrails | Chain of Responsibility — faithfulness, citation, legal-claim checks |
+| Evaluation | RAGAS + promptfoo 30-case regression suite |
+| UI | Gradio 6 (Chat + Evaluation Dashboard tabs) |
+| CI | GitHub Actions — promptfoo eval on every PR |
 | Deployment | HuggingFace Spaces |

@@ -3,9 +3,8 @@ title: RegulationAdvisor
 emoji: ⚖️
 colorFrom: blue
 colorTo: indigo
-sdk: gradio
-sdk_version: "6.20.0"
-app_file: src/regulation_advisor/ui/app_runner.py
+sdk: docker
+app_port: 8000
 pinned: false
 ---
 
@@ -225,16 +224,27 @@ uv run pytest tests/ --cov=src -v
 
 ## Deploy to HuggingFace Spaces
 
-Add secrets in **Settings → Variables and Secrets**:
+The Space uses `sdk: docker` — HF builds from `Dockerfile` directly, pre-baking the FAISS index
+into the image. No separate `app_file` is needed.
 
-| Secret | Source | Required for |
-|--------|--------|-------------|
-| `OPENROUTER_API_KEY` | openrouter.ai | LLM (default provider) |
-| `TAVILY_API_KEY` | tavily.com | `search_web` tool |
-| `GROQ_API_KEY` | console.groq.com | If using Groq provider |
-| `GOOGLE_API_KEY` | aistudio.google.com | If using Google provider |
+**Secrets** — add in Space Settings → Variables and Secrets (never commit to repo):
 
-On cold start, the Spaces build runs `scripts/ingest.py` automatically (~20 s).
+| Secret | Value | Required for |
+|--------|-------|-------------|
+| `OPENROUTER_API_KEY` | from openrouter.ai | LLM (default provider) |
+| `TAVILY_API_KEY` | from tavily.com | `search_web` tool |
+| `VECTOR_STORE_BACKEND` | `faiss` | Use baked-in FAISS index (no ChromaDB sidecar) |
+| `GROQ_API_KEY` | from console.groq.com | If switching to Groq provider |
+
+**Upload:**
+
+```bash
+huggingface-cli login
+huggingface-cli upload BigEyesDev/regulation-advisor . --repo-type=space
+```
+
+The FAISS index is built at Docker image build time (`RUN python scripts/ingest.py` in
+`Dockerfile`), so HF Spaces cold starts are fast — no per-request ingest delay.
 
 ---
 

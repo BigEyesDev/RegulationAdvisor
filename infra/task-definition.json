@@ -1,0 +1,46 @@
+{
+  "family": "regulation-advisor",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "regulation-advisor",
+      "image": "ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/regulation-advisor:v0.5.0",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "VECTOR_STORE_BACKEND",
+          "value": "faiss"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "OPENROUTER_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:ACCOUNT_ID:secret:regulation-advisor/openrouter-api-key"
+        },
+        {
+          "name": "TAVILY_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:ACCOUNT_ID:secret:regulation-advisor/tavily-api-key"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/regulation-advisor",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "essential": true
+    }
+  ]
+}

@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 
 _fastapi_app = FastAPI(
     title="RegulationAdvisor API",
-    version="0.4.0",
+    version="0.5.0",
     lifespan=lifespan,
 )
 _fastapi_app.include_router(routes.router)

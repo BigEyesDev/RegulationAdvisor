@@ -6,6 +6,48 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.5.0] — 2026-07-16
+
+**Containerisation and cloud deployment: Docker, Docker Compose, HuggingFace Spaces (Docker SDK), AWS ECR + ECS Fargate + ALB.**
+
+### Added
+
+#### Docker
+- `Dockerfile` — production-ready multi-stage build: `uv` builder stage + lean `python:3.11-slim`
+  runtime; FAISS index pre-built at image build time via `RUN python scripts/ingest.py`
+- `.dockerignore` — excludes `.venv`, `.env`, caches, `data/index/`, docs/, planning files from
+  build context; reduces context size and prevents secret leakage
+- `uv.lock` version field corrected to match `pyproject.toml` (was stale at 0.2.1)
+
+#### Docker Compose (ChromaDB mode)
+- `docker-compose.yml` rewritten: fixed `CHROMA_PORT=8000` (was 8001 — wrong internal port);
+  removed broken `./data` volume mount; added `entrypoint` override to `scripts/entrypoint.sh`
+- `scripts/entrypoint.sh` — idempotent startup: checks ChromaDB document count, ingests only
+  if empty, then `exec uvicorn`; prevents duplicate ingestion on restarts
+
+#### HuggingFace Spaces
+- `README.md` front-matter: `sdk: gradio` → `sdk: docker`, `app_port: 8000`; removed Gradio-
+  specific `sdk_version` and `app_file` fields
+- Updated deploy section: Docker upload flow, secrets table with `VECTOR_STORE_BACKEND=faiss`
+
+#### AWS Infrastructure
+- `infra/task-definition.json` — ECS Fargate task: 0.5 vCPU / 1 GB, eu-central-1, API keys
+  injected from Secrets Manager at runtime (no plaintext), CloudWatch log driver
+- `infra/README.md` — deployment reference: ECR push, IAM role setup, service creation,
+  CloudWatch tailing, cost-control commands (scale to 0, delete ALB)
+
+#### ECS Service + ALB
+- ECS cluster `regulation-advisor` with Fargate service (1 desired task)
+- Application Load Balancer: internet-facing, health check on `/health`, HTTPS termination
+- Public API endpoint documented in README
+
+### Changed
+- `pyproject.toml` version bumped `0.4.0 → 0.5.0`
+- `src/regulation_advisor/api/app.py` version string updated to `0.5.0`
+- `README.md` architecture diagram updated to v0.5
+
+---
+
 ## [0.4.0] — 2026-07-15
 
 **FastAPI REST API, streaming responses, ChromaDB persistence, and Evaluation Dashboard.**

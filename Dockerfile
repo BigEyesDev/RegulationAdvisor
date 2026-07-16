@@ -1,35 +1,29 @@
-# Use uv's official Docker image as the base for the builder stage
+# ── Stage 1: dependency installer ────────────────────────────────────────────
+# uv's own image already has uv on PATH — no pip install needed.
 FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
 
 WORKDIR /app
 
-# Copy dependency files first (Docker cache optimization)
-# If pyproject.toml doesn't change, this layer is cached
-COPY pyproject.toml ./
+# Copy lock file alongside pyproject so --frozen can verify the lock is current.
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 
-# Install dependencies into /app/.venv
-# --frozen: fail if uv.lock is out of date (ensures reproducibility)
-# --no-dev: skip dev dependencies in production
-RUN uv sync --frozen --no-dev 2>/dev/null || uv sync --no-dev
-
-# ── Final image ──────────────────────────────────────────────────────────────
+# ── Stage 2: lean runtime image ───────────────────────────────────────────────
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy the virtual environment from the builder stage
+# Bring only the installed packages from the builder — no uv, no build tools.
 COPY --from=builder /app/.venv /app/.venv
-
-# Copy application code
 COPY src/ src/
 COPY data/ data/
 COPY evals/ evals/
 COPY scripts/ scripts/
 
-# Make the venv's Python the default
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Pre-build the vector index at container build time
+# Build the FAISS vector index once at image-build time.
+# VECTOR_STORE_BACKEND defaults to "faiss" so this uses local files only.
 RUN python scripts/ingest.py
 
 EXPOSE 8000

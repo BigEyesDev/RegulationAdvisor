@@ -21,6 +21,7 @@ from regulation_advisor.api.schemas import (
     SourceReference,
 )
 from regulation_advisor.api import metrics_store
+from regulation_advisor.classifier.reg_classifier import RegClassifier
 from regulation_advisor.config import settings
 
 logger = logging.getLogger(__name__)
@@ -30,17 +31,27 @@ router = APIRouter()
 # Set by api/app.py lifespan via set_agent()
 _agent = None
 
+# Lazily loads the fine-tuned checkpoint on first use, or falls back to the
+# prompted LLM if CLASSIFIER_CHECKPOINT is unset — see config.py.
+_classifier = RegClassifier(checkpoint_path=settings.classifier_checkpoint or None)
+
 
 def set_agent(agent: object) -> None:
     global _agent
     _agent = agent
 
 
+def set_classifier(classifier: object) -> None:
+    """Test/startup injection point — mirrors set_agent()."""
+    global _classifier
+    _classifier = classifier
+
+
 @router.get("/api/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.4.0",
+        version="0.6.0",
         vector_store_backend=settings.vector_store_backend,
     )
 
@@ -87,12 +98,21 @@ async def chat_sync(request: ChatRequest) -> ChatResponse:
         for c in retrieved
     ]
 
+    risk_tier, classifier_confidence = None, None
+    try:
+        finding = _classifier.classify(answer)
+        risk_tier, classifier_confidence = finding.risk_tier, finding.confidence
+    except Exception:
+        logger.exception("RegClassifier failed — returning answer without a risk tier")
+
     return ChatResponse(
         answer=answer,
         sources=sources,
         confidence_score=result.get("confidence_score", 1.0),
         warnings=[],
         session_id=request.session_id,
+        risk_tier=risk_tier,
+        classifier_confidence=classifier_confidence,
     )
 
 

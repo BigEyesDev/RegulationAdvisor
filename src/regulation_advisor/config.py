@@ -47,6 +47,11 @@ class Settings(BaseSettings):
     # Path where the FAISS index is saved / loaded (ChromaDB ignores this)
     index_dir: str = "data/index"
 
+    # RegClassifier checkpoint: local path (outputs/reg_classifier/final) or a
+    # HuggingFace Hub repo id (BigEyesDev/reg-classifier-qwen3-1.7b).
+    # Leave empty to use the LLM-prompted fallback classifier instead.
+    classifier_checkpoint: str = ""
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

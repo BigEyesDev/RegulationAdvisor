@@ -6,6 +6,34 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.0] — 2026-07-17
+
+**Fine-tuning: QLoRA-trained RegClassifier (Qwen3-1.7B), published to HuggingFace Hub and
+wired into the REST API + Gradio UI.**
+
+### Added
+
+- `evals/finetune/examples.json` — 200 hand-reviewed EU AI Act classification examples
+  across all four risk tiers plus edge cases; `scripts/build_finetune_dataset.py` validates
+  schema and produces an 80/10/10 train/val/test split
+- `scripts/train_classifier.py` — QLoRA fine-tuning of Qwen3-1.7B-Instruct via Unsloth +
+  `trl`'s `SFTTrainer`, saving a LoRA adapter checkpoint
+- `scripts/evaluate_classifier.py` — `classification_report` comparison of the prompted
+  base model vs. the fine-tuned checkpoint on the held-out test set
+- `scripts/publish_to_hub.py` + `src/regulation_advisor/classifier/MODEL_CARD.md` —
+  publishes the adapter to HuggingFace Hub with a documented model card
+- `RegClassifier` rewritten from a stub to real inference: loads the fine-tuned checkpoint
+  when `CLASSIFIER_CHECKPOINT` is set, otherwise falls back to a prompted LLM call
+- `POST /api/chat/sync` now returns `risk_tier` and `classifier_confidence`; Gradio chat tab
+  shows a colour-coded risk badge (🔴 Unacceptable / 🟠 High / 🟡 Limited / 🟢 Minimal)
+
+### Changed
+
+- `pyproject.toml` version `0.5.0 → 0.6.0`
+- `/api/health` now reports `version: "0.6.0"`
+
+---
+
 ## [0.5.0] — 2026-07-16
 
 **Containerisation and cloud deployment: Docker, Docker Compose, HuggingFace Spaces (Docker SDK), AWS ECR + ECS Fargate + ALB.**

@@ -46,7 +46,8 @@ def classify_with_base_llm(text: str) -> str:
 def classify_with_finetuned(text: str, pipeline) -> str:
     prompt = (
         f"<|im_start|>user\n"
-        f"Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: {text}"
+        f"Classify the following EU AI Act regulation finding by risk tier, "
+        f"obligation type, and urgency.\n\nText: {text}"
         f"<|im_end|>\n<|im_start|>assistant\n"
     )
     output = pipeline(prompt, max_new_tokens=256, do_sample=False)[0]["generated_text"]
@@ -90,8 +91,12 @@ def main(checkpoint: str, output_path: Path) -> None:
     print(classification_report(labels, ft_preds, zero_division=0))
 
     result = {
-        "base_model": classification_report(labels, base_preds, output_dict=True, zero_division=0),
-        "finetuned_model": classification_report(labels, ft_preds, output_dict=True, zero_division=0),
+        "base_model": classification_report(
+            labels, base_preds, output_dict=True, zero_division=0
+        ),
+        "finetuned_model": classification_report(
+            labels, ft_preds, output_dict=True, zero_division=0
+        ),
         "test_size": len(test_data),
     }
     output_path.write_text(json.dumps(result, indent=2))

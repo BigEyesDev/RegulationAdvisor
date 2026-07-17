@@ -13,26 +13,38 @@ from fastapi.testclient import TestClient
 
 from regulation_advisor.api import routes
 from regulation_advisor.api.routes import router
+from regulation_advisor.models import RegulationFinding
 
 
 @pytest.fixture()
 def client_with_agent():
-    """Build a minimal test app and inject a fake agent."""
+    """Build a minimal test app and inject a fake agent + classifier (no real LLM calls)."""
     mock_agent = MagicMock()
     mock_agent.ainvoke = AsyncMock(return_value={
         "messages": [MagicMock(content="Article 5 prohibits social scoring.")],
         "retrieved_chunks": [],
         "confidence_score": 0.95,
     })
+    mock_classifier = MagicMock()
+    mock_classifier.classify.return_value = RegulationFinding(
+        article="Article 5",
+        risk_tier="Unacceptable",
+        obligation_type="PROHIBITED",
+        urgency="IMMEDIATE",
+        confidence=0.92,
+        reasoning="Social scoring is a prohibited practice.",
+    )
 
     app = FastAPI()
     app.include_router(router)
 
-    original = routes._agent
+    original_agent, original_classifier = routes._agent, routes._classifier
     routes.set_agent(mock_agent)
+    routes.set_classifier(mock_classifier)
     with TestClient(app) as c:
         yield c, mock_agent
-    routes.set_agent(original)
+    routes.set_agent(original_agent)
+    routes.set_classifier(original_classifier)
 
 
 def test_chat_sync_returns_200(client_with_agent):

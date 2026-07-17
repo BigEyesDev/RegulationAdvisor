@@ -28,6 +28,7 @@ data/index/
 *.pkl
 outputs/
 models/
+unsloth_compiled_cache/
 
 # Python packaging
 dist/

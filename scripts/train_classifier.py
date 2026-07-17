@@ -95,7 +95,7 @@ def main(model_name: str, epochs: int, output_dir: Path) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="Qwen/Qwen3-1.7B-Instruct")
+    parser.add_argument("--model", default="unsloth/Qwen3-1.7B-unsloth-bnb-4bit")
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--output-dir", default="outputs/reg_classifier")
     args = parser.parse_args()

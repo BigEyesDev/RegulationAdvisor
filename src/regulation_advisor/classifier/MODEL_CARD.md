@@ -1,7 +1,7 @@
 ---
 language: en
 license: apache-2.0
-base_model: Qwen/Qwen3-1.7B-Instruct
+base_model: Qwen/Qwen3-1.7B
 tags:
   - peft
   - qlora
@@ -12,7 +12,7 @@ tags:
 
 # reg-classifier-qwen3-1.7b
 
-QLoRA fine-tuned adapter on top of Qwen3-1.7B-Instruct.
+QLoRA fine-tuned adapter on top of Qwen3-1.7B.
 Classifies EU AI Act regulation text into structured findings.
 
 ## Task
@@ -26,7 +26,7 @@ Given a description of an AI system or practice, returns:
 
 ## Training
 
-- Base model: Qwen/Qwen3-1.7B-Instruct
+- Base model: Qwen/Qwen3-1.7B
 - Training examples: 160 (80/10/10 split)
 - LoRA rank r=16, alpha=32, target: q_proj, k_proj, v_proj, o_proj
 - Epochs: 3, lr: 2e-4 cosine, batch size 16 (4x4 accumulation)
@@ -48,7 +48,7 @@ see `evals/classifier_eval.json` for the generated numbers.
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
-base = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-1.7B-Instruct")
+base = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-1.7B")
 model = PeftModel.from_pretrained(base, "BigEyesDev/reg-classifier-qwen3-1.7b")
 tokenizer = AutoTokenizer.from_pretrained("BigEyesDev/reg-classifier-qwen3-1.7b")
 ```

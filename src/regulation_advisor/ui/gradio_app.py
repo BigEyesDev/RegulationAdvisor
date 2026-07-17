@@ -63,10 +63,24 @@ def _context_chunks_from_state(agent: object, config: dict) -> list[RegulationCh
         return []
 
 
+_RISK_BADGE = {
+    "Unacceptable": "🔴 **Risk: Unacceptable** — prohibited practice",
+    "High": "🟠 **Risk: High** — conformity assessment required",
+    "Limited": "🟡 **Risk: Limited** — transparency obligations apply",
+    "Minimal": "🟢 **Risk: Minimal** — no specific obligation",
+}
+
+
 def _get_agent():
     """Lazy agent accessor — reads from routes at call time, not import time."""
     from regulation_advisor.api.routes import _agent
     return _agent
+
+
+def _get_classifier():
+    """Lazy classifier accessor — reads from routes at call time, not import time."""
+    from regulation_advisor.api.routes import _classifier
+    return _classifier
 
 
 def _fetch_metrics() -> dict | None:
@@ -109,8 +123,18 @@ def build_ui() -> gr.Blocks:
 
         chunks = _context_chunks_from_state(agent, config)
         guard = _guardrails.check(partial, chunks, confidence=1.0)
+        final_text = partial
         if guard.warnings:
-            yield partial + "\n\n" + "\n\n".join(guard.warnings)
+            final_text = partial + "\n\n" + "\n\n".join(guard.warnings)
+            yield final_text
+
+        try:
+            finding = _get_classifier().classify(partial)
+            badge = _RISK_BADGE.get(finding.risk_tier, "")
+            if badge:
+                yield final_text + f"\n\n---\n{badge}"
+        except Exception:
+            logger.exception("RegClassifier failed — answer shown without a risk badge")
 
         logger.info(
             "Streamed answer (%d chars, guardrail_passed=%s, warnings=%d)",

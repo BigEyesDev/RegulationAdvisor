@@ -20,6 +20,8 @@ class ChatResponse(BaseModel):
     confidence_score: float = Field(ge=0.0, le=1.0)
     warnings: list[str]
     session_id: str
+    risk_tier: str | None = None
+    classifier_confidence: float | None = None
 
 
 class MetricsResponse(BaseModel):

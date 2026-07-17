@@ -6,6 +6,26 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.1] — 2026-07-17
+
+**Fixes discovered while dry-running the fine-tuning pipeline for the first time.**
+
+### Fixed
+
+- `Qwen/Qwen3-1.7B-Instruct` does not exist on HuggingFace Hub — Qwen3's naming dropped the
+  `-Instruct` suffix used by Qwen2.5. `scripts/train_classifier.py`'s default `--model` and
+  the model card now point to `unsloth/Qwen3-1.7B-unsloth-bnb-4bit` (a pre-quantized 4-bit
+  build — smaller download and lower peak RAM/VRAM than quantizing the full-precision
+  weights on the fly, which matters on constrained hardware)
+- Pinned `torchao==0.9.0` in the `finetune` dependency group — newer `torchao` (>=0.14)
+  references `torch.int1`, a sub-byte dtype that doesn't exist in the `torch 2.5.1` build
+  already installed by `sentence-transformers`/`chromadb`. Pinning `torchao` down avoided a
+  large, disk-risky `torch` reinstall while keeping `unsloth` importable
+- Added `unsloth_compiled_cache/` to `.gitignore` — a build-time cache directory `unsloth`
+  creates on first import
+
+---
+
 ## [0.6.0] — 2026-07-17
 
 **Fine-tuning: QLoRA-trained RegClassifier (Qwen3-1.7B), published to HuggingFace Hub and
@@ -16,7 +36,7 @@ wired into the REST API + Gradio UI.**
 - `evals/finetune/examples.json` — 200 hand-reviewed EU AI Act classification examples
   across all four risk tiers plus edge cases; `scripts/build_finetune_dataset.py` validates
   schema and produces an 80/10/10 train/val/test split
-- `scripts/train_classifier.py` — QLoRA fine-tuning of Qwen3-1.7B-Instruct via Unsloth +
+- `scripts/train_classifier.py` — QLoRA fine-tuning of Qwen3-1.7B via Unsloth +
   `trl`'s `SFTTrainer`, saving a LoRA adapter checkpoint
 - `scripts/evaluate_classifier.py` — `classification_report` comparison of the prompted
   base model vs. the fine-tuned checkpoint on the held-out test set

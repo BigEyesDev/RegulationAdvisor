@@ -51,7 +51,7 @@ def set_classifier(classifier: object) -> None:
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.6.0",
+        version="0.6.1",
         vector_store_backend=settings.vector_store_backend,
     )
 

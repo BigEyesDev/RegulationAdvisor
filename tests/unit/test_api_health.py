@@ -25,7 +25,7 @@ def test_health_returns_ok():
 
 def test_health_version():
     response = client.get("/api/health")
-    assert response.json()["version"] == "0.6.0"
+    assert response.json()["version"] == "0.6.1"
 
 
 def test_health_vector_store_backend_is_valid():

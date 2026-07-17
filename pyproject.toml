@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "regulation-advisor"
-version = "0.6.0"
+version = "0.6.1"
 description = "Agentic RAG advisor for EU AI Act compliance — FastAPI REST API + streaming + ChromaDB + Gradio Evaluation Dashboard + Docker + AWS ECS + QLoRA-fine-tuned RegClassifier"
 requires-python = ">=3.11"
 
@@ -65,6 +65,11 @@ finetune = [
     "peft",
     "trl",
     "unsloth",
+    # torchao>=0.17 imports torch.int1 (sub-byte dtypes) that don't exist in the
+    # torch 2.5.1 build already pinned by sentence-transformers/chromadb — pin
+    # an older torchao instead of upgrading torch to avoid a large, disk-risky
+    # torch reinstall on constrained machines.
+    "torchao==0.9.0",
 ]
 
 [tool.hatch.build.targets.wheel]

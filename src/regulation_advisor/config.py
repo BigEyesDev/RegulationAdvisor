@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     llm_provider: str = "openrouter"
     llm_model: str = "deepseek/deepseek-v4-flash"
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    # Some provider/model combos occasionally stall on a single request for
+    # 30-60s+ with no error — this bounds how long any one call can hang.
+    llm_request_timeout_seconds: int = 45
 
     # Web search
     tavily_api_key: str = ""

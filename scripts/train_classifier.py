@@ -49,10 +49,13 @@ def main(model_name: str, epochs: int, output_dir: Path) -> None:
 
     model = FastLanguageModel.get_peft_model(
         model,
-        r=16,                 # LoRA rank — higher = more parameters = better but slower
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
-        lora_alpha=32,        # scaling factor: effective_lr = lora_alpha / r * lr
-        lora_dropout=0.05,    # regularisation
+        r=32,                  # LoRA rank — higher = more capacity to hold new vocabulary
+        target_modules=[
+            "q_proj", "k_proj", "v_proj", "o_proj",       # attention
+            "gate_proj", "up_proj", "down_proj",           # MLP — shapes output-token choice
+        ],
+        lora_alpha=64,          # kept at 2 * r per LoRA convention
+        lora_dropout=0.05,      # regularisation
         bias="none",
         use_gradient_checkpointing="unsloth",  # saves VRAM
     )
@@ -71,8 +74,9 @@ def main(model_name: str, epochs: int, output_dir: Path) -> None:
         args=SFTConfig(
             dataset_text_field="text",
             max_seq_length=2048,
-            per_device_train_batch_size=4,
-            gradient_accumulation_steps=4,   # effective batch = 4*4 = 16
+            per_device_train_batch_size=2,
+            gradient_accumulation_steps=2,   # effective batch = 2*2 = 4 — more steps/epoch
+                                              # on small datasets than a larger effective batch
             num_train_epochs=epochs,
             learning_rate=2e-4,
             warmup_ratio=0.1,
@@ -96,7 +100,7 @@ def main(model_name: str, epochs: int, output_dir: Path) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="unsloth/Qwen3-1.7B-unsloth-bnb-4bit")
-    parser.add_argument("--epochs", type=int, default=3)
+    parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--output-dir", default="outputs/reg_classifier")
     args = parser.parse_args()
     main(args.model, args.epochs, Path(args.output_dir))

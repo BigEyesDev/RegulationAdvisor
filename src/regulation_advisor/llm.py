@@ -35,16 +35,21 @@ def build_llm():
     model = settings.llm_model
     logger.info("Building LLM: provider=%s model=%s", provider, model)
 
+    timeout = settings.llm_request_timeout_seconds
+
     if provider == "openrouter":
         from langchain_openai import ChatOpenAI
         return ChatOpenAI(
             model=model,
             base_url=settings.openrouter_base_url,
             api_key=settings.openrouter_api_key,
+            timeout=timeout,
         )
     if provider == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(model=model, google_api_key=settings.google_api_key)
+        return ChatGoogleGenerativeAI(
+            model=model, google_api_key=settings.google_api_key, timeout=timeout
+        )
     # default: groq
     from langchain_groq import ChatGroq
-    return ChatGroq(model=model, api_key=settings.groq_api_key)
+    return ChatGroq(model=model, api_key=settings.groq_api_key, timeout=timeout)

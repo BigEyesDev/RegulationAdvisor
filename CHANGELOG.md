@@ -6,6 +6,20 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.2] — 2026-07-18
+
+**Fix discovered while running the evaluation script for the first time.**
+
+### Fixed
+
+- `build_llm()` now passes an explicit `timeout` (default 45s, `LLM_REQUEST_TIMEOUT_SECONDS`
+  in `.env`) to every provider client. Observed a single request to the configured
+  OpenRouter model take 50s versus 3-5s for others, with no timeout previously configured
+  anywhere — a slow or stuck provider response could hang a chat request or evaluation run
+  indefinitely.
+
+---
+
 ## [0.6.1] — 2026-07-17
 
 **Fixes discovered while dry-running the fine-tuning pipeline for the first time.**

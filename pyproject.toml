@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "regulation-advisor"
-version = "0.6.2"
+version = "0.6.3"
 description = "Agentic RAG advisor for EU AI Act compliance — FastAPI REST API + streaming + ChromaDB + Gradio Evaluation Dashboard + Docker + AWS ECS + QLoRA-fine-tuned RegClassifier"
 requires-python = ">=3.11"
 
@@ -65,12 +65,18 @@ finetune = [
     "peft",
     "trl",
     "unsloth",
-    # torchao>=0.17 imports torch.int1 (sub-byte dtypes) that don't exist in the
-    # torch 2.5.1 build already pinned by sentence-transformers/chromadb — pin
-    # an older torchao instead of upgrading torch to avoid a large, disk-risky
-    # torch reinstall on constrained machines.
-    "torchao==0.9.0",
 ]
+# `unsloth` pulls in `torchao` transitively. Any torchao version new enough for
+# `peft` to treat as "available" (>=0.16) imports torch.int1 (a sub-byte dtype)
+# that doesn't exist in the torch 2.5.1 build already pinned by
+# sentence-transformers/chromadb — and older, compatible torchao versions make
+# `peft` raise a hard ImportError instead of just skipping that backend. There
+# is no version that satisfies both. On a machine already pinned to torch
+# 2.5.1, the working fix is to remove torchao entirely so peft treats it as
+# "not installed" (silently skipped) rather than "installed but too old"
+# (hard error):
+#     uv sync --group dev --group finetune
+#     uv pip uninstall torchao
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/regulation_advisor"]

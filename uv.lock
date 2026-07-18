@@ -4898,7 +4898,6 @@ dev = [
 ]
 finetune = [
     { name = "peft" },
-    { name = "torchao" },
     { name = "trl" },
     { name = "unsloth" },
 ]
@@ -4939,7 +4938,6 @@ dev = [
 ]
 finetune = [
     { name = "peft" },
-    { name = "torchao", specifier = "==0.9.0" },
     { name = "trl" },
     { name = "unsloth" },
 ]

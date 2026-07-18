@@ -1,642 +1,326 @@
 [
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI opponent in a single-player video game that adapts its difficulty based on player performance.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"AI used purely for entertainment purposes in video games is treated as minimal risk with no specific transparency obligation.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A private data broker scrapes millions of tagged photos from social media to build an untargeted facial-recognition index later resold to security firms.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images to build or expand a recognition database is prohibited under Article 5(1)(e).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI-powered advertising platform that subliminally manipulates a user's decision-making beyond their conscious awareness in order to materially distort their behaviour and cause harm.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(a)\",\n  \"reasoning\": \"Subliminal manipulation techniques designed to materially distort behaviour and cause harm are a prohibited practice under Article 5(1)(a).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An online retailer's customer-support chatbot answers questions about order status and processes return requests.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems that interact directly with people must disclose they are an AI system under Article 50(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 29] An AI-based fraud-detection system used by a bank to flag suspicious transactions for human review before any account action is taken.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Even though a human reviews the final decision, the AI's role in flagging transactions affecting access to financial services keeps this in the high-risk category.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A comedy writers' room uses an AI tool to generate a deepfake clip of a politician for a late-night sketch, aired with an on-screen 'AI-generated parody' disclaimer.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content, even for satire, must be disclosed as artificially generated under Article 50(4), which the on-screen disclaimer satisfies.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 28] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A newspaper's AI tool drafts short summaries of wire-service articles, each displayed with a visible 'AI-generated summary' tag.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text on matters of public interest must be labelled as such under Article 50(4).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A deepfake video generator used internally by a film studio's VFX team, with outputs never distributed publicly and always reviewed by human editors before any release decision.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Even for internal production use, synthetic media must be marked as AI-generated once it is eventually shared, so the transparency obligation still applies at time of disclosure.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A retailer's fingerprint scanner lets loyalty-card members pay at self-checkout by matching against their own previously enrolled fingerprint only.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"One-to-one biometric verification against a person's own enrolled data for payment convenience is minimal risk, distinct from crowd identification.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 18] An in-car AI system that detects driver drowsiness by monitoring facial expressions to issue a safety alert.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion recognition systems must inform affected individuals that the system is in operation under Article 50(3).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A retail chain's in-store cameras infer shoppers' ethnicity from facial features to route certain groups to higher-priced product displays.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(g)\",\n  \"reasoning\": \"Biometric categorisation to infer race or ethnicity for discriminatory treatment is prohibited under Article 5(1)(g).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 3] A private security firm scrapes facial images from social media and CCTV footage to build an untargeted facial recognition database sold to law enforcement agencies.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images to build or expand recognition databases is prohibited under Article 5(1)(e).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A warehouse's AI forecasting tool predicts next month's stock needs for a retail chain based on historical sales data.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting with no direct impact on individuals' rights is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 15] A private security firm scrapes facial images from social media and CCTV footage to build an untargeted facial recognition database sold to law enforcement agencies.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images to build or expand recognition databases is prohibited under Article 5(1)(e).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A national exam board uses AI to score students' anxiety levels from webcam footage during standardised testing and flags high-anxiety students to proctors.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in educational settings is prohibited under Article 5(1)(f).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 10] A general-purpose AI model with systemic risk due to exceeding the compute threshold, requiring the provider to conduct adversarial testing and report serious incidents.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models classified as posing systemic risk carry additional obligations under Article 55, including adversarial testing, in force from 2 August 2025.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An airport uses a one-to-one biometric verification gate paired with a watchlist-matching model to flag travellers for secondary screening.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(1)\",\n  \"reasoning\": \"Biometric identification systems used to categorise or flag individuals against a watchlist fall under Annex III(1) as high-risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 1] A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A political consultancy scans public selfies to infer users' likely political affiliation and religion for a targeted persuasion campaign.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(g)\",\n  \"reasoning\": \"Biometric categorisation inferring political opinions or religious beliefs is prohibited under Article 5(1)(g).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 22] An AI system that uses real-time remote biometric identification in publicly accessible spaces for law enforcement purposes without prior judicial authorisation.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Real-time remote biometric identification in public spaces is a prohibited practice under Article 5. The prohibition has been in force since 2 February 2025.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A mortgage lender's AI model determines the maximum loan-to-value ratio it will offer each applicant.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Credit-scoring systems determining access to essential financial services are high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 16] A biometric system used exclusively for one-to-one identity verification to unlock an individual's own smartphone.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"One-to-one biometric verification for device unlocking is explicitly distinguished from the high-risk biometric identification category and treated as minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A children's smart toy has a voice assistant that responds to simple commands like 'tell me a story', with no biometric or profiling capability.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with a child, so it must disclose its AI nature, but has no Annex III high-risk function.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 13] An algorithm used by a utility company to decide which customers are eligible for essential electricity services based on a risk profile.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI evaluating eligibility for essential private services is classified high-risk under Annex III(5).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A meme-generator app lets users create an AI-voiced parody clip of a historical figure, automatically appending a visible 'synthetic content' watermark.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Synthetic audio-visual content must be marked as AI-generated under Article 50(4), which the automatic watermark satisfies.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 20] An employer uses an AI system solely to detect anomalies in payroll calculations, with no role in hiring, promotion, or termination decisions.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Purely administrative payroll-anomaly detection is unrelated to employment decisions covered by Annex III(4) and is therefore minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A toy company's AI plush toy is tuned to detect and specifically target children showing signs of loneliness with prompts encouraging costly in-app purchases.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(b)\",\n  \"reasoning\": \"Exploiting the vulnerabilities of children to materially distort behaviour causing harm is prohibited under Article 5(1)(b).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 1] A biometric categorisation system that infers political opinions or sexual orientation from facial images to segment users for targeted political content.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(g)\",\n  \"reasoning\": \"Biometric categorisation systems inferring sensitive attributes such as political opinions are prohibited under Article 5(1)(g).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A marketing agency generates AI product photos for a client's catalogue, each carrying an embedded machine-readable synthetic-content marker.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Providers generating synthetic image content must ensure a machine-readable marking under Article 50(2).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 18] A workplace monitoring tool that infers employees' emotions during shift reviews to decide who receives disciplinary action.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in the workplace is prohibited under Article 5(1)(f), except for narrow medical or safety exceptions that do not apply here.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A strategy video game adjusts the difficulty of computer-controlled opponents based on the player's recent win rate.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"AI used purely for entertainment purposes in video games is minimal risk with no specific obligation under the Act.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 26] A predictive policing tool used by police departments to identify high-risk locations for patrol deployment, based on aggregated historical crime statistics.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(6)\",\n  \"reasoning\": \"AI systems used by law enforcement for risk assessment are classified high-risk under Annex III(6), requiring conformity assessment and logging.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A language-school's placement test uses AI to score spoken responses and assign students to proficiency tracks.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems used to assess and place students in education are high-risk under Annex III(3).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 5] A toy manufacturer embeds a voice-activated AI assistant in a children's toy that responds to simple commands, with no biometric or profiling capability.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with children, so it must disclose its AI nature, but it does not fall into any Annex III high-risk category.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A regional utility company's algorithm decides which delinquent customers are eligible for a payment plan versus immediate disconnection.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI evaluating eligibility for essential private services such as utilities is high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 17] A social credit scoring system deployed by a public authority that evaluates or classifies people based on social behaviour, leading to detrimental treatment unrelated to the context in which the data was generated.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(c)\",\n  \"reasoning\": \"Social scoring by public authorities that causes unjustified or disproportionate detrimental treatment is explicitly prohibited under Article 5.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A gig-economy platform's algorithm decides which drivers get deactivated based on an opaque composite performance score.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(4)\",\n  \"reasoning\": \"AI systems making employment-termination-relevant decisions are high-risk under Annex III(4).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 24] A general-purpose large language model provider that must publish a summary of the copyrighted material used in training.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 53(1)(d)\",\n  \"reasoning\": \"General-purpose AI model providers must publish a sufficiently detailed training-data summary under Article 53(1)(d), effective from 2 August 2025.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An insurer's AI sets individual premiums for life and health cover based on a detailed personal risk profile.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Risk assessment and pricing for life and health insurance is explicitly listed as high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 23] A general-purpose AI model with systemic risk due to exceeding the compute threshold, requiring the provider to conduct adversarial testing and report serious incidents.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models classified as posing systemic risk carry additional obligations under Article 55, including adversarial testing, in force from 2 August 2025.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A national tax authority scores citizens' 'compliance trustworthiness' from unrelated social-media sentiment and reduces service priority for low scorers.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(c)\",\n  \"reasoning\": \"Social scoring by a public authority causing detrimental treatment unrelated to the data's original context is prohibited under Article 5(1)(c).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 16] A biometric verification system used to authenticate identity for accessing critical digital infrastructure, distinct from real-time public identification.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(1)\",\n  \"reasoning\": \"Biometric identification systems (excluding verification-only use covered elsewhere) fall under Annex III(1) as high-risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A telecom provider's IVR system uses a synthetic voice to walk callers through billing troubleshooting steps.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems using synthetic voice to interact with callers must disclose their artificial nature under Article 50(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An employer uses an AI system solely to detect anomalies in payroll calculations, with no role in hiring, promotion, or termination decisions.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Purely administrative payroll-anomaly detection is unrelated to employment decisions covered by Annex III(4) and is therefore minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 32] A photo-editing app's auto-enhance filter that adjusts brightness and contrast automatically.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Basic image-enhancement features present negligible risk to fundamental rights and are minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 17] A deepfake video generator used internally by a film studio's VFX team, with outputs never distributed publicly and always reviewed by human editors before any release decision.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Even for internal production use, synthetic media must be marked as AI-generated once it is eventually shared, so the transparency obligation still applies at time of disclosure.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 8] An image-generation app that creates realistic synthetic photos for marketing materials, watermarking each output as AI-generated.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Providers of systems generating synthetic content must ensure outputs are marked in a machine-readable format under Article 50(2).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 11] A voice assistant embedded in a smart speaker that answers general knowledge questions from household members.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting with natural persons must make clear it is an AI system, satisfying the transparency obligation of Article 50(1).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A general-purpose AI model with systemic risk due to exceeding the compute threshold, requiring the provider to conduct adversarial testing and report serious incidents.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models classified as posing systemic risk carry additional obligations under Article 55, including adversarial testing, in force from 2 August 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A safety component AI embedded in an autonomous industrial robot arm operating on a factory floor alongside human workers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 6(1)\",\n  \"reasoning\": \"AI used as a safety component of a machinery product covered by existing EU product-safety legislation is high-risk under Article 6(1).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A school deploys an AI system to infer students' emotional state from webcam feeds during exams to flag potential cheating.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in educational institutions is prohibited under Article 5(1)(f), with only narrow safety-related exceptions.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 19] An automated grading system used by a university to score final exam essays and determine pass/fail outcomes.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems used to evaluate learning outcomes in educational settings are high-risk under Annex III(3).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 4] An AI system that uses real-time remote biometric identification in publicly accessible spaces for law enforcement purposes without prior judicial authorisation.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Real-time remote biometric identification in public spaces is a prohibited practice under Article 5. The prohibition has been in force since 2 February 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 4] An in-car AI system that detects driver drowsiness by monitoring facial expressions to issue a safety alert.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion recognition systems must inform affected individuals that the system is in operation under Article 50(3).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 23] An insurer's chatbot subtly nudges vulnerable customers with gambling addiction histories toward high-risk financial products they would not otherwise choose.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(b)\",\n  \"reasoning\": \"Exploiting known vulnerabilities to distort economic decisions causing harm is a prohibited practice under Article 5(1)(b).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 14] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 22] An automated CV-screening tool used by a recruitment agency to shortlist candidates for interviews based on resume content.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(4)\",\n  \"reasoning\": \"AI systems used in recruitment and candidate screening are classified high-risk under Annex III(4) due to their impact on employment access.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A video-editing tool that generates a deepfake video of a public figure for a satire piece, clearly labelled as AI-generated content in the video description.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content must be disclosed as artificially generated or manipulated under Article 50(4), which this example satisfies.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 2] An AI-powered advertising platform that subliminally manipulates a user's decision-making beyond their conscious awareness in order to materially distort their behaviour and cause harm.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(a)\",\n  \"reasoning\": \"Subliminal manipulation techniques designed to materially distort behaviour and cause harm are a prohibited practice under Article 5(1)(a).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 27] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 4] A photo-editing app's auto-enhance filter that adjusts brightness and contrast automatically.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Basic image-enhancement features present negligible risk to fundamental rights and are minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 3] A hospital uses an AI-assisted triage chatbot that only reminds patients of appointment times and does not participate in diagnosis or treatment decisions.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Administrative-only reminder functionality with no diagnostic or treatment role does not meet the Annex III healthcare high-risk criteria.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 9] A general-purpose large language model provider that must publish a summary of the copyrighted material used in training.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 53(1)(d)\",\n  \"reasoning\": \"General-purpose AI model providers must publish a sufficiently detailed training-data summary under Article 53(1)(d), effective from 2 August 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 15] An automated CV-screening tool used by a recruitment agency to shortlist candidates for interviews based on resume content.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(4)\",\n  \"reasoning\": \"AI systems used in recruitment and candidate screening are classified high-risk under Annex III(4) due to their impact on employment access.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 2] An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 22] A toy manufacturer embeds a voice-activated AI assistant in a children's toy that responds to simple commands, with no biometric or profiling capability.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with children, so it must disclose its AI nature, but it does not fall into any Annex III high-risk category.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 19] An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 27] A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 29] A safety component AI embedded in an autonomous industrial robot arm operating on a factory floor alongside human workers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 6(1)\",\n  \"reasoning\": \"AI used as a safety component of a machinery product covered by existing EU product-safety legislation is high-risk under Article 6(1).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 6] A video-editing tool that generates a deepfake video of a public figure for a satire piece, clearly labelled as AI-generated content in the video description.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content must be disclosed as artificially generated or manipulated under Article 50(4), which this example satisfies.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A workplace monitoring tool that infers employees' emotions during shift reviews to decide who receives disciplinary action.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in the workplace is prohibited under Article 5(1)(f), except for narrow medical or safety exceptions that do not apply here.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 22] An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 12] An AI-based system used by immigration authorities to assess visa applications and flag cases for manual review.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(7)\",\n  \"reasoning\": \"AI systems used in migration, asylum, and border control management are high-risk under Annex III(7).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 28] A spam filter in an email client that classifies incoming messages as spam or not spam.",
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An email client's spam filter sorts incoming messages into inbox and junk folders based on sender reputation and content patterns.",
     "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Spam filters pose minimal risk to health, safety, or fundamental rights and fall outside the high-risk and limited-risk categories.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 2] A toy manufacturer embeds a voice-activated AI assistant in a children's toy that responds to simple commands, with no biometric or profiling capability.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with children, so it must disclose its AI nature, but it does not fall into any Annex III high-risk category.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A facial-recognition startup scrapes public webcam feeds from unrelated websites to expand its identification database without consent from anyone pictured.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images from the internet to build a recognition database is prohibited under Article 5(1)(e).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 9] An insurer's chatbot subtly nudges vulnerable customers with gambling addiction histories toward high-risk financial products they would not otherwise choose.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(b)\",\n  \"reasoning\": \"Exploiting known vulnerabilities to distort economic decisions causing harm is a prohibited practice under Article 5(1)(b).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A podcast network uses an AI co-host voice in some episodes, disclosed in the show notes and at the start of each episode.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems interacting with the audience in a conversational format must disclose their artificial nature under Article 50(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 14] A spam filter in an email client that classifies incoming messages as spam or not spam.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Spam filters pose minimal risk to health, safety, or fundamental rights and fall outside the high-risk and limited-risk categories.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A retailer's virtual try-on feature generates a synthetic image of how a garment would look on the shopper's uploaded photo, labelled 'AI preview'.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Synthetic image generation must carry a machine-readable AI-generated marking under Article 50(2).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 34] An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A home thermostat learns a household's temperature preferences over time and adjusts heating schedules automatically.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Consumer comfort automation with no impact on fundamental rights is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 17] An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An insurance company's model sets individual life-insurance premiums based on health questionnaire responses and pharmacy purchase history.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Risk assessment and pricing for life and health insurance is explicitly high-risk under Annex III(5) due to its effect on access to essential services.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An insurer's chatbot subtly nudges vulnerable customers with gambling addiction histories toward high-risk financial products they would not otherwise choose.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(b)\",\n  \"reasoning\": \"Exploiting known vulnerabilities to distort economic decisions causing harm is a prohibited practice under Article 5(1)(b).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A national immigration office uses an AI tool to triage asylum applications and flag which files need expedited human review.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(7)\",\n  \"reasoning\": \"AI systems used in migration and asylum-application management are high-risk under Annex III(7).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 18] A predictive policing tool used by police departments to identify high-risk locations for patrol deployment, based on aggregated historical crime statistics.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(6)\",\n  \"reasoning\": \"AI systems used by law enforcement for risk assessment are classified high-risk under Annex III(6), requiring conformity assessment and logging.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A construction site's AI-vision safety system automatically shuts down a crane if it detects a worker inside the load path.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 6(1)\",\n  \"reasoning\": \"AI used as a safety component of machinery already regulated by EU product-safety law is high-risk under Article 6(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 3] An AI system used to assist in diagnosing cancer from radiology images, informing treatment decisions made by oncologists.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Medical diagnosis AI is a high-risk system under Annex III as it affects health outcomes and requires a conformity assessment before deployment.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A note-taking app auto-suggests the next word as a user types, based on their own writing history.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Personal predictive-text features present negligible risk and are minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 11] An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A public exam-proctoring vendor's AI flags students for academic misconduct review based on eye-movement and keystroke patterns during remote exams.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems used to evaluate or flag students in educational assessment are high-risk under Annex III(3).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A government agency uses an AI system to predict an individual's likelihood of committing a future crime based solely on profiling and personality traits, without any objective, verifiable facts linked to a specific offence.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Predictive policing based purely on profiling without objective facts linked to a specific criminal offence is prohibited under Article 5(1)(d).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A publisher's audiobook narration is fully synthetic, generated by a text-to-speech model and labelled as 'AI narration' on the product page.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Synthetic audio content must be marked as AI-generated in a way discoverable to consumers under Article 50(2).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 22] A voice assistant embedded in a smart speaker that answers general knowledge questions from household members.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting with natural persons must make clear it is an AI system, satisfying the transparency obligation of Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A shopping-mall operator runs continuous live facial recognition across all entrances to identify banned individuals, sharing hits with local police without any court order.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Real-time remote biometric identification in a publicly accessible space for law-enforcement purposes without judicial authorisation is prohibited under Article 5(1)(d).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A private security firm scrapes facial images from social media and CCTV footage to build an untargeted facial recognition database sold to law enforcement agencies.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images to build or expand recognition databases is prohibited under Article 5(1)(e).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A budgeting app categorises a user's own transactions into 'groceries', 'transport', and 'entertainment' for a personal spending summary.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Personal finance categorisation for the user's own information is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 32] A voice assistant embedded in a smart speaker that answers general knowledge questions from household members.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting with natural persons must make clear it is an AI system, satisfying the transparency obligation of Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An airline's check-in kiosk uses a synthetic voice assistant to guide passengers through baggage drop-off.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems interacting directly with travellers must disclose they are an AI system under Article 50(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 10] A customer-support chatbot on an e-commerce website that answers questions about order status and returns.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems that interact directly with natural persons must disclose that the user is interacting with an AI system under Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A grammar-checking browser extension suggests spelling and style corrections as a user types an email.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Personal writing-assistance tools present negligible risk and are minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 8] A biometric categorisation system that infers political opinions or sexual orientation from facial images to segment users for targeted political content.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(g)\",\n  \"reasoning\": \"Biometric categorisation systems inferring sensitive attributes such as political opinions are prohibited under Article 5(1)(g).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A dating app infers users' sexual orientation from uploaded photos to sell the segment data to third-party advertisers.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(g)\",\n  \"reasoning\": \"Biometric categorisation to infer sexual orientation is prohibited under Article 5(1)(g).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 24] A video-editing tool that generates a deepfake video of a public figure for a satire piece, clearly labelled as AI-generated content in the video description.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content must be disclosed as artificially generated or manipulated under Article 50(4), which this example satisfies.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A music-streaming app suggests new playlists based on a listener's recent listening history.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation for entertainment purposes is minimal risk and not subject to specific obligations.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 21] A customer-support chatbot on an e-commerce website that answers questions about order status and returns.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems that interact directly with natural persons must disclose that the user is interacting with an AI system under Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: Berlin's transit authority scores residents on punctuality and reports of anti-social behaviour, then denies discounted fares to low scorers.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(c)\",\n  \"reasoning\": \"Social scoring by a public authority causing detrimental treatment unrelated to the original context is prohibited under Article 5(1)(c).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 9] A video-editing tool that generates a deepfake video of a public figure for a satire piece, clearly labelled as AI-generated content in the video description.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content must be disclosed as artificially generated or manipulated under Article 50(4), which this example satisfies.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A subscription-cancellation flow uses manipulative dark-pattern audio cues below the threshold of conscious perception to discourage users from completing cancellation.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(a)\",\n  \"reasoning\": \"Subliminal manipulation techniques distorting behaviour in a way likely to cause harm are prohibited under Article 5(1)(a).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 15] A general-purpose AI model with systemic risk due to exceeding the compute threshold, requiring the provider to conduct adversarial testing and report serious incidents.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models classified as posing systemic risk carry additional obligations under Article 55, including adversarial testing, in force from 2 August 2025.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A car manufacturer's driver-monitoring camera detects signs of drowsiness from eyelid movement and sounds an alert.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion or state-recognition systems must inform affected individuals that the system is operating, per Article 50(3).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A voice assistant embedded in a smart speaker that answers general knowledge questions from household members.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting with natural persons must make clear it is an AI system, satisfying the transparency obligation of Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A city's predictive-policing dashboard forecasts which specific individuals are likely to reoffend within six months, informing bail recommendations.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(6)\",\n  \"reasoning\": \"AI systems used by law enforcement to assess individual reoffending risk are high-risk under Annex III(6).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 34] An in-car AI system that detects driver drowsiness by monitoring facial expressions to issue a safety alert.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion recognition systems must inform affected individuals that the system is in operation under Article 50(3).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A telecom provider's AI decides which customers behind on payments get service suspended versus offered a hardship plan.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI evaluating eligibility for essential private services such as telecommunications is high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 33] A voice assistant embedded in a smart speaker that answers general knowledge questions from household members.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting with natural persons must make clear it is an AI system, satisfying the transparency obligation of Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A stock-photo marketplace generates synthetic model photos for advertising mockups, each embedding a machine-readable AI-generated watermark.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Providers of systems generating synthetic image content must ensure outputs carry a machine-readable marking under Article 50(2).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 16] An image-generation app that creates realistic synthetic photos for marketing materials, watermarking each output as AI-generated.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Providers of systems generating synthetic content must ensure outputs are marked in a machine-readable format under Article 50(2).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A wellness app's virtual companion checks in on users' mood daily through short voice conversations to suggest breathing exercises.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Systems inferring emotional state must inform the user that the emotion-recognition system is operating, per Article 50(3).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 20] A customer-support chatbot on an e-commerce website that answers questions about order status and returns.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems that interact directly with natural persons must disclose that the user is interacting with an AI system under Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A ride-hailing app's in-car assistant uses a synthetic voice to give the driver turn-by-turn directions.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems using a synthetic voice to interact with a person must disclose their artificial nature under Article 50(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 27] A toy manufacturer embeds a voice-activated AI assistant in a children's toy that responds to simple commands, with no biometric or profiling capability.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with children, so it must disclose its AI nature, but it does not fall into any Annex III high-risk category.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A call-centre monitoring tool scores agents' emotional state from voice tone during shifts and flags low-scoring agents for termination.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in the workplace is prohibited under Article 5(1)(f), except for narrow safety exceptions that do not apply here.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 23] A biometric verification system used to authenticate identity for accessing critical digital infrastructure, distinct from real-time public identification.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(1)\",\n  \"reasoning\": \"Biometric identification systems (excluding verification-only use covered elsewhere) fall under Annex III(1) as high-risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A public hospital network's AI allocates scarce ICU beds among competing patients based on a predicted-outcome score.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI systems determining access to essential healthcare resources are high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A credit scoring AI used by a retail bank to determine loan eligibility and interest rates for individual applicants.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Credit scoring systems that determine access to essential financial services are high-risk under Annex III(5).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A dermatology clinic's AI tool classifies skin lesions from photographs as likely benign or requiring biopsy.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI used in medical diagnosis affecting treatment pathways is high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 21] An algorithm used by a utility company to decide which customers are eligible for essential electricity services based on a risk profile.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI evaluating eligibility for essential private services is classified high-risk under Annex III(5).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A bank's fraud-detection system flags a suspicious wire transfer for human review, but front-line staff make the final decision on freezing the account.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Even with human review of the final action, the AI's role in flagging transactions affecting access to financial services keeps this high-risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 3] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A company's internal helpdesk tool auto-tags support tickets as 'billing', 'technical', or 'account' for routing purposes only.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket routing with no external decision-making impact on individuals is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 6] An AI-based system used by immigration authorities to assess visa applications and flag cases for manual review.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(7)\",\n  \"reasoning\": \"AI systems used in migration, asylum, and border control management are high-risk under Annex III(7).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An airport security checkpoint runs continuous facial recognition against a watchlist across the whole terminal without any judicial order authorising the search.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Real-time remote biometric identification of the public for law-enforcement purposes without prior judicial authorisation is prohibited under Article 5(1)(d).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 12] A biometric system used exclusively for one-to-one identity verification to unlock an individual's own smartphone.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"One-to-one biometric verification for device unlocking is explicitly distinguished from the high-risk biometric identification category and treated as minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An emergency-room intake system uses AI to assign patients a triage priority level based on reported symptoms and vital signs.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI systems determining priority access to essential healthcare services are high-risk under Annex III(5).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 30] A private security firm scrapes facial images from social media and CCTV footage to build an untargeted facial recognition database sold to law enforcement agencies.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images to build or expand recognition databases is prohibited under Article 5(1)(e).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A satirical news outlet publishes a clearly-labelled deepfake video of a celebrity endorsing a fictional product for comedic effect.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Synthetic audio-visual content must be disclosed as AI-generated or manipulated under Article 50(4), which this labelled example satisfies.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 11] An AI system used by an insurer to assess risk and set premiums for life and health insurance policies for individual customers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Risk assessment and pricing for life and health insurance is explicitly listed as high-risk under Annex III(5) due to its impact on access to essential services.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An e-commerce site's AI resizes and compresses product images automatically for faster page loading.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Purely technical image-processing automation carries no meaningful risk to individuals and is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 7] An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A payday-loan app detects users showing linguistic markers of severe financial desperation in support chats and specifically offers them its highest-fee products.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(b)\",\n  \"reasoning\": \"Exploiting a person's economic vulnerability to distort financial decisions in a way causing harm is prohibited under Article 5(1)(b).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An image-generation app that creates realistic synthetic photos for marketing materials, watermarking each output as AI-generated.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Providers of systems generating synthetic content must ensure outputs are marked in a machine-readable format under Article 50(2).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A general-purpose LLM provider publishes a detailed summary of the copyrighted text corpora used to pretrain their model, as required by law.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 53(1)(d)\",\n  \"reasoning\": \"General-purpose AI model providers must publish a sufficiently detailed training-data summary under Article 53(1)(d), in force since 2 August 2025.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A factory installs an AI vision system that halts a robotic press if it detects a human hand entering the danger zone.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 6(1)\",\n  \"reasoning\": \"AI used as a safety component of machinery already covered by EU product-safety law is high-risk under Article 6(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 23] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A smartphone's biometric unlock feature verifies the registered owner's fingerprint to open the device \u2014 a one-to-one match, not identification of a crowd.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"One-to-one biometric verification for personal device unlocking is distinguished from high-risk biometric identification and is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 10] An automated CV-screening tool used by a recruitment agency to shortlist candidates for interviews based on resume content.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(4)\",\n  \"reasoning\": \"AI systems used in recruitment and candidate screening are classified high-risk under Annex III(4) due to their impact on employment access.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A vocational training provider's AI decides which enrolled students should be automatically advanced to the next certification level.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems determining access to further stages of education or training are high-risk under Annex III(3).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A customer-support chatbot on an e-commerce website that answers questions about order status and returns.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems that interact directly with natural persons must disclose that the user is interacting with an AI system under Article 50(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A national customs agency's AI scores incoming shipments for smuggling likelihood, determining which get flagged for manual inspection.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(6)\",\n  \"reasoning\": \"AI systems supporting law-enforcement-adjacent risk assessment at borders are high-risk under Annex III(6).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI-based fraud-detection system used by a bank to flag suspicious transactions for human review before any account action is taken.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Even though a human reviews the final decision, the AI's role in flagging transactions affecting access to financial services keeps this in the high-risk category.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A translation app converts a tourist's spoken phrase into another language in real time.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"General-purpose translation tools present negligible risk to fundamental rights and are minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A toy manufacturer embeds a voice-activated AI assistant in a children's toy that responds to simple commands, with no biometric or profiling capability.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with children, so it must disclose its AI nature, but it does not fall into any Annex III high-risk category.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A border checkpoint uses an AI tool to verify the authenticity of travel documents and flag suspected forgeries for officer review.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(7)\",\n  \"reasoning\": \"AI systems used to assess the veracity of travel and identity documents in migration control are high-risk under Annex III(7).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 18] A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A regional government ranks districts by residents' predicted unemployment 'risk profile' built solely from ethnicity and postcode, with no individual case assessment, to decide where to cut services.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Profiling that leads to detrimental automated decisions without individualised, objective assessment falls within the prohibited practices of Article 5.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 8] A spam filter in an email client that classifies incoming messages as spam or not spam.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Spam filters pose minimal risk to health, safety, or fundamental rights and fall outside the high-risk and limited-risk categories.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A political satire account posts an AI-voiced parody clip of a public official, captioned clearly as 'AI parody, not a real statement'.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Even satirical synthetic content must carry disclosure of its artificial nature under Article 50(4), which this caption satisfies.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An automated grading system used by a university to score final exam essays and determine pass/fail outcomes.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems used to evaluate learning outcomes in educational settings are high-risk under Annex III(3).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A logistics company scores warehouse workers' stress levels from wearable biometric sensors and uses low scores to deny shift-swap requests.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion and stress-state recognition in the workplace is prohibited under Article 5(1)(f).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A photo-editing app's auto-enhance filter that adjusts brightness and contrast automatically.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Basic image-enhancement features present negligible risk to fundamental rights and are minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A city welfare office assigns households a 'trustworthiness score' from utility payment patterns and unrelated social media activity, cutting benefits for low scorers.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(c)\",\n  \"reasoning\": \"Social scoring leading to detrimental treatment in a context unrelated to the data's origin is prohibited under Article 5(1)(c).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 27] An AI system used by a hospital to triage emergency-room patients and determine treatment priority order.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI systems that determine access to essential healthcare services are high-risk under Annex III(5).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A metropolitan police unit ranks neighbourhoods by residents' predicted 'criminal tendency' derived purely from demographic profiling, with no link to any specific offence, to decide patrol intensity.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Predictive policing based solely on profiling without objective facts tied to a specific criminal offence is prohibited under Article 5(1)(d).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 10] A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A university's plagiarism-detection tool compares submitted essays against a database of prior submissions and flags matches for a human instructor to review.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems used to evaluate academic integrity and inform pass/fail-adjacent decisions are high-risk under Annex III(3), even with human review of the final call.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 18] A hospital uses an AI-assisted triage chatbot that only reminds patients of appointment times and does not participate in diagnosis or treatment decisions.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Administrative-only reminder functionality with no diagnostic or treatment role does not meet the Annex III healthcare high-risk criteria.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An employer's payroll system uses AI only to flag arithmetic anomalies in payslip calculations, with no role in hiring, promotion, or termination.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Purely administrative payroll-anomaly detection is unrelated to the employment decisions covered by Annex III(4).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 5] An in-car AI system that detects driver drowsiness by monitoring facial expressions to issue a safety alert.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion recognition systems must inform affected individuals that the system is in operation under Article 50(3).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A photo-editing app automatically adjusts brightness and colour balance when a user imports a picture.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Basic automated image enhancement presents negligible risk to fundamental rights and is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 24] A social credit scoring system deployed by a public authority that evaluates or classifies people based on social behaviour, leading to detrimental treatment unrelated to the context in which the data was generated.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(c)\",\n  \"reasoning\": \"Social scoring by public authorities that causes unjustified or disproportionate detrimental treatment is explicitly prohibited under Article 5.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A podcast app's AI generates chapter timestamps for an episode based on topic changes in the audio.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Automated content indexing for convenience is minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 8] An AI system used by an insurer to assess risk and set premiums for life and health insurance policies for individual customers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Risk assessment and pricing for life and health insurance is explicitly listed as high-risk under Annex III(5) due to its impact on access to essential services.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A retail chain's AI chatbot occasionally answers questions about store return policy, but a human always makes the final refund decision.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The chatbot still interacts directly with customers and must disclose its AI nature, even though it does not make the final decision itself.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An algorithm used by a utility company to decide which customers are eligible for essential electricity services based on a risk profile.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI evaluating eligibility for essential private services is classified high-risk under Annex III(5).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A frontier AI lab's model exceeds the compute threshold for systemic risk and must run adversarial red-team testing and report serious incidents to regulators.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models posing systemic risk carry additional obligations under Article 55, in force since 2 August 2025.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 30] An AI system used by an insurer to assess risk and set premiums for life and health insurance policies for individual customers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Risk assessment and pricing for life and health insurance is explicitly listed as high-risk under Annex III(5) due to its impact on access to essential services.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A weather app uses a model to generate a short-term rain forecast for the user's current location.",
+    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"General-purpose forecasting tools with no bearing on individuals' rights or safety are minimal risk.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 20] A photo-editing app's auto-enhance filter that adjusts brightness and contrast automatically.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Basic image-enhancement features present negligible risk to fundamental rights and are minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A staffing agency's algorithm ranks job applicants' resumes and auto-rejects the bottom 70% before a human ever reviews them.",
+    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(4)\",\n  \"reasoning\": \"AI systems used to filter or rank candidates in recruitment are high-risk under Annex III(4) due to their impact on employment access.\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 30] An automated grading system used by a university to score final exam essays and determine pass/fail outcomes.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(3)\",\n  \"reasoning\": \"AI systems used to evaluate learning outcomes in educational settings are high-risk under Annex III(3).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A hotel's booking-desk chatbot handles reservation changes and answers questions about amenities.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting directly with guests must disclose it is an AI system under Article 50(1).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 7] A safety component AI embedded in an autonomous industrial robot arm operating on a factory floor alongside human workers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 6(1)\",\n  \"reasoning\": \"AI used as a safety component of a machinery product covered by existing EU product-safety legislation is high-risk under Article 6(1).\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A mobile game injects flashing sub-perceptual visual cues timed to push players toward in-app purchases they would not otherwise make.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(a)\",\n  \"reasoning\": \"Subliminal techniques that materially distort a person's behaviour and cause harm are prohibited under Article 5(1)(a).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A telemarketing firm uses AI to identify callers with early-stage dementia from voice patterns and prioritises them for high-pressure sales scripts.",
+    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(b)\",\n  \"reasoning\": \"Exploiting the vulnerabilities of a group due to age or cognitive condition to distort economic decisions causing harm is prohibited under Article 5(1)(b).\"\n}"
   },
   {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 24] An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 13] An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An automated CV-screening tool used by a recruitment agency to shortlist candidates for interviews based on resume content.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(4)\",\n  \"reasoning\": \"AI systems used in recruitment and candidate screening are classified high-risk under Annex III(4) due to their impact on employment access.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI-based system used by immigration authorities to assess visa applications and flag cases for manual review.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(7)\",\n  \"reasoning\": \"AI systems used in migration, asylum, and border control management are high-risk under Annex III(7).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 16] A private security firm scrapes facial images from social media and CCTV footage to build an untargeted facial recognition database sold to law enforcement agencies.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(e)\",\n  \"reasoning\": \"Untargeted scraping of facial images to build or expand recognition databases is prohibited under Article 5(1)(e).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 13] A deepfake video generator used internally by a film studio's VFX team, with outputs never distributed publicly and always reviewed by human editors before any release decision.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Even for internal production use, synthetic media must be marked as AI-generated once it is eventually shared, so the transparency obligation still applies at time of disclosure.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 17] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI system used by an insurer to assess risk and set premiums for life and health insurance policies for individual customers.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Risk assessment and pricing for life and health insurance is explicitly listed as high-risk under Annex III(5) due to its impact on access to essential services.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 13] A voice assistant embedded in a smart speaker that answers general knowledge questions from household members.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"Conversational AI interacting with natural persons must make clear it is an AI system, satisfying the transparency obligation of Article 50(1).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 7] A video-editing tool that generates a deepfake video of a public figure for a satire piece, clearly labelled as AI-generated content in the video description.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content must be disclosed as artificially generated or manipulated under Article 50(4), which this example satisfies.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 5] A credit scoring AI used by a retail bank to determine loan eligibility and interest rates for individual applicants.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Credit scoring systems that determine access to essential financial services are high-risk under Annex III(5).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 11] A government agency uses an AI system to predict an individual's likelihood of committing a future crime based solely on profiling and personality traits, without any objective, verifiable facts linked to a specific offence.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Predictive policing based purely on profiling without objective facts linked to a specific criminal offence is prohibited under Article 5(1)(d).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 20] A government agency uses an AI system to predict an individual's likelihood of committing a future crime based solely on profiling and personality traits, without any objective, verifiable facts linked to a specific offence.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Predictive policing based purely on profiling without objective facts linked to a specific criminal offence is prohibited under Article 5(1)(d).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI system used by a hospital to triage emergency-room patients and determine treatment priority order.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"AI systems that determine access to essential healthcare services are high-risk under Annex III(5).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 2] A predictive policing tool used by police departments to identify high-risk locations for patrol deployment, based on aggregated historical crime statistics.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(6)\",\n  \"reasoning\": \"AI systems used by law enforcement for risk assessment are classified high-risk under Annex III(6), requiring conformity assessment and logging.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 29] An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 30] An image-generation app that creates realistic synthetic photos for marketing materials, watermarking each output as AI-generated.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(2)\",\n  \"reasoning\": \"Providers of systems generating synthetic content must ensure outputs are marked in a machine-readable format under Article 50(2).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 25] A general-purpose AI model with systemic risk due to exceeding the compute threshold, requiring the provider to conduct adversarial testing and report serious incidents.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models classified as posing systemic risk carry additional obligations under Article 55, including adversarial testing, in force from 2 August 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 1] An AI system used to assist in diagnosing cancer from radiology images, informing treatment decisions made by oncologists.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Medical diagnosis AI is a high-risk system under Annex III as it affects health outcomes and requires a conformity assessment before deployment.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 24] An AI system used to assist in diagnosing cancer from radiology images, informing treatment decisions made by oncologists.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Medical diagnosis AI is a high-risk system under Annex III as it affects health outcomes and requires a conformity assessment before deployment.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A general-purpose large language model provider that must publish a summary of the copyrighted material used in training.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 53(1)(d)\",\n  \"reasoning\": \"General-purpose AI model providers must publish a sufficiently detailed training-data summary under Article 53(1)(d), effective from 2 August 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 10] An AI system that uses real-time remote biometric identification in publicly accessible spaces for law enforcement purposes without prior judicial authorisation.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Real-time remote biometric identification in public spaces is a prohibited practice under Article 5. The prohibition has been in force since 2 February 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 23] A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 12] A workplace monitoring tool that infers employees' emotions during shift reviews to decide who receives disciplinary action.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in the workplace is prohibited under Article 5(1)(f), except for narrow medical or safety exceptions that do not apply here.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 31] An AI opponent in a single-player video game that adapts its difficulty based on player performance.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"AI used purely for entertainment purposes in video games is treated as minimal risk with no specific transparency obligation.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 26] An AI system that sorts customer support tickets into categories such as billing or technical for internal routing purposes only.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal ticket-routing automation with no external decision-making impact on individuals is minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI system used to assist in diagnosing cancer from radiology images, informing treatment decisions made by oncologists.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Medical diagnosis AI is a high-risk system under Annex III as it affects health outcomes and requires a conformity assessment before deployment.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An in-car AI system that detects driver drowsiness by monitoring facial expressions to issue a safety alert.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion recognition systems must inform affected individuals that the system is in operation under Article 50(3).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 25] A biometric verification system used to authenticate identity for accessing critical digital infrastructure, distinct from real-time public identification.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(1)\",\n  \"reasoning\": \"Biometric identification systems (excluding verification-only use covered elsewhere) fall under Annex III(1) as high-risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 30] A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 7] A social credit scoring system deployed by a public authority that evaluates or classifies people based on social behaviour, leading to detrimental treatment unrelated to the context in which the data was generated.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(c)\",\n  \"reasoning\": \"Social scoring by public authorities that causes unjustified or disproportionate detrimental treatment is explicitly prohibited under Article 5.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 12] An in-car AI system that detects driver drowsiness by monitoring facial expressions to issue a safety alert.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(3)\",\n  \"reasoning\": \"Emotion recognition systems must inform affected individuals that the system is in operation under Article 50(3).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A biometric system used exclusively for one-to-one identity verification to unlock an individual's own smartphone.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"One-to-one biometric verification for device unlocking is explicitly distinguished from the high-risk biometric identification category and treated as minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A spam filter in an email client that classifies incoming messages as spam or not spam.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Spam filters pose minimal risk to health, safety, or fundamental rights and fall outside the high-risk and limited-risk categories.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 1] An AI-based fraud-detection system used by a bank to flag suspicious transactions for human review before any account action is taken.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(5)\",\n  \"reasoning\": \"Even though a human reviews the final decision, the AI's role in flagging transactions affecting access to financial services keeps this in the high-risk category.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 5] An AI-powered inventory management tool that forecasts warehouse stock levels for a retail chain.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Internal operational forecasting tools with no direct impact on individuals' rights are classified as minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI system used exclusively for internal cybersecurity threat detection on a company's own network, with no profiling of individual employees.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Cybersecurity systems used for narrow technical purposes without individual profiling are minimal risk and fall outside Annex III.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: An AI system that uses real-time remote biometric identification in publicly accessible spaces for law enforcement purposes without prior judicial authorisation.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(d)\",\n  \"reasoning\": \"Real-time remote biometric identification in public spaces is a prohibited practice under Article 5. The prohibition has been in force since 2 February 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 33] A spam filter in an email client that classifies incoming messages as spam or not spam.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Spam filters pose minimal risk to health, safety, or fundamental rights and fall outside the high-risk and limited-risk categories.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A biometric verification system used to authenticate identity for accessing critical digital infrastructure, distinct from real-time public identification.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Annex III(1)\",\n  \"reasoning\": \"Biometric identification systems (excluding verification-only use covered elsewhere) fall under Annex III(1) as high-risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 31] A customer-support chatbot on an e-commerce website that answers questions about order status and returns.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"AI systems that interact directly with natural persons must disclose that the user is interacting with an AI system under Article 50(1).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 1] A news website's AI tool that auto-generates article summaries, with a visible 'AI-generated summary' tag on each output.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"AI-generated text content published to inform the public on matters of public interest must be labelled under Article 50(4).\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 26] A video-editing tool that generates a deepfake video of a public figure for a satire piece, clearly labelled as AI-generated content in the video description.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Deepfake content must be disclosed as artificially generated or manipulated under Article 50(4), which this example satisfies.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 26] A general-purpose AI model with systemic risk due to exceeding the compute threshold, requiring the provider to conduct adversarial testing and report serious incidents.",
-    "response": "{\n  \"risk_tier\": \"High\",\n  \"obligation_type\": \"CONFORMITY\",\n  \"urgency\": \"2025\",\n  \"article_reference\": \"Article 55(1)\",\n  \"reasoning\": \"General-purpose AI models classified as posing systemic risk carry additional obligations under Article 55, including adversarial testing, in force from 2 August 2025.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 6] A biometric system used exclusively for one-to-one identity verification to unlock an individual's own smartphone.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"One-to-one biometric verification for device unlocking is explicitly distinguished from the high-risk biometric identification category and treated as minimal risk.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 28] A toy manufacturer embeds a voice-activated AI assistant in a children's toy that responds to simple commands, with no biometric or profiling capability.",
-    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(1)\",\n  \"reasoning\": \"The toy interacts directly with children, so it must disclose its AI nature, but it does not fall into any Annex III high-risk category.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Scenario variant 25] A workplace monitoring tool that infers employees' emotions during shift reviews to decide who receives disciplinary action.",
-    "response": "{\n  \"risk_tier\": \"Unacceptable\",\n  \"obligation_type\": \"PROHIBITED\",\n  \"urgency\": \"IMMEDIATE\",\n  \"article_reference\": \"Article 5(1)(f)\",\n  \"reasoning\": \"Emotion recognition in the workplace is prohibited under Article 5(1)(f), except for narrow medical or safety exceptions that do not apply here.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: [Edge case variant 14] A hospital uses an AI-assisted triage chatbot that only reminds patients of appointment times and does not participate in diagnosis or treatment decisions.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Administrative-only reminder functionality with no diagnostic or treatment role does not meet the Annex III healthcare high-risk criteria.\"\n}"
-  },
-  {
-    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A recommendation engine on a streaming platform that suggests movies based on viewing history.",
-    "response": "{\n  \"risk_tier\": \"Minimal\",\n  \"obligation_type\": \"GENERAL_PURPOSE\",\n  \"urgency\": \"2027\",\n  \"article_reference\": \"Recital 14\",\n  \"reasoning\": \"Content recommendation systems for entertainment purposes are minimal-risk and not subject to specific obligations under the Act.\"\n}"
+    "instruction": "Classify the following EU AI Act regulation finding by risk tier, obligation type, and urgency.\n\nText: A film studio's VFX team uses a deepfake generator internally for a scene, with every output reviewed by human editors before any public release.",
+    "response": "{\n  \"risk_tier\": \"Limited\",\n  \"obligation_type\": \"TRANSPARENCY\",\n  \"urgency\": \"2026\",\n  \"article_reference\": \"Article 50(4)\",\n  \"reasoning\": \"Once shared publicly, synthetic media must be marked as AI-generated \\u2014 the obligation attaches at the point of disclosure, not internal production use.\"\n}"
   }
 ]

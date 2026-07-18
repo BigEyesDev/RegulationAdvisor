@@ -6,6 +6,35 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.3] — 2026-07-18
+
+**Fine-tuning quality fixes, found by actually running the pipeline and checking raw model
+output rather than trusting the aggregate accuracy number. Full write-up in
+`docs/learning-by-doing-01-finetune-training-log.md` and
+`docs/learning-by-doing-02-action-plan.md`.**
+
+### Fixed
+
+- `evals/finetune/examples.json` rebuilt from 200 templated examples (~40 genuinely unique,
+  the rest near-duplicates padded with a `[Scenario variant N]` tag) to 102 examples, every
+  one textually distinct. The fine-tuned model had scored *worse* than the un-tuned base
+  model (35% vs 85% accuracy) because it was trained on repeated near-identical batches.
+  Added `test_no_duplicate_instructions_in_train_set` as a regression test.
+- `scripts/train_classifier.py`: LoRA now also targets the MLP layers (`gate_proj, up_proj,
+  down_proj`, not just attention), rank raised `16 → 32`, effective batch size lowered
+  `16 → 4` (more optimizer steps on a small dataset without raising epoch count past the
+  small-dataset overfitting ceiling). The model had been inventing `obligation_type` values
+  outside the schema entirely (`"REPUTATIONAL"`, `"CONFORMANCE"`) — a sign of too few
+  optimizer steps and too little LoRA capacity to memorise a new rigid vocabulary, not a
+  data problem this time.
+- `torchao` removed from the `finetune` dependency group entirely. No installed version
+  satisfies both `unsloth` (needs an old enough torchao to avoid a `torch.int1` crash against
+  the `torch 2.5.1` already pinned by sentence-transformers/chromadb) and `peft`'s LoRA
+  dispatch for MLP layers (hard-errors on an old-but-present torchao instead of skipping it).
+  Fix: `uv sync --group dev --group finetune && uv pip uninstall torchao`.
+
+---
+
 ## [0.6.2] — 2026-07-18
 
 **Fix discovered while running the evaluation script for the first time.**

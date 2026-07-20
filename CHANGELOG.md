@@ -6,6 +6,20 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.8] — 2026-07-20
+
+### Security
+
+- Audited the BYOK path end to end for key leakage: no code path logs a full
+  request object or raw exception (`logger.exception` would print provider
+  HTTP client errors that sometimes echo the key back — the BYOK handlers
+  log only the exception type). No middleware or access log prints request
+  bodies. The guardrail chain and RegClassifier only ever see the LLM's
+  answer text, never the request. `ChatRequest.api_key` is marked
+  `repr=False` so accidental `logger.info("%s", request)` calls can't leak
+  it either. Regression tests assert the key never appears in the response
+  body or in captured logs for a failing BYOK call.
+
 ## [0.6.7] — 2026-07-20
 
 ### Added

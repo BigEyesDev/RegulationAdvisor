@@ -53,8 +53,11 @@ REJECT_PHRASES = [
 
 
 def check(case: dict, answer: str) -> tuple[bool, str]:
-    cited = bool(ARTICLE_CITATION.search(answer))
-    lower = answer.lower()
+    # Some models (e.g. gpt-oss) use non-breaking/narrow unicode spaces around
+    # article numbers — collapse all whitespace variants before substring checks
+    # so a real citation isn't misread as missing.
+    lower = re.sub(r"\s+", " ", answer).lower()
+    cited = bool(ARTICLE_CITATION.search(lower))
     refused = any(p in lower for p in REJECT_PHRASES)
     rejected = refused or not cited
 

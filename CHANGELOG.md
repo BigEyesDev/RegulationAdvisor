@@ -6,6 +6,23 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.7] — 2026-07-20
+
+### Added
+
+- BYOK (bring your own key) for `/api/chat` and `/api/chat/sync`: `ChatRequest`
+  gains optional `api_key`, `provider`, and `model` fields. When `api_key` is
+  set, the request is served by a throwaway agent built for that call only
+  (`build_agent_graph()` now takes the same `provider`/`model`/`api_key`
+  overrides as `build_llm()`) — the shared default agent used by everyone
+  else is never touched. Nothing about the key or the throwaway agent is
+  cached, stored, or attached to `session_id`; both are dropped when the
+  request finishes.
+- Both chat endpoints now catch LLM-provider failures (invalid key, rejected
+  request) and return a clean 502 / SSE error event instead of an unhandled
+  500 — the raw exception (which some providers echo the invalid key back
+  into) is never included in the response or in logs, only the exception type.
+
 ## [0.6.6] — 2026-07-20
 
 ### Added

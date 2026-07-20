@@ -24,9 +24,22 @@ SYSTEM_PROMPT = (Path(__file__).parent.parent / "prompts" / "system_prompt.txt")
 TOOLS = [search_regulations, query_structured_data, search_web]
 
 
-def build_agent_graph():
-    """Build and compile the LangGraph StateGraph. Called once at startup."""
-    llm = build_llm()
+def build_agent_graph(
+    provider: str | None = None,
+    model: str | None = None,
+    api_key: str | None = None,
+):
+    """
+    Build and compile the LangGraph StateGraph.
+
+    Called once at startup for the shared default agent. ``provider``/``model``/
+    ``api_key`` let a caller build a second, independent agent for a single
+    BYOK request (see api/routes.py) — no index loading happens here, just an
+    LLM client and a graph compile, so this is cheap enough to call per request.
+    The returned graph's checkpointer is private to this instance; nothing
+    about a BYOK call is retained once the caller drops the reference.
+    """
+    llm = build_llm(provider=provider, model=model, api_key=api_key)
     llm_with_tools = llm.bind_tools(TOOLS)
 
     def agent_node(state: RegAdvisorState) -> dict:

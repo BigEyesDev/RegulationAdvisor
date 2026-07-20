@@ -47,11 +47,29 @@ def set_classifier(classifier: object) -> None:
     _classifier = classifier
 
 
+def _agent_for_request(request: ChatRequest) -> object:
+    """
+    Return the agent to use for one request.
+
+    No ``api_key`` → the shared default agent everyone uses. A supplied
+    ``api_key`` builds a brand-new agent scoped to this call only — nothing
+    is cached, stored, or attached to ``request.session_id``, so the key
+    exists only for the lifetime of this function call and the request it serves.
+    """
+    if not request.api_key:
+        return _agent
+    from regulation_advisor.agent.graph import build_agent_graph
+
+    return build_agent_graph(
+        provider=request.provider, model=request.model, api_key=request.api_key
+    )
+
+
 @router.get("/api/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.6.6",
+        version="0.6.7",
         vector_store_backend=settings.vector_store_backend,
     )
 
@@ -59,18 +77,25 @@ async def health() -> HealthResponse:
 @router.post("/api/chat")
 async def chat_stream(request: ChatRequest) -> StreamingResponse:
     """Stream the LLM response token-by-token as Server-Sent Events."""
-    if _agent is None:
+    agent = _agent_for_request(request)
+    if agent is None:
         raise HTTPException(status_code=503, detail="Agent not ready")
 
     async def generate():
         config = {"configurable": {"thread_id": request.session_id}}
-        async for event in _agent.astream_events(
-            {"messages": [("human", request.message)]}, config=config, version="v2"
-        ):
-            if event["event"] == "on_chat_model_stream":
-                token = event["data"]["chunk"].content
-                if token:
-                    yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        try:
+            async for event in agent.astream_events(
+                {"messages": [("human", request.message)]}, config=config, version="v2"
+            ):
+                if event["event"] == "on_chat_model_stream":
+                    token = event["data"]["chunk"].content
+                    if token:
+                        yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        except Exception as exc:
+            logger.warning("Chat stream failed: %s", type(exc).__name__)
+            error = "The configured LLM provider rejected the request."
+            yield f"data: {json.dumps({'type': 'error', 'content': error})}\n\n"
+            return
         yield f"data: {json.dumps({'type': 'done'})}\n\n"
 
     return StreamingResponse(
@@ -83,13 +108,20 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
 @router.post("/api/chat/sync", response_model=ChatResponse)
 async def chat_sync(request: ChatRequest) -> ChatResponse:
     """Non-streaming: returns the complete answer. Used by eval harness and tests."""
-    if _agent is None:
+    agent = _agent_for_request(request)
+    if agent is None:
         raise HTTPException(status_code=503, detail="Agent not ready")
 
     config = {"configurable": {"thread_id": request.session_id}}
-    result = await _agent.ainvoke(
-        {"messages": [("human", request.message)]}, config=config
-    )
+    try:
+        result = await agent.ainvoke(
+            {"messages": [("human", request.message)]}, config=config
+        )
+    except Exception as exc:
+        logger.warning("Chat request failed: %s", type(exc).__name__)
+        raise HTTPException(
+            status_code=502, detail="The configured LLM provider rejected the request."
+        ) from None
 
     answer = result["messages"][-1].content
     retrieved = result.get("retrieved_chunks", [])

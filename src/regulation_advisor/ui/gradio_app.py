@@ -78,6 +78,22 @@ def _get_agent():
     return _agent
 
 
+def _agent_for_call(api_key: str | None):
+    """
+    Mirrors api/routes.py's ``_agent_for_request`` for the Gradio chat tab.
+
+    No key → the shared default agent. A key builds a throwaway agent for
+    this call only; it is held in a local variable and discarded when
+    ``respond()`` returns — nothing is written to disk or kept beyond the
+    lifetime of this one turn.
+    """
+    if not api_key:
+        return _get_agent()
+    from regulation_advisor.agent.graph import build_agent_graph
+
+    return build_agent_graph(api_key=api_key)
+
+
 def _get_classifier():
     """Lazy classifier accessor — reads from routes at call time, not import time."""
     from regulation_advisor.api.routes import _classifier
@@ -99,8 +115,10 @@ def build_ui() -> gr.Blocks:
 
     # ── Chat tab ──────────────────────────────────────────────────────────────
 
-    def respond(message: str, history: list) -> Generator[str, None, None]:
-        agent = _get_agent()
+    def respond(
+        message: str, history: list, api_key: str = ""
+    ) -> Generator[str, None, None]:
+        agent = _agent_for_call(api_key.strip() or None)
         if agent is None:
             yield "Service not ready — agent is still loading. Please retry in a moment."
             return
@@ -113,11 +131,21 @@ def build_ui() -> gr.Blocks:
             date_message = SystemMessage(content=_DATE_CONTEXT_TEMPLATE.format(today=today))
             messages = [date_message] + messages
 
-        partial = ""
-        for chunk, _ in agent.stream({"messages": messages}, config=config, stream_mode="messages"):
-            if isinstance(chunk, AIMessageChunk) and chunk.content:
-                partial += chunk.content
-                yield partial
+        try:
+            partial = ""
+            for chunk, _ in agent.stream(
+                {"messages": messages}, config=config, stream_mode="messages"
+            ):
+                if isinstance(chunk, AIMessageChunk) and chunk.content:
+                    partial += chunk.content
+                    yield partial
+        except Exception as exc:
+            logger.warning("Chat turn failed: %s", type(exc).__name__)
+            yield (
+                "The configured LLM provider rejected the request. "
+                "Check your API key and try again."
+            )
+            return
 
         if any(kw.lower() in partial.lower() for kw in CRITICAL_KEYWORDS):
             partial = partial + _CRITICAL_WARNING
@@ -194,7 +222,16 @@ def build_ui() -> gr.Blocks:
                 "Every answer cites the relevant Article. "
                 "Critical findings are flagged for legal review."
             )
-            gr.ChatInterface(fn=respond, title="")
+            api_key_box = gr.Textbox(
+                label="Use your own API key (optional)",
+                type="password",
+                placeholder="sk-... / gsk_... — leave blank to use the free default",
+                info=(
+                    "Optional. Used only for your messages in this browser tab — "
+                    "never written to disk, and gone the moment you refresh or close."
+                ),
+            )
+            gr.ChatInterface(fn=respond, title="", additional_inputs=[api_key_box])
 
         with gr.Tab("Evaluation Dashboard"):
             gr.Markdown(

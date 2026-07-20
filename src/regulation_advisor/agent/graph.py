@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
+from langchain_core.messages import SystemMessage
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
@@ -12,6 +14,8 @@ from regulation_advisor.agent.tools import search_regulations, query_structured_
 from regulation_advisor.llm import build_llm
 
 logger = logging.getLogger(__name__)
+
+SYSTEM_PROMPT = (Path(__file__).parent.parent / "prompts" / "system_prompt.txt").read_text()
 
 # Tool priority is communicated via each tool's docstring (what the LLM reads):
 #   1. search_regulations      — always try first (authoritative regulation text)
@@ -26,7 +30,8 @@ def build_agent_graph():
     llm_with_tools = llm.bind_tools(TOOLS)
 
     def agent_node(state: RegAdvisorState) -> dict:
-        response = llm_with_tools.invoke(state["messages"])
+        non_system = [m for m in state["messages"] if not isinstance(m, SystemMessage)]
+        response = llm_with_tools.invoke([SystemMessage(content=SYSTEM_PROMPT)] + non_system)
         is_critical = any(kw.lower() in response.content.lower() for kw in CRITICAL_KEYWORDS)
         return {"messages": [response], "is_critical_finding": is_critical}
 

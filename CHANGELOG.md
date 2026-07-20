@@ -6,7 +6,34 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [0.6.3] — 2026-07-18
+## [0.6.4] — 2026-07-19
+
+### Fixed
+
+- `prompts/system_prompt.txt` was never actually loaded by any code path — `agent/graph.py`'s
+  `agent_node` invoked the LLM directly on `state["messages"]` with no system message at all.
+  Now loaded once at import time and prepended on every `agent_node` call (`agent/graph.py`).
+  Also dropped the file's unused trailing `Context: {context}` block, a leftover from an
+  earlier non-agentic prompt-template design — context now arrives via tool calls, not a
+  pre-filled template slot.
+- System prompt now (a) always closes an answer with "This is AI-generated guidance, not
+  legal advice. Verify with a qualified lawyer," instead of only when the guardrail's
+  phrase-matcher happens to catch legal-claim wording, and (b) added a scope gate: the model
+  must first check whether the question actually concerns building/deploying/using an AI
+  system or processing personal data before answering, and must clearly refuse — not search,
+  not construct an answer — for questions that merely mention "AI Act" or "GDPR" without
+  describing such an activity.
+
+### Added
+
+- `evals/regression_questions.json` + `scripts/run_regression_questions.py`: a 6-question
+  regression set (2 legitimate compliance questions, 2 trick questions designed to bait the
+  scope gate, 1 malformed/gibberish input, 1 gray-area question about a document-summarization
+  app) run against the live agent graph after any change to the system prompt, agent graph,
+  or tools. Checks for an "Article N" citation as the signal that a real answer was given
+  (the prompt requires one), combined with rejection-phrase matching as a second signal,
+  since the model phrases refusals differently run to run and single-signal matching produced
+  false negatives during validation.
 
 **Fine-tuning quality fixes, found by actually running the pipeline and checking raw model
 output rather than trusting the aggregate accuracy number. Full write-up in

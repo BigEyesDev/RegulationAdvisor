@@ -6,6 +6,23 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.10] — 2026-07-20
+
+### Verified
+
+- End-to-end BYOK verification against a live running server (not mocks):
+  (1) no `api_key` → shared default agent answers normally; (2) a real,
+  working personal key (openrouter/deepseek-v4-flash) routed through
+  `provider`/`model`/`api_key` produces a genuine cited answer via a
+  throwaway agent, proving the override actually reaches the LLM client;
+  (3) an invalid key returns a clean 502 with the key absent from both the
+  response body and the server logs, confirmed by grepping the log file.
+  6/6 regression passes. This closes out Week 7 Phase 2 (BYOK); Phase 2a's
+  "pick one free-tier default model" was deferred in favor of BYOK-only,
+  per real-world testing showing every currently-reachable free-tier
+  option (Groq TPM caps, OpenRouter daily quota, Google's non-free-tier
+  key) had a blocking problem — see the v0.6.5–v0.6.6 commits for details.
+
 ## [0.6.9] — 2026-07-20
 
 ### Added

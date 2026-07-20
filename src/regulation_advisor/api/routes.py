@@ -12,6 +12,7 @@ import logging
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
 
+from regulation_advisor.api import metrics_store
 from regulation_advisor.api.schemas import (
     ChatRequest,
     ChatResponse,
@@ -20,7 +21,6 @@ from regulation_advisor.api.schemas import (
     MetricsResponse,
     SourceReference,
 )
-from regulation_advisor.api import metrics_store
 from regulation_advisor.classifier.reg_classifier import RegClassifier
 from regulation_advisor.config import settings
 
@@ -51,7 +51,7 @@ def set_classifier(classifier: object) -> None:
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.6.4",
+        version="0.6.5",
         vector_store_backend=settings.vector_store_backend,
     )
 
@@ -138,9 +138,13 @@ async def trigger_evaluation(background_tasks: BackgroundTasks) -> EvaluateRespo
     """Start a RAGAS evaluation in the background. Returns immediately."""
     global _evaluation_running
     if _evaluation_running:
-        return EvaluateResponse(status="already_running", message="Evaluation already in progress.")
+        return EvaluateResponse(
+            status="already_running", message="Evaluation already in progress."
+        )
     background_tasks.add_task(_run_evaluation)
-    return EvaluateResponse(status="started", message="Evaluation started. Poll /api/metrics for results.")
+    return EvaluateResponse(
+        status="started", message="Evaluation started. Poll /api/metrics for results."
+    )
 
 
 async def _run_evaluation() -> None:
@@ -148,6 +152,7 @@ async def _run_evaluation() -> None:
     _evaluation_running = True
     try:
         from pathlib import Path
+
         from regulation_advisor.evaluation.harness import EvaluationHarness
 
         harness = EvaluationHarness(Path("evals/qa_pairs.json"))

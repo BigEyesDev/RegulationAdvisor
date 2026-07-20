@@ -68,6 +68,7 @@ def search_web(query: str) -> str:
     covered by the regulation PDFs. Do NOT use this for questions that can be answered from
     the regulation text itself — always prefer search_regulations and query_structured_data."""
     from tavily import TavilyClient
+
     from regulation_advisor.config import settings
     client = TavilyClient(api_key=settings.tavily_api_key)
     results = client.search(query, max_results=3)

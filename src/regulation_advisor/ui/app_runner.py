@@ -53,10 +53,10 @@ def _ensure_index() -> None:
 
 def _load_retriever():
     """Load the vector store (FAISS or ChromaDB depending on config) and return a Retriever."""
+    from regulation_advisor.config import settings
     from regulation_advisor.retrieval.embeddings import SentenceTransformerEmbedder
     from regulation_advisor.retrieval.retriever import Retriever
     from regulation_advisor.retrieval.store import build_vector_store
-    from regulation_advisor.config import settings
 
     logger.info("Loading vector store (backend=%s)…", settings.vector_store_backend)
     store = build_vector_store()

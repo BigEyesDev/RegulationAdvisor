@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from regulation_advisor.models import RegulationChunk, RetrievalResult
+from regulation_advisor.models import RetrievalResult
 from regulation_advisor.retrieval.embeddings import SentenceTransformerEmbedder
 from regulation_advisor.retrieval.store import VectorStore
 

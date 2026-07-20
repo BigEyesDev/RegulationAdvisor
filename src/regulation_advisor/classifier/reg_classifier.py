@@ -56,8 +56,8 @@ class RegClassifier:
 
     def _load(self, path: str) -> None:
         try:
-            from unsloth import FastLanguageModel
             from transformers import pipeline as hf_pipeline
+            from unsloth import FastLanguageModel
 
             logger.info("Loading RegClassifier from %s", path)
             model, tokenizer = FastLanguageModel.from_pretrained(

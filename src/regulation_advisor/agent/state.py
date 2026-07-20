@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 from typing import Annotated, TypedDict
-from langgraph.graph.message import add_messages
+
 from langchain_core.messages import BaseMessage
+from langgraph.graph.message import add_messages
+
 from regulation_advisor.models import RegulationChunk
 
 CRITICAL_KEYWORDS = ["prohibited", "banned", "Article 5", "35,000,000", "7%", "illegal"]

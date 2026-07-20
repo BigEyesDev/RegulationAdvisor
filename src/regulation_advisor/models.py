@@ -5,6 +5,7 @@ Add new models here — do not define data models inside individual modules.
 from __future__ import annotations
 
 from typing import Literal
+
 from pydantic import BaseModel, Field
 
 

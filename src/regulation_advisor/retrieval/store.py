@@ -79,7 +79,7 @@ class ChromaDBVectorStore:
         return [
             RegulationChunk(content=doc, article_number=m["article"],
                             article_title="", source_document=m["source"])
-            for doc, m in zip(results["documents"][0], results["metadatas"][0])
+            for doc, m in zip(results["documents"][0], results["metadatas"][0], strict=True)
         ]
 
     def save(self, path: Path) -> None:

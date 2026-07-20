@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from regulation_advisor.api.schemas import MetricsResponse
@@ -46,7 +46,7 @@ def save(faithfulness: float, answer_relevancy: float,
     payload = {
         "version": version,
         "week": 4,
-        "evaluated_at": datetime.now(timezone.utc).isoformat(),
+        "evaluated_at": datetime.now(UTC).isoformat(),
         "metrics": {
             "faithfulness": faithfulness,
             "answer_relevancy": answer_relevancy,

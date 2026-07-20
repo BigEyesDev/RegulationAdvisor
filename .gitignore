@@ -19,6 +19,7 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.coverage
 
 # Data and models (too large for git)
 data/*.pdf

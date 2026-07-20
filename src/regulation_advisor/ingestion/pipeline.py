@@ -5,7 +5,11 @@ import logging
 from pathlib import Path
 
 from regulation_advisor.config import settings
-from regulation_advisor.ingestion.chunkers import ArticleAwareChunker, Chunker, RecursiveCharacterChunker
+from regulation_advisor.ingestion.chunkers import (
+    ArticleAwareChunker,
+    Chunker,
+    RecursiveCharacterChunker,
+)
 from regulation_advisor.ingestion.loaders import DocumentLoaderFactory
 
 logger = logging.getLogger(__name__)

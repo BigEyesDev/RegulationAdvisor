@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, asdict
+from collections.abc import Callable
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -44,9 +44,9 @@ class EvaluationHarness:
         """
         pipeline_fn: takes a question, returns (answer_str, list_of_context_strings)
         """
-        from ragas import evaluate
-        from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
         from datasets import Dataset
+        from ragas import evaluate
+        from ragas.metrics import answer_relevancy, context_precision, context_recall, faithfulness
 
         data: dict[str, list] = {"question": [], "answer": [], "contexts": [], "ground_truth": []}
 

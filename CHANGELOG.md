@@ -6,6 +6,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.5] — 2026-07-20
+
+### Fixed
+
+- `ruff check src/` now passes with zero errors: import ordering, an unused
+  import (`metrics_store` in `ui/gradio_app.py`), an unused local
+  (`result_holder`), a missing `strict=` on a `zip()` call in
+  `retrieval/store.py`, and five lines over the 100-char limit.
+- Two integration tests asserted stale hardcoded API versions (`0.4.0`,
+  `0.6.3`) left over from earlier releases; updated to the current version.
+
 ## [0.6.4] — 2026-07-19
 
 ### Fixed

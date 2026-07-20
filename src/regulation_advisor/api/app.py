@@ -27,10 +27,10 @@ async def lifespan(app: FastAPI):
     """Load index + agent once at startup. Tear down cleanly on shutdown."""
     from regulation_advisor.agent.graph import build_agent_graph
     from regulation_advisor.agent.tools import set_retriever
+    from regulation_advisor.config import settings
     from regulation_advisor.retrieval.embeddings import SentenceTransformerEmbedder
     from regulation_advisor.retrieval.retriever import Retriever
     from regulation_advisor.retrieval.store import build_vector_store
-    from regulation_advisor.config import settings
 
     logger.info("Loading vector store (%s)…", settings.vector_store_backend)
     store = build_vector_store()

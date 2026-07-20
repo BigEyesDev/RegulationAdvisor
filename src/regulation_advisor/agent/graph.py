@@ -5,12 +5,12 @@ import logging
 from pathlib import Path
 
 from langchain_core.messages import SystemMessage
-from langgraph.graph import StateGraph, END
-from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, StateGraph
+from langgraph.prebuilt import ToolNode
 
-from regulation_advisor.agent.state import RegAdvisorState, CRITICAL_KEYWORDS
-from regulation_advisor.agent.tools import search_regulations, query_structured_data, search_web
+from regulation_advisor.agent.state import CRITICAL_KEYWORDS, RegAdvisorState
+from regulation_advisor.agent.tools import query_structured_data, search_regulations, search_web
 from regulation_advisor.llm import build_llm
 
 logger = logging.getLogger(__name__)

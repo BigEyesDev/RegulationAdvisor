@@ -12,8 +12,8 @@ from __future__ import annotations
 import logging
 import re
 import uuid
+from collections.abc import Generator
 from datetime import date
-from typing import Generator
 
 import gradio as gr
 from langchain_core.messages import AIMessageChunk, SystemMessage
@@ -34,7 +34,8 @@ _CRITICAL_WARNING = (
 _DATE_CONTEXT_TEMPLATE = (
     "Today's date is {today}. "
     "When discussing regulatory deadlines, always calculate exactly how many days, "
-    "weeks, or months remain from today's date — do not use approximate or static figures when calculating dates and times."
+    "weeks, or months remain from today's date — do not use approximate or "
+    "static figures when calculating dates and times."
 )
 
 
@@ -109,7 +110,8 @@ def build_ui() -> gr.Blocks:
         messages: list = [("human", message)]
         if not history:
             today = date.today().strftime("%B %d, %Y")
-            messages = [SystemMessage(content=_DATE_CONTEXT_TEMPLATE.format(today=today))] + messages
+            date_message = SystemMessage(content=_DATE_CONTEXT_TEMPLATE.format(today=today))
+            messages = [date_message] + messages
 
         partial = ""
         for chunk, _ in agent.stream({"messages": messages}, config=config, stream_mode="messages"):
@@ -153,11 +155,15 @@ def build_ui() -> gr.Blocks:
             f"**v{m['version']}** — evaluated {m['evaluated_at'][:10]} — "
             f"{'✅ PASS' if m['acceptable'] else '❌ FAIL'}"
         )
-        return status, m["faithfulness"], m["answer_relevancy"], m["context_precision"], m["context_recall"]
+        return (
+            status, m["faithfulness"], m["answer_relevancy"],
+            m["context_precision"], m["context_recall"],
+        )
 
     def trigger_eval():
-        from regulation_advisor.api import routes, metrics_store
         import asyncio
+
+        from regulation_advisor.api import routes
         if routes._evaluation_running:
             return "⏳ Evaluation already running — check back in a few minutes."
         routes._evaluation_running = True
@@ -166,7 +172,6 @@ def build_ui() -> gr.Blocks:
         except RuntimeError:
             # Already in a running event loop (can happen in Gradio's thread)
             import threading
-            result_holder = {}
             def run():
                 import asyncio as _asyncio
                 loop = _asyncio.new_event_loop()

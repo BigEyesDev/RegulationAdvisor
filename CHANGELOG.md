@@ -6,6 +6,18 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.9] — 2026-07-20
+
+### Added
+
+- Gradio Chat tab gains a password-masked "Use your own API key (optional)"
+  field, wired through the same per-request BYOK path as the API
+  (`_agent_for_call()` mirrors `api/routes.py`'s `_agent_for_request()`).
+  Blank → the shared default agent; a key → a throwaway agent for that turn
+  only. The field is a plain Gradio component value, not persisted to disk,
+  and clears on refresh or tab close. A rejected/invalid key now yields a
+  clean in-chat error instead of an unhandled exception.
+
 ## [0.6.8] — 2026-07-20
 
 ### Security

@@ -56,7 +56,7 @@ class TestHealth:
         assert client.get("/api/health").json()["status"] == "ok"
 
     def test_returns_current_version(self, client):
-        assert client.get("/api/health").json()["version"] == "0.6.7"
+        assert client.get("/api/health").json()["version"] == "0.6.8"
 
 
 # ── Chat sync ─────────────────────────────────────────────────────────────────
@@ -154,6 +154,28 @@ class TestBringYourOwnKey:
         )
         assert r.status_code == 502
         assert "sk-totally-fake-123" not in r.text
+
+    def test_invalid_key_never_appears_in_logs(self, client, mock_agent, monkeypatch, caplog):
+        byok_agent = MagicMock()
+        byok_agent.ainvoke = AsyncMock(
+            side_effect=RuntimeError("401 Unauthorized: bad key sk-totally-fake-123")
+        )
+        monkeypatch.setattr(
+            "regulation_advisor.agent.graph.build_agent_graph", lambda **kw: byok_agent
+        )
+
+        with caplog.at_level("DEBUG"):
+            client.post(
+                "/api/chat/sync",
+                json={"message": "test", "api_key": "sk-totally-fake-123"},
+            )
+        assert "sk-totally-fake-123" not in caplog.text
+
+    def test_request_repr_omits_api_key(self):
+        from regulation_advisor.api.schemas import ChatRequest
+
+        request = ChatRequest(message="test", api_key="sk-totally-fake-123")
+        assert "sk-totally-fake-123" not in repr(request)
 
 
 # ── Metrics ───────────────────────────────────────────────────────────────────

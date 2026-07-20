@@ -6,6 +6,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.6] — 2026-07-20
+
+### Added
+
+- `build_llm()` now accepts optional `provider`, `model`, and `api_key`
+  overrides — falls back to `settings.*` when omitted, otherwise builds a
+  one-off client with the override values. Global settings are never
+  mutated. This is the foundation for bring-your-own-key (BYOK) support:
+  a caller-supplied key builds a throwaway LLM client for a single request
+  without touching the shared default agent used by everyone else.
+
 ## [0.6.5] — 2026-07-20
 
 ### Fixed

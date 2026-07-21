@@ -47,29 +47,42 @@ def set_classifier(classifier: object) -> None:
     _classifier = classifier
 
 
+_BYOK_REQUIRED_DETAIL = (
+    "This deployment has no default API key configured — add your own "
+    "provider API key to use it."
+)
+
+
 def _agent_for_request(request: ChatRequest) -> object:
     """
     Return the agent to use for one request.
 
-    No ``api_key`` → the shared default agent everyone uses. A supplied
-    ``api_key`` builds a brand-new agent scoped to this call only — nothing
-    is cached, stored, or attached to ``request.session_id``, so the key
-    exists only for the lifetime of this function call and the request it serves.
+    A supplied ``api_key`` builds a brand-new agent scoped to this call only —
+    nothing is cached, stored, or attached to ``request.session_id``, so the
+    key exists only for the lifetime of this function call and the request
+    it serves. With no ``api_key``, the shared default agent is used — but
+    only if the deployment actually has a default key configured. A
+    deployment run with empty LLM keys in its secrets is BYOK-only by
+    design (no visitor's usage is ever billed to the deployer), so a
+    keyless request there is rejected with a clear 400 instead of silently
+    calling out with an empty key.
     """
-    if not request.api_key:
-        return _agent
-    from regulation_advisor.agent.graph import build_agent_graph
+    if request.api_key:
+        from regulation_advisor.agent.graph import build_agent_graph
 
-    return build_agent_graph(
-        provider=request.provider, model=request.model, api_key=request.api_key
-    )
+        return build_agent_graph(
+            provider=request.provider, model=request.model, api_key=request.api_key
+        )
+    if not settings.has_default_llm_key:
+        raise HTTPException(status_code=400, detail=_BYOK_REQUIRED_DETAIL)
+    return _agent
 
 
 @router.get("/api/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.6.10",
+        version="0.6.11",
         vector_store_backend=settings.vector_store_backend,
     )
 

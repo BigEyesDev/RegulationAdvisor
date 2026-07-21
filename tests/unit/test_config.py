@@ -35,3 +35,25 @@ def test_settings_loads_without_error():
     assert settings.llm_provider != ""
     assert settings.llm_model != ""
     assert settings.embedding_model != ""
+
+
+def test_has_default_llm_key_false_when_provider_key_empty():
+    s = Settings(
+        groq_api_key="", openrouter_api_key="", google_api_key="", llm_provider="groq"
+    )
+    assert s.has_default_llm_key is False
+
+
+def test_has_default_llm_key_true_when_provider_key_set():
+    s = Settings(
+        groq_api_key="fake", openrouter_api_key="", google_api_key="", llm_provider="groq"
+    )
+    assert s.has_default_llm_key is True
+
+
+def test_has_default_llm_key_only_checks_active_provider():
+    # A key for a *different* provider than llm_provider must not count.
+    s = Settings(
+        groq_api_key="", openrouter_api_key="fake", google_api_key="", llm_provider="groq"
+    )
+    assert s.has_default_llm_key is False

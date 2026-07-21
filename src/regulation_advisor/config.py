@@ -57,6 +57,14 @@ class Settings(BaseSettings):
     # Leave empty to use the LLM-prompted fallback classifier instead.
     classifier_checkpoint: str = ""
 
+    # POST /api/evaluate runs the full RAGAS QA set against the shared default
+    # agent with no per-caller key check — anyone reaching it can trigger a
+    # batch of paid LLM calls billed to whoever configured the default key.
+    # Disabled by default; opt in only if this deployment's API isn't public,
+    # or the cost/abuse risk is acceptable. Evaluations otherwise stay a
+    # local/dev action via scripts/run_evaluation.py.
+    enable_evaluate_endpoint: bool = False
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
     @property

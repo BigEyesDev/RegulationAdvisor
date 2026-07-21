@@ -181,6 +181,16 @@ async def get_metrics() -> MetricsResponse:
 @router.post("/api/evaluate", response_model=EvaluateResponse)
 async def trigger_evaluation(background_tasks: BackgroundTasks) -> EvaluateResponse:
     """Start a RAGAS evaluation in the background. Returns immediately."""
+    if not settings.enable_evaluate_endpoint:
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Evaluation endpoint disabled — it would run the full RAGAS QA "
+                "set on this deployment's shared key with no per-caller check. "
+                "Run scripts/run_evaluation.py locally, or set "
+                "ENABLE_EVALUATE_ENDPOINT=true if you understand the cost/abuse risk."
+            ),
+        )
     global _evaluation_running
     if _evaluation_running:
         return EvaluateResponse(

@@ -82,7 +82,7 @@ def _agent_for_request(request: ChatRequest) -> object:
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.6.11",
+        version="0.6.12",
         vector_store_backend=settings.vector_store_backend,
     )
 

@@ -13,7 +13,8 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     google_api_key: str = ""
     openrouter_api_key: str = ""
-    # Provider: "openrouter" | "groq" | "google"
+    anthropic_api_key: str = ""
+    # Provider: "openrouter" | "groq" | "google" | "openai" | "anthropic"
     # Switch by changing LLM_PROVIDER in .env — no code changes needed.
     llm_provider: str = "openrouter"
     llm_model: str = "deepseek/deepseek-v4-flash"
@@ -25,7 +26,8 @@ class Settings(BaseSettings):
     # Web search
     tavily_api_key: str = ""
 
-    # OpenAI (used by RAGAS evaluation harness)
+    # OpenAI — used by the RAGAS evaluation harness, and optionally as an
+    # LLM_PROVIDER/BYOK chat provider (see llm.py)
     openai_api_key: str = ""
 
     # HuggingFace
@@ -72,6 +74,8 @@ class Settings(BaseSettings):
             "openrouter": self.openrouter_api_key,
             "groq": self.groq_api_key,
             "google": self.google_api_key,
+            "openai": self.openai_api_key,
+            "anthropic": self.anthropic_api_key,
         }
         return bool(key_by_provider.get(self.llm_provider))
 

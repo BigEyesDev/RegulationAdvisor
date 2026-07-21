@@ -13,7 +13,7 @@ class ChatRequest(BaseModel):
     # only. Never persisted: read once to build a throwaway LLM client, then
     # discarded when the request finishes. See api/routes.py chat_sync/chat_stream.
     api_key: str | None = Field(default=None, max_length=200, repr=False)
-    provider: Literal["openrouter", "groq", "google"] | None = None
+    provider: Literal["openrouter", "groq", "google", "openai", "anthropic"] | None = None
     model: str | None = Field(default=None, max_length=200)
 
 

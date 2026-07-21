@@ -6,6 +6,41 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.12] — 2026-07-21
+
+### Added
+
+- BYOK provider/model selector in the Gradio Chat tab: a "Use your own API
+  key" accordion (closed by default) with a Provider dropdown (OpenAI,
+  Anthropic, Groq, Google Gemini, OpenRouter), a Model dropdown whose
+  choices update to match the chosen provider, and the API key field.
+  Previously the key box alone always routed through the deployment's own
+  configured provider regardless of which provider the visitor's key was
+  actually for — a mismatched key produced a confusing auth failure
+  against the wrong provider's endpoint (not a security issue: the
+  caller's key always wins over the deployment's per `llm.py`'s
+  `api_key or settings.*`, just a UX bug).
+- Native **OpenAI** and **Anthropic (Claude)** support in `llm.py`'s
+  provider factory and `ChatRequest.provider`, alongside the existing
+  Groq/Google/OpenRouter — added `langchain-openai` (previously only an
+  undeclared transitive dependency) and `langchain-anthropic` to
+  `pyproject.toml`, and `OPENAI_API_KEY`/`ANTHROPIC_API_KEY` to
+  `Settings`/`.env.example`. `has_default_llm_key` covers both.
+  OpenAI path verified live against a real key (`gpt-4o-mini`); Anthropic
+  verified structurally (client construction, key routing) — no key
+  available to verify a live call in this environment.
+
+### Removed
+
+- The Evaluation Dashboard tab (RAGAS scores + "Run Evaluation" trigger) is
+  no longer mounted in the public Gradio app — its "Run Evaluation" button
+  bypassed the BYOK-required guard entirely (always called the shared
+  default agent, no per-visitor key check), so any visitor could trigger
+  the full RAGAS QA set on the deployer's key. Code moved, not deleted, to
+  `ui/eval_dashboard.py`; see `version_Plan.md` for the eval-history rework
+  that should replace the trigger with a read-only history view before it
+  comes back.
+
 ## [0.6.11] — 2026-07-21
 
 ### Added

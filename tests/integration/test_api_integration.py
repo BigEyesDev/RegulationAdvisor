@@ -242,12 +242,19 @@ class TestMetrics:
 # ── Evaluate ──────────────────────────────────────────────────────────────────
 
 class TestEvaluate:
-    def test_started_status(self, client, monkeypatch):
+    def test_disabled_by_default_returns_403(self, client, monkeypatch):
+        monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", False)
+        r = client.post("/api/evaluate")
+        assert r.status_code == 403
+
+    def test_started_status_when_enabled(self, client, monkeypatch):
+        monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", True)
         monkeypatch.setattr(routes, "_evaluation_running", False)
         r = client.post("/api/evaluate")
         assert r.json()["status"] == "started"
 
-    def test_already_running_status(self, client, monkeypatch):
+    def test_already_running_status_when_enabled(self, client, monkeypatch):
+        monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", True)
         monkeypatch.setattr(routes, "_evaluation_running", True)
         r = client.post("/api/evaluate")
         assert r.json()["status"] == "already_running"

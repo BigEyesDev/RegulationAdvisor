@@ -67,3 +67,7 @@ def test_has_default_llm_key_true_for_openai_provider():
 def test_has_default_llm_key_true_for_anthropic_provider():
     s = Settings(anthropic_api_key="fake", llm_provider="anthropic")
     assert s.has_default_llm_key is True
+
+
+def test_enable_evaluate_endpoint_defaults_false():
+    assert Settings.model_fields["enable_evaluate_endpoint"].default is False

@@ -71,7 +71,14 @@ def test_metrics_store_save_and_load_roundtrip(scores_file, monkeypatch):
     assert result.acceptable is True  # 0.85 >= 0.80 and 0.76 >= 0.70
 
 
+def test_evaluate_disabled_by_default(client, monkeypatch):
+    monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", False)
+    response = client.post("/api/evaluate")
+    assert response.status_code == 403
+
+
 def test_evaluate_returns_started(client, monkeypatch):
+    monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", True)
     monkeypatch.setattr(routes, "_evaluation_running", False)
     response = client.post("/api/evaluate")
     assert response.status_code == 200
@@ -79,6 +86,7 @@ def test_evaluate_returns_started(client, monkeypatch):
 
 
 def test_evaluate_returns_already_running_when_busy(client, monkeypatch):
+    monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", True)
     monkeypatch.setattr(routes, "_evaluation_running", True)
     response = client.post("/api/evaluate")
     assert response.json()["status"] == "already_running"

@@ -14,7 +14,7 @@ pinned: false
 
 > EU AI Act becomes fully enforceable 2 August 2026.
 
-**Live demo:** [huggingface.co/spaces/BigEyesDev/regulation-advisor](https://huggingface.co/spaces/BigEyesDev/regulation-advisor)
+**Live demo:** not published yet — see [Run locally](#run-locally) below.
 
 ---
 
@@ -46,7 +46,7 @@ LLM writes answer citing Article 5(1)(f) + enforcement date
 
 ---
 
-## Architecture (v0.5)
+## Architecture (v0.6)
 
 ```
                         ┌─────────────────────────────────────┐
@@ -55,8 +55,9 @@ LLM writes answer citing Article 5(1)(f) + enforcement date
                         │  POST /api/chat      (SSE stream)   │
                         │  POST /api/chat/sync (sync)         │
                         │  GET  /api/metrics                  │
-                        │  POST /api/evaluate                 │
-                        │  GET  /health                       │
+                        │  POST /api/evaluate  (disabled by    │
+                        │                       default)       │
+                        │  GET  /api/health                   │
                         │                                      │
                         │  Gradio UI  mounted at  /           │
                         └──────────────┬──────────────────────┘
@@ -87,6 +88,14 @@ LLM writes answer citing Article 5(1)(f) + enforcement date
 
 Multi-turn memory: `MemorySaver` checkpoints state per `thread_id`.
 
+**Bring your own key (BYOK):** every chat request (API or Gradio) can optionally
+supply its own `provider` + `model` + `api_key` — OpenAI, Anthropic (Claude), Groq,
+Google Gemini, or OpenRouter. When supplied, a throwaway agent is built for that one
+request using the caller's key; nothing is cached, logged, or written to disk, and
+the shared default agent (if this deployment funds one) is never touched. If a
+deployment ships with no LLM key configured at all, it's BYOK-only by design —
+requests without a key get a clear message instead of a call billed to the deployer.
+
 ---
 
 ## Run locally
@@ -102,8 +111,12 @@ uv sync --group dev
 # 2. Configure API keys
 cp .env.example .env
 # Edit .env — set at minimum:
-#   OPENROUTER_API_KEY  (or GROQ_API_KEY / GOOGLE_API_KEY)
+#   One of: OPENROUTER_API_KEY / GROQ_API_KEY / GOOGLE_API_KEY /
+#           OPENAI_API_KEY / ANTHROPIC_API_KEY (matching LLM_PROVIDER)
 #   TAVILY_API_KEY      (needed for the web search tool)
+#
+# Leave all five LLM keys blank to run BYOK-only locally too — every chat
+# request without its own key gets a clear "bring your own key" message.
 
 # 3. Add the regulation documents to data/
 #    eu_ai_act.pdf, gdpr.pdf, ai_act_timeline.csv,
@@ -127,8 +140,12 @@ uv run uvicorn regulation_advisor.api.app:app --host 0.0.0.0 --port 8000 --reloa
 | `POST` | `/api/chat` | Streaming SSE chat — streams LLM tokens as `data:` events |
 | `POST` | `/api/chat/sync` | Synchronous chat — returns full answer in one response |
 | `GET` | `/api/metrics` | Latest RAGAS scores from the last evaluation run |
-| `POST` | `/api/evaluate` | Triggers RAGAS evaluation in the background |
-| `GET` | `/health` | Health check |
+| `POST` | `/api/evaluate` | Triggers RAGAS evaluation in the background — **disabled by default** (`ENABLE_EVALUATE_ENDPOINT=false`); it would otherwise let anyone trigger a batch of paid LLM calls with no per-caller check |
+| `GET` | `/api/health` | Health check |
+
+`ChatRequest` (`/api/chat` and `/api/chat/sync`) accepts an optional
+`api_key` / `provider` (`openrouter` \| `groq` \| `google` \| `openai` \|
+`anthropic`) / `model` — see [BYOK](#architecture-v06) above.
 
 ```bash
 # Streaming chat
@@ -140,6 +157,11 @@ curl -X POST http://localhost:8000/api/chat \
 curl -X POST http://localhost:8000/api/chat/sync \
   -H "Content-Type: application/json" \
   -d '{"message": "What is the fine for a prohibited AI system?"}'
+
+# Sync chat with your own key
+curl -X POST http://localhost:8000/api/chat/sync \
+  -H "Content-Type: application/json" \
+  -d '{"message": "What is the fine for a prohibited AI system?", "provider": "openai", "model": "gpt-4o-mini", "api_key": "sk-..."}'
 
 # Get evaluation scores
 curl http://localhost:8000/api/metrics
@@ -153,7 +175,7 @@ Edit `.env` — no code changes needed:
 
 ```bash
 # Switch LLM provider and model
-LLM_PROVIDER=openrouter          # openrouter | groq | google
+LLM_PROVIDER=openrouter          # openrouter | groq | google | openai | anthropic
 LLM_MODEL=deepseek/deepseek-v4-flash
 
 # Switch vector store (chromadb requires the sidecar to be running)
@@ -183,14 +205,18 @@ uv run uvicorn regulation_advisor.api.app:app --host 0.0.0.0 --port 8000
 
 ## Evaluation
 
-RAGAS scores are tracked across all answers. Run the evaluation suite against the 20-question
-golden dataset:
+Two independent suites, run locally (never triggered by public traffic — see
+[REST API](#rest-api) above for why `/api/evaluate` is disabled by default):
 
 ```bash
-# Run RAGAS evaluation and save scores to evals/baseline_scores.json
+# RAGAS: scores the agent's answers against a 20-question golden dataset
 uv run python scripts/run_evaluation.py
 
-# Run the promptfoo 30-case regression suite (requires Node.js)
+# Scope-gate regression: 6 fixed questions checking the agent correctly
+# answers in-scope questions and refuses out-of-scope ones
+uv run python scripts/run_regression_questions.py
+
+# promptfoo: 30-case regression suite (requires Node.js)
 npx promptfoo eval --config evals/promptfoo.yaml
 ```
 
@@ -204,6 +230,32 @@ The promptfoo suite also runs automatically on every PR to `main` via GitHub Act
 | Answer Relevancy | ≥ 0.70 |
 | Context Precision | ≥ 0.70 |
 | Context Recall | ≥ 0.70 |
+
+Real baseline numbers aren't published yet — a dependency-version
+incompatibility between `ragas` and the current `langchain-openai` breaks
+RAGAS's embedding-based metrics (`context_precision`/`context_recall`) in
+this environment, and the scoring pipeline is unreliable enough right now
+that we're not shipping partial/unverified numbers either. The 6-question
+scope-gate regression suite passes 6/6 and is the quality signal actually
+relied on day to day.
+
+### Fine-tuned RegClassifier: before/after
+
+`RegClassifier` (risk-tier classification: Unacceptable / High / Limited /
+Minimal) can run as a QLoRA-fine-tuned checkpoint or fall back to an
+LLM-prompted classifier. On an 11-example held-out test set:
+
+| | Accuracy | Macro F1 |
+|---|---|---|
+| Base model | 0.818 | 0.672 |
+| Fine-tuned | 0.818 | 0.798 |
+
+Accuracy is identical; macro F1 improved because the fine-tuned model is
+more balanced across classes (better recall on the minority `Limited`
+class), not because it's a clean win — recall on `High` actually dropped.
+**n=11 is small enough that none of this should be read as a strong
+result** — it's the honest number from the test set that exists today, not
+a claim of validated real-world improvement.
 
 ---
 
@@ -227,20 +279,23 @@ uv run pytest tests/ --cov=src -v
 The Space uses `sdk: docker` — HF builds from `Dockerfile` directly, pre-baking the FAISS index
 into the image. No separate `app_file` is needed.
 
-**Secrets** — add in Space Settings → Variables and Secrets (never commit to repo):
+**Secrets** — add in Space Settings → Variables and Secrets (never commit to repo).
+Decide first whether this deployment funds a shared default LLM key or runs
+BYOK-only (leave all five LLM keys below unset — visitors without their own
+key get a clear message instead of a call billed to you):
 
 | Secret | Value | Required for |
 |--------|-------|-------------|
-| `OPENROUTER_API_KEY` | from openrouter.ai | LLM (default provider) |
+| `OPENROUTER_API_KEY` / `GROQ_API_KEY` / `GOOGLE_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | your provider key | Funding a shared default LLM (matching `LLM_PROVIDER`) — leave unset for BYOK-only |
 | `TAVILY_API_KEY` | from tavily.com | `search_web` tool |
 | `VECTOR_STORE_BACKEND` | `faiss` | Use baked-in FAISS index (no ChromaDB sidecar) |
-| `GROQ_API_KEY` | from console.groq.com | If switching to Groq provider |
+| `ENABLE_EVALUATE_ENDPOINT` | `false` (or leave unset) | Keep `/api/evaluate` disabled — see [REST API](#rest-api) |
 
 **Upload:**
 
 ```bash
 huggingface-cli login
-huggingface-cli upload BigEyesDev/regulation-advisor . --repo-type=space
+huggingface-cli upload <your-username>/<space-name> . --repo-type=space
 ```
 
 The FAISS index is built at Docker image build time (`RUN python scripts/ingest.py` in
@@ -255,13 +310,13 @@ The FAISS index is built at Docker image build time (`RUN python scripts/ingest.
 | Package manager | uv |
 | API server | FastAPI + Uvicorn (SSE streaming) |
 | Agent framework | LangGraph — stateful graph with `MemorySaver` checkpointing |
-| LLM | DeepSeek V4 Flash via OpenRouter (swappable via `.env`) |
+| LLM | DeepSeek V4 Flash via OpenRouter by default; OpenAI, Anthropic, Groq, Google Gemini, or OpenRouter via BYOK per-request or `.env` |
 | Embeddings | sentence-transformers `all-MiniLM-L6-v2` (local, no API cost) |
 | Vector store | FAISS (dev) / ChromaDB (persistent) — swapped via config |
 | Tools | LangChain `@tool` — regulation search, CSV lookup, Tavily web search |
 | Document loading | LlamaIndex + PyMuPDF |
 | Guardrails | Chain of Responsibility — faithfulness, citation, legal-claim checks |
-| Evaluation | RAGAS + promptfoo 30-case regression suite |
-| UI | Gradio 6 (Chat + Evaluation Dashboard tabs) |
-| CI | GitHub Actions — promptfoo eval on every PR |
+| Evaluation | RAGAS + 6-question scope-gate regression + promptfoo 30-case suite |
+| UI | Gradio 6 — Chat tab with BYOK provider/model/key selector |
+| CI | GitHub Actions — promptfoo eval on every PR to `main` |
 | Deployment | HuggingFace Spaces |

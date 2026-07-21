@@ -6,6 +6,19 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.11] — 2026-07-21
+
+### Added
+
+- `settings.has_default_llm_key` — true only if the currently configured
+  `LLM_PROVIDER` actually has a key set. A deployment shipped with empty
+  LLM keys in its secrets (BYOK-only, e.g. a public Space where the
+  deployer isn't funding a shared paid key) now rejects keyless requests
+  with a clear 400 / in-chat message instead of silently attempting a
+  call with an empty key on the deployer's would-be default. A supplied
+  `api_key` still works exactly as before regardless of this flag — only
+  the no-key fallback path is affected.
+
 ## [0.6.10] — 2026-07-20
 
 ### Verified

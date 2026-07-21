@@ -57,6 +57,24 @@ class Settings(BaseSettings):
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
+    @property
+    def has_default_llm_key(self) -> bool:
+        """
+        Whether the configured LLM_PROVIDER has a key to serve requests with,
+        with no caller-supplied api_key involved.
+
+        False in a deployment that intentionally ships with no LLM keys in
+        its secrets (e.g. a public Space run BYOK-only, so no visitor's usage
+        is ever billed to the deployer) — callers use this to require BYOK
+        instead of attempting a call that would fail on an empty key.
+        """
+        key_by_provider = {
+            "openrouter": self.openrouter_api_key,
+            "groq": self.groq_api_key,
+            "google": self.google_api_key,
+        }
+        return bool(key_by_provider.get(self.llm_provider))
+
 
 # Single instance — import this everywhere
 settings = Settings()

@@ -56,7 +56,7 @@ class TestHealth:
         assert client.get("/api/health").json()["status"] == "ok"
 
     def test_returns_current_version(self, client):
-        assert client.get("/api/health").json()["version"] == "0.6.10"
+        assert client.get("/api/health").json()["version"] == "0.6.11"
 
 
 # ── Chat sync ─────────────────────────────────────────────────────────────────
@@ -176,6 +176,34 @@ class TestBringYourOwnKey:
 
         request = ChatRequest(message="test", api_key="sk-totally-fake-123")
         assert "sk-totally-fake-123" not in repr(request)
+
+    def test_no_key_and_no_default_key_returns_400_not_a_paid_call(
+        self, client, mock_agent, monkeypatch
+    ):
+        monkeypatch.setattr(type(routes.settings), "has_default_llm_key", False)
+        r = client.post("/api/chat/sync", json={"message": "What is Article 5?"})
+        assert r.status_code == 400
+        assert "own" in r.json()["detail"].lower()
+        mock_agent.ainvoke.assert_not_awaited()
+
+    def test_supplied_key_still_works_when_no_default_key(
+        self, client, mock_agent, monkeypatch
+    ):
+        monkeypatch.setattr(type(routes.settings), "has_default_llm_key", False)
+        byok_agent = MagicMock()
+        byok_agent.ainvoke = AsyncMock(return_value={
+            "messages": [MagicMock(content="Article 5 prohibits social scoring.")],
+            "retrieved_chunks": [],
+        })
+        monkeypatch.setattr(
+            "regulation_advisor.agent.graph.build_agent_graph", lambda **kw: byok_agent
+        )
+        r = client.post(
+            "/api/chat/sync",
+            json={"message": "What is Article 5?", "api_key": "sk-user-supplied"},
+        )
+        assert r.status_code == 200
+        byok_agent.ainvoke.assert_awaited()
 
 
 # ── Metrics ───────────────────────────────────────────────────────────────────

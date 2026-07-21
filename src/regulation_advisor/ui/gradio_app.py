@@ -78,20 +78,31 @@ def _get_agent():
     return _agent
 
 
+class _ByokRequiredError(Exception):
+    """Raised when no key was supplied and the deployment has no default key."""
+
+
 def _agent_for_call(api_key: str | None):
     """
     Mirrors api/routes.py's ``_agent_for_request`` for the Gradio chat tab.
 
-    No key → the shared default agent. A key builds a throwaway agent for
-    this call only; it is held in a local variable and discarded when
-    ``respond()`` returns — nothing is written to disk or kept beyond the
-    lifetime of this one turn.
+    A key builds a throwaway agent for this call only; it is held in a
+    local variable and discarded when ``respond()`` returns — nothing is
+    written to disk or kept beyond the lifetime of this one turn. With no
+    key, the shared default agent is used only if the deployment actually
+    has a default key configured — a BYOK-only deployment (empty keys in
+    its secrets, so no visitor's usage is ever billed to the deployer)
+    raises instead of silently calling out with an empty key.
     """
-    if not api_key:
-        return _get_agent()
-    from regulation_advisor.agent.graph import build_agent_graph
+    if api_key:
+        from regulation_advisor.agent.graph import build_agent_graph
 
-    return build_agent_graph(api_key=api_key)
+        return build_agent_graph(api_key=api_key)
+    from regulation_advisor.config import settings
+
+    if not settings.has_default_llm_key:
+        raise _ByokRequiredError
+    return _get_agent()
 
 
 def _get_classifier():
@@ -118,7 +129,14 @@ def build_ui() -> gr.Blocks:
     def respond(
         message: str, history: list, api_key: str = ""
     ) -> Generator[str, None, None]:
-        agent = _agent_for_call(api_key.strip() or None)
+        try:
+            agent = _agent_for_call(api_key.strip() or None)
+        except _ByokRequiredError:
+            yield (
+                "This deployment has no default API key configured — "
+                "paste your own key above to chat."
+            )
+            return
         if agent is None:
             yield "Service not ready — agent is still loading. Please retry in a moment."
             return

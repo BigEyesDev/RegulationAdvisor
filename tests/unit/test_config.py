@@ -57,3 +57,13 @@ def test_has_default_llm_key_only_checks_active_provider():
         groq_api_key="", openrouter_api_key="fake", google_api_key="", llm_provider="groq"
     )
     assert s.has_default_llm_key is False
+
+
+def test_has_default_llm_key_true_for_openai_provider():
+    s = Settings(openai_api_key="fake", llm_provider="openai")
+    assert s.has_default_llm_key is True
+
+
+def test_has_default_llm_key_true_for_anthropic_provider():
+    s = Settings(anthropic_api_key="fake", llm_provider="anthropic")
+    assert s.has_default_llm_key is True

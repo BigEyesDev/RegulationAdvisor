@@ -56,7 +56,7 @@ class TestHealth:
         assert client.get("/api/health").json()["status"] == "ok"
 
     def test_returns_current_version(self, client):
-        assert client.get("/api/health").json()["version"] == "0.6.11"
+        assert client.get("/api/health").json()["version"] == "0.6.12"
 
 
 # ── Chat sync ─────────────────────────────────────────────────────────────────

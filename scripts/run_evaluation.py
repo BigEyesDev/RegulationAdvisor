@@ -15,21 +15,32 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from regulation_advisor.evaluation.harness import EvaluationHarness
 from regulation_advisor.agent.graph import build_agent_graph
+from regulation_advisor.agent.tools import set_retriever
+from regulation_advisor.config import settings
+from regulation_advisor.evaluation.harness import EvaluationHarness
+from regulation_advisor.retrieval.embeddings import SentenceTransformerEmbedder
+from regulation_advisor.retrieval.retriever import Retriever
+from regulation_advisor.retrieval.store import build_vector_store
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-QA_PATH = Path("evals/qa_pairs.json")
-OUTPUT_PATH = Path("evals/baseline_scores.json")
+_ROOT = Path(__file__).parent.parent
+QA_PATH = _ROOT / "evals" / "qa_pairs.json"
+OUTPUT_PATH = _ROOT / "evals" / "baseline_scores.json"
 
 
 def make_pipeline_fn(agent):
     """Wrap the agent so harness.run() can call it with just a question."""
-    config = {"configurable": {"thread_id": "ragas-eval"}}
 
     def pipeline_fn(question: str) -> tuple[str, list[str]]:
+        # A unique thread_id per question — a shared one would let LangGraph's
+        # MemorySaver accumulate every prior question's retrieved chunks and
+        # answer into each subsequent call, ballooning context size until the
+        # judge LLM's context window overflows (seen: 130k-165k tokens by the
+        # last few questions in a 20-question run).
+        config = {"configurable": {"thread_id": f"ragas-eval-{hash(question)}"}}
         result = agent.invoke({"messages": [("human", question)]}, config=config)
         answer = result["messages"][-1].content
         # Extract tool message contents as context strings for RAGAS
@@ -43,6 +54,11 @@ def make_pipeline_fn(agent):
 
 
 def main() -> None:
+    logger.info("Loading vector store (%s)…", settings.vector_store_backend)
+    store = build_vector_store()
+    store.load(_ROOT / settings.index_dir)
+    set_retriever(Retriever(store=store, embedder=SentenceTransformerEmbedder()))
+
     logger.info("Building agent...")
     agent = build_agent_graph()
 

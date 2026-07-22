@@ -222,22 +222,28 @@ npx promptfoo eval --config evals/promptfoo.yaml
 
 The promptfoo suite also runs automatically on every PR to `main` via GitHub Actions.
 
-**Current baseline targets:**
+**Current baseline** (openrouter/deepseek-v4-flash, 20-question golden set,
+gpt-4o-mini judge, local sentence-transformers embeddings):
 
-| Metric | Target |
-|--------|--------|
-| Faithfulness | ≥ 0.80 |
-| Answer Relevancy | ≥ 0.70 |
-| Context Precision | ≥ 0.70 |
-| Context Recall | ≥ 0.70 |
+| Metric | Target | Result |
+|--------|--------|--------|
+| Faithfulness | ≥ 0.80 | **0.865** ✅ |
+| Answer Relevancy | ≥ 0.70 | **0.852** ✅ |
+| Context Precision | ≥ 0.70 | **0.973** ✅ |
+| Context Recall | ≥ 0.70 | **0.975** ✅ |
 
-Real baseline numbers aren't published yet — a dependency-version
-incompatibility between `ragas` and the current `langchain-openai` breaks
-RAGAS's embedding-based metrics (`context_precision`/`context_recall`) in
-this environment, and the scoring pipeline is unreliable enough right now
-that we're not shipping partial/unverified numbers either. The 6-question
-scope-gate regression suite passes 6/6 and is the quality signal actually
-relied on day to day.
+The 6-question scope-gate regression suite passes 6/6 as well. Getting a
+trustworthy number here required fixing three separate bugs, in case you hit
+the same ones: `scripts/run_evaluation.py` never wired up the retriever
+(so the agent silently fell back to the LLM's own memorized knowledge
+instead of the retrieved documents), RAGAS's default judge construction
+is broken for this `ragas`/`langchain-openai` combo (its auto-factory
+returns a mismatched embeddings interface), and each evaluation question
+must get its own conversation `thread_id` (a shared one lets LangGraph's
+checkpointer accumulate every prior question into each subsequent
+call, ballooning context until the judge model's context window
+overflows). All three are fixed in `evaluation/harness.py` and
+`scripts/run_evaluation.py`.
 
 ### Fine-tuned RegClassifier: before/after
 

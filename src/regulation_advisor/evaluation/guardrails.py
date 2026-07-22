@@ -6,8 +6,8 @@ Add new checks by creating a new GuardrailHandler subclass.
 """
 from __future__ import annotations
 
-import re
 import logging
+import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 

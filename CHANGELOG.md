@@ -6,7 +6,187 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [0.6.3] — 2026-07-18
+## [0.6.13] — 2026-07-22
+
+### Fixed
+
+- The RAGAS evaluation pipeline (`scripts/run_evaluation.py`,
+  `evaluation/harness.py`) was completely broken, and had apparently never
+  produced a real score in this repo's history (`evals/baseline_scores.json`
+  had sat as an all-null Week 3 placeholder). Three separate bugs, all fixed:
+  (1) the retriever was never wired up, so the agent silently answered from
+  the LLM's own memorized knowledge instead of the retrieved documents —
+  the score would have measured the wrong thing entirely; (2) RAGAS's
+  default judge auto-construction is broken for the installed `ragas`/
+  `langchain-openai` combo (mismatched embeddings interface) — fixed by
+  passing an explicit gpt-4o-mini judge + local sentence-transformers
+  embeddings; (3) all 20 questions shared one LangGraph `thread_id`,
+  accumulating conversation history until later questions overflowed the
+  judge's context window — fixed with a unique thread_id per question.
+  Also tuned `ragas`'s `RunConfig` (lower concurrency, longer retry
+  patience) to stop tripping OpenAI rate limits. Real baseline now
+  recorded: Faithfulness 0.865, Answer Relevancy 0.852, Context Precision
+  0.973, Context Recall 0.975 — all above target. Full diagnosis in
+  `Week7a_Plan.md`.
+
+## [0.6.12] — 2026-07-21
+
+### Added
+
+- BYOK provider/model selector in the Gradio Chat tab: a "Use your own API
+  key" accordion (closed by default) with a Provider dropdown (OpenAI,
+  Anthropic, Groq, Google Gemini, OpenRouter), a Model dropdown whose
+  choices update to match the chosen provider, and the API key field.
+  Previously the key box alone always routed through the deployment's own
+  configured provider regardless of which provider the visitor's key was
+  actually for — a mismatched key produced a confusing auth failure
+  against the wrong provider's endpoint (not a security issue: the
+  caller's key always wins over the deployment's per `llm.py`'s
+  `api_key or settings.*`, just a UX bug).
+- Native **OpenAI** and **Anthropic (Claude)** support in `llm.py`'s
+  provider factory and `ChatRequest.provider`, alongside the existing
+  Groq/Google/OpenRouter — added `langchain-openai` (previously only an
+  undeclared transitive dependency) and `langchain-anthropic` to
+  `pyproject.toml`, and `OPENAI_API_KEY`/`ANTHROPIC_API_KEY` to
+  `Settings`/`.env.example`. `has_default_llm_key` covers both.
+  OpenAI path verified live against a real key (`gpt-4o-mini`); Anthropic
+  verified structurally (client construction, key routing) — no key
+  available to verify a live call in this environment.
+
+### Removed
+
+- The Evaluation Dashboard tab (RAGAS scores + "Run Evaluation" trigger) is
+  no longer mounted in the public Gradio app — its "Run Evaluation" button
+  bypassed the BYOK-required guard entirely (always called the shared
+  default agent, no per-visitor key check), so any visitor could trigger
+  the full RAGAS QA set on the deployer's key. Code moved, not deleted, to
+  `ui/eval_dashboard.py`; see `version_Plan.md` for the eval-history rework
+  that should replace the trigger with a read-only history view before it
+  comes back.
+
+## [0.6.11] — 2026-07-21
+
+### Added
+
+- `settings.has_default_llm_key` — true only if the currently configured
+  `LLM_PROVIDER` actually has a key set. A deployment shipped with empty
+  LLM keys in its secrets (BYOK-only, e.g. a public Space where the
+  deployer isn't funding a shared paid key) now rejects keyless requests
+  with a clear 400 / in-chat message instead of silently attempting a
+  call with an empty key on the deployer's would-be default. A supplied
+  `api_key` still works exactly as before regardless of this flag — only
+  the no-key fallback path is affected.
+
+## [0.6.10] — 2026-07-20
+
+### Verified
+
+- End-to-end BYOK verification against a live running server (not mocks):
+  (1) no `api_key` → shared default agent answers normally; (2) a real,
+  working personal key (openrouter/deepseek-v4-flash) routed through
+  `provider`/`model`/`api_key` produces a genuine cited answer via a
+  throwaway agent, proving the override actually reaches the LLM client;
+  (3) an invalid key returns a clean 502 with the key absent from both the
+  response body and the server logs, confirmed by grepping the log file.
+  6/6 regression passes. This closes out Week 7 Phase 2 (BYOK); Phase 2a's
+  "pick one free-tier default model" was deferred in favor of BYOK-only,
+  per real-world testing showing every currently-reachable free-tier
+  option (Groq TPM caps, OpenRouter daily quota, Google's non-free-tier
+  key) had a blocking problem — see the v0.6.5–v0.6.6 commits for details.
+
+## [0.6.9] — 2026-07-20
+
+### Added
+
+- Gradio Chat tab gains a password-masked "Use your own API key (optional)"
+  field, wired through the same per-request BYOK path as the API
+  (`_agent_for_call()` mirrors `api/routes.py`'s `_agent_for_request()`).
+  Blank → the shared default agent; a key → a throwaway agent for that turn
+  only. The field is a plain Gradio component value, not persisted to disk,
+  and clears on refresh or tab close. A rejected/invalid key now yields a
+  clean in-chat error instead of an unhandled exception.
+
+## [0.6.8] — 2026-07-20
+
+### Security
+
+- Audited the BYOK path end to end for key leakage: no code path logs a full
+  request object or raw exception (`logger.exception` would print provider
+  HTTP client errors that sometimes echo the key back — the BYOK handlers
+  log only the exception type). No middleware or access log prints request
+  bodies. The guardrail chain and RegClassifier only ever see the LLM's
+  answer text, never the request. `ChatRequest.api_key` is marked
+  `repr=False` so accidental `logger.info("%s", request)` calls can't leak
+  it either. Regression tests assert the key never appears in the response
+  body or in captured logs for a failing BYOK call.
+
+## [0.6.7] — 2026-07-20
+
+### Added
+
+- BYOK (bring your own key) for `/api/chat` and `/api/chat/sync`: `ChatRequest`
+  gains optional `api_key`, `provider`, and `model` fields. When `api_key` is
+  set, the request is served by a throwaway agent built for that call only
+  (`build_agent_graph()` now takes the same `provider`/`model`/`api_key`
+  overrides as `build_llm()`) — the shared default agent used by everyone
+  else is never touched. Nothing about the key or the throwaway agent is
+  cached, stored, or attached to `session_id`; both are dropped when the
+  request finishes.
+- Both chat endpoints now catch LLM-provider failures (invalid key, rejected
+  request) and return a clean 502 / SSE error event instead of an unhandled
+  500 — the raw exception (which some providers echo the invalid key back
+  into) is never included in the response or in logs, only the exception type.
+
+## [0.6.6] — 2026-07-20
+
+### Added
+
+- `build_llm()` now accepts optional `provider`, `model`, and `api_key`
+  overrides — falls back to `settings.*` when omitted, otherwise builds a
+  one-off client with the override values. Global settings are never
+  mutated. This is the foundation for bring-your-own-key (BYOK) support:
+  a caller-supplied key builds a throwaway LLM client for a single request
+  without touching the shared default agent used by everyone else.
+
+## [0.6.5] — 2026-07-20
+
+### Fixed
+
+- `ruff check src/` now passes with zero errors: import ordering, an unused
+  import (`metrics_store` in `ui/gradio_app.py`), an unused local
+  (`result_holder`), a missing `strict=` on a `zip()` call in
+  `retrieval/store.py`, and five lines over the 100-char limit.
+- Two integration tests asserted stale hardcoded API versions (`0.4.0`,
+  `0.6.3`) left over from earlier releases; updated to the current version.
+
+## [0.6.4] — 2026-07-19
+
+### Fixed
+
+- `prompts/system_prompt.txt` was never actually loaded by any code path — `agent/graph.py`'s
+  `agent_node` invoked the LLM directly on `state["messages"]` with no system message at all.
+  Now loaded once at import time and prepended on every `agent_node` call (`agent/graph.py`).
+  Also dropped the file's unused trailing `Context: {context}` block, a leftover from an
+  earlier non-agentic prompt-template design — context now arrives via tool calls, not a
+  pre-filled template slot.
+- System prompt now (a) always closes an answer with "This is AI-generated guidance, not
+  legal advice. Verify with a qualified lawyer," instead of only when the guardrail's
+  phrase-matcher happens to catch legal-claim wording, and (b) added a scope gate: the model
+  must first check whether the question actually concerns building/deploying/using an AI
+  system or processing personal data before answering, and must clearly refuse — not search,
+  not construct an answer — for questions that merely mention "AI Act" or "GDPR" without
+  describing such an activity.
+
+### Added
+
+- `evals/regression_questions.json` + `scripts/run_regression_questions.py`: a 6-question
+  regression set (2 legitimate compliance questions, 2 trick questions designed to bait the
+  scope gate, 1 malformed/gibberish input, 1 gray-area question about a document-summarization
+  app) run against the live agent graph after any change to the system prompt, agent graph,
+  or tools. Checks for an "Article N" citation as the signal that a real answer was given
+  (the prompt requires one), combined with rejection-phrase matching as a second signal,
+  since the model phrases refusals differently run to run and single-signal matching produced
+  false negatives during validation.
 
 **Fine-tuning quality fixes, found by actually running the pipeline and checking raw model
 output rather than trusting the aggregate accuracy number. Full write-up in

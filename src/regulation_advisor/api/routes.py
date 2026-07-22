@@ -12,6 +12,7 @@ import logging
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from fastapi.responses import StreamingResponse
 
+from regulation_advisor.api import metrics_store
 from regulation_advisor.api.schemas import (
     ChatRequest,
     ChatResponse,
@@ -20,7 +21,6 @@ from regulation_advisor.api.schemas import (
     MetricsResponse,
     SourceReference,
 )
-from regulation_advisor.api import metrics_store
 from regulation_advisor.classifier.reg_classifier import RegClassifier
 from regulation_advisor.config import settings
 
@@ -47,11 +47,42 @@ def set_classifier(classifier: object) -> None:
     _classifier = classifier
 
 
+_BYOK_REQUIRED_DETAIL = (
+    "This deployment has no default API key configured — add your own "
+    "provider API key to use it."
+)
+
+
+def _agent_for_request(request: ChatRequest) -> object:
+    """
+    Return the agent to use for one request.
+
+    A supplied ``api_key`` builds a brand-new agent scoped to this call only —
+    nothing is cached, stored, or attached to ``request.session_id``, so the
+    key exists only for the lifetime of this function call and the request
+    it serves. With no ``api_key``, the shared default agent is used — but
+    only if the deployment actually has a default key configured. A
+    deployment run with empty LLM keys in its secrets is BYOK-only by
+    design (no visitor's usage is ever billed to the deployer), so a
+    keyless request there is rejected with a clear 400 instead of silently
+    calling out with an empty key.
+    """
+    if request.api_key:
+        from regulation_advisor.agent.graph import build_agent_graph
+
+        return build_agent_graph(
+            provider=request.provider, model=request.model, api_key=request.api_key
+        )
+    if not settings.has_default_llm_key:
+        raise HTTPException(status_code=400, detail=_BYOK_REQUIRED_DETAIL)
+    return _agent
+
+
 @router.get("/api/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(
         status="ok",
-        version="0.6.3",
+        version="0.6.13",
         vector_store_backend=settings.vector_store_backend,
     )
 
@@ -59,18 +90,25 @@ async def health() -> HealthResponse:
 @router.post("/api/chat")
 async def chat_stream(request: ChatRequest) -> StreamingResponse:
     """Stream the LLM response token-by-token as Server-Sent Events."""
-    if _agent is None:
+    agent = _agent_for_request(request)
+    if agent is None:
         raise HTTPException(status_code=503, detail="Agent not ready")
 
     async def generate():
         config = {"configurable": {"thread_id": request.session_id}}
-        async for event in _agent.astream_events(
-            {"messages": [("human", request.message)]}, config=config, version="v2"
-        ):
-            if event["event"] == "on_chat_model_stream":
-                token = event["data"]["chunk"].content
-                if token:
-                    yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        try:
+            async for event in agent.astream_events(
+                {"messages": [("human", request.message)]}, config=config, version="v2"
+            ):
+                if event["event"] == "on_chat_model_stream":
+                    token = event["data"]["chunk"].content
+                    if token:
+                        yield f"data: {json.dumps({'type': 'token', 'content': token})}\n\n"
+        except Exception as exc:
+            logger.warning("Chat stream failed: %s", type(exc).__name__)
+            error = "The configured LLM provider rejected the request."
+            yield f"data: {json.dumps({'type': 'error', 'content': error})}\n\n"
+            return
         yield f"data: {json.dumps({'type': 'done'})}\n\n"
 
     return StreamingResponse(
@@ -83,13 +121,20 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
 @router.post("/api/chat/sync", response_model=ChatResponse)
 async def chat_sync(request: ChatRequest) -> ChatResponse:
     """Non-streaming: returns the complete answer. Used by eval harness and tests."""
-    if _agent is None:
+    agent = _agent_for_request(request)
+    if agent is None:
         raise HTTPException(status_code=503, detail="Agent not ready")
 
     config = {"configurable": {"thread_id": request.session_id}}
-    result = await _agent.ainvoke(
-        {"messages": [("human", request.message)]}, config=config
-    )
+    try:
+        result = await agent.ainvoke(
+            {"messages": [("human", request.message)]}, config=config
+        )
+    except Exception as exc:
+        logger.warning("Chat request failed: %s", type(exc).__name__)
+        raise HTTPException(
+            status_code=502, detail="The configured LLM provider rejected the request."
+        ) from None
 
     answer = result["messages"][-1].content
     retrieved = result.get("retrieved_chunks", [])
@@ -136,11 +181,25 @@ async def get_metrics() -> MetricsResponse:
 @router.post("/api/evaluate", response_model=EvaluateResponse)
 async def trigger_evaluation(background_tasks: BackgroundTasks) -> EvaluateResponse:
     """Start a RAGAS evaluation in the background. Returns immediately."""
+    if not settings.enable_evaluate_endpoint:
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Evaluation endpoint disabled — it would run the full RAGAS QA "
+                "set on this deployment's shared key with no per-caller check. "
+                "Run scripts/run_evaluation.py locally, or set "
+                "ENABLE_EVALUATE_ENDPOINT=true if you understand the cost/abuse risk."
+            ),
+        )
     global _evaluation_running
     if _evaluation_running:
-        return EvaluateResponse(status="already_running", message="Evaluation already in progress.")
+        return EvaluateResponse(
+            status="already_running", message="Evaluation already in progress."
+        )
     background_tasks.add_task(_run_evaluation)
-    return EvaluateResponse(status="started", message="Evaluation started. Poll /api/metrics for results.")
+    return EvaluateResponse(
+        status="started", message="Evaluation started. Poll /api/metrics for results."
+    )
 
 
 async def _run_evaluation() -> None:
@@ -148,6 +207,7 @@ async def _run_evaluation() -> None:
     _evaluation_running = True
     try:
         from pathlib import Path
+
         from regulation_advisor.evaluation.harness import EvaluationHarness
 
         harness = EvaluationHarness(Path("evals/qa_pairs.json"))

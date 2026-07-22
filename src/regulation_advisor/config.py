@@ -13,7 +13,8 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     google_api_key: str = ""
     openrouter_api_key: str = ""
-    # Provider: "openrouter" | "groq" | "google"
+    anthropic_api_key: str = ""
+    # Provider: "openrouter" | "groq" | "google" | "openai" | "anthropic"
     # Switch by changing LLM_PROVIDER in .env — no code changes needed.
     llm_provider: str = "openrouter"
     llm_model: str = "deepseek/deepseek-v4-flash"
@@ -25,7 +26,8 @@ class Settings(BaseSettings):
     # Web search
     tavily_api_key: str = ""
 
-    # OpenAI (used by RAGAS evaluation harness)
+    # OpenAI — used by the RAGAS evaluation harness, and optionally as an
+    # LLM_PROVIDER/BYOK chat provider (see llm.py)
     openai_api_key: str = ""
 
     # HuggingFace
@@ -55,7 +57,35 @@ class Settings(BaseSettings):
     # Leave empty to use the LLM-prompted fallback classifier instead.
     classifier_checkpoint: str = ""
 
+    # POST /api/evaluate runs the full RAGAS QA set against the shared default
+    # agent with no per-caller key check — anyone reaching it can trigger a
+    # batch of paid LLM calls billed to whoever configured the default key.
+    # Disabled by default; opt in only if this deployment's API isn't public,
+    # or the cost/abuse risk is acceptable. Evaluations otherwise stay a
+    # local/dev action via scripts/run_evaluation.py.
+    enable_evaluate_endpoint: bool = False
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+
+    @property
+    def has_default_llm_key(self) -> bool:
+        """
+        Whether the configured LLM_PROVIDER has a key to serve requests with,
+        with no caller-supplied api_key involved.
+
+        False in a deployment that intentionally ships with no LLM keys in
+        its secrets (e.g. a public Space run BYOK-only, so no visitor's usage
+        is ever billed to the deployer) — callers use this to require BYOK
+        instead of attempting a call that would fail on an empty key.
+        """
+        key_by_provider = {
+            "openrouter": self.openrouter_api_key,
+            "groq": self.groq_api_key,
+            "google": self.google_api_key,
+            "openai": self.openai_api_key,
+            "anthropic": self.anthropic_api_key,
+        }
+        return bool(key_by_provider.get(self.llm_provider))
 
 
 # Single instance — import this everywhere

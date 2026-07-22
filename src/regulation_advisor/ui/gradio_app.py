@@ -1,8 +1,9 @@
 """
 Gradio UI — RegulationAdvisor.
 
-Two-tab interface: Chat (streaming LangGraph agent) and Evaluation Dashboard
-(RAGAS scores with on-demand evaluation trigger).
+Chat tab: streaming LangGraph agent with an optional BYOK provider/model/key
+selector. The Evaluation Dashboard tab is parked in ui/eval_dashboard.py, not
+currently mounted here — see that module's docstring and version_Plan.md.
 
 build_ui() reads the agent lazily from api.routes._agent so the Gradio app
 can be mounted on FastAPI before the lifespan fires.
@@ -12,8 +13,8 @@ from __future__ import annotations
 import logging
 import re
 import uuid
+from collections.abc import Generator
 from datetime import date
-from typing import Generator
 
 import gradio as gr
 from langchain_core.messages import AIMessageChunk, SystemMessage
@@ -34,7 +35,8 @@ _CRITICAL_WARNING = (
 _DATE_CONTEXT_TEMPLATE = (
     "Today's date is {today}. "
     "When discussing regulatory deadlines, always calculate exactly how many days, "
-    "weeks, or months remain from today's date — do not use approximate or static figures when calculating dates and times."
+    "weeks, or months remain from today's date — do not use approximate or "
+    "static figures when calculating dates and times."
 )
 
 
@@ -70,11 +72,60 @@ _RISK_BADGE = {
     "Minimal": "🟢 **Risk: Minimal** — no specific obligation",
 }
 
+# Curated model choices per BYOK provider — a free-text model field lets
+# visitors hit deprecated/misspelled slugs (we hit this ourselves picking a
+# free-tier default; see CHANGELOG v0.6.5-0.6.6), so the UI only offers a
+# short list instead. Not every entry has been live-verified against a real
+# key in this account (openai/deepseek-v4-flash were; the rest are current
+# vendor-documented model names as of this writing) — worth spot-checking
+# again if one starts erroring for everyone.
+_BYOK_MODELS = {
+    "groq": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "openai/gpt-oss-20b"],
+    "google": ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.5-pro"],
+    "openrouter": [
+        "deepseek/deepseek-v4-flash", "anthropic/claude-3.5-sonnet", "openai/gpt-4o-mini"
+    ],
+    "openai": ["gpt-4o-mini", "gpt-4o"],
+    "anthropic": ["claude-sonnet-5", "claude-haiku-4-5-20251001", "claude-opus-4-8"],
+}
+
 
 def _get_agent():
     """Lazy agent accessor — reads from routes at call time, not import time."""
     from regulation_advisor.api.routes import _agent
     return _agent
+
+
+class _ByokRequiredError(Exception):
+    """Raised when no key was supplied and the deployment has no default key."""
+
+
+def _agent_for_call(api_key: str | None, provider: str | None = None, model: str | None = None):
+    """
+    Mirrors api/routes.py's ``_agent_for_request`` for the Gradio chat tab.
+
+    A key builds a throwaway agent for this call only, using the caller's
+    chosen ``provider``/``model`` rather than the deployment's own default —
+    otherwise a key for e.g. Groq would get sent to whatever provider this
+    deployment happens to be configured with (an auth failure, not a
+    security issue: the caller's key always wins over the deployment's, see
+    llm.py's ``api_key or settings.*`` — but a confusing one). The agent is
+    held in a local variable and discarded when ``respond()`` returns —
+    nothing is written to disk or kept beyond the lifetime of this one turn.
+    With no key, the shared default agent is used only if the deployment
+    actually has a default key configured — a BYOK-only deployment (empty
+    keys in its secrets, so no visitor's usage is ever billed to the
+    deployer) raises instead of silently calling out with an empty key.
+    """
+    if api_key:
+        from regulation_advisor.agent.graph import build_agent_graph
+
+        return build_agent_graph(provider=provider, model=model, api_key=api_key)
+    from regulation_advisor.config import settings
+
+    if not settings.has_default_llm_key:
+        raise _ByokRequiredError
+    return _get_agent()
 
 
 def _get_classifier():
@@ -83,23 +134,29 @@ def _get_classifier():
     return _classifier
 
 
-def _fetch_metrics() -> dict | None:
-    """Read the latest scores from disk. Returns None if no scores yet."""
-    from regulation_advisor.api.metrics_store import load
-    result = load()
-    if result is None:
-        return None
-    return result.model_dump()
-
-
 def build_ui() -> gr.Blocks:
     """Build the two-tab Gradio UI. Agent is read lazily at request time."""
     session_id = str(uuid.uuid4())
 
     # ── Chat tab ──────────────────────────────────────────────────────────────
 
-    def respond(message: str, history: list) -> Generator[str, None, None]:
-        agent = _get_agent()
+    def respond(
+        message: str,
+        history: list,
+        provider: str = "openai",
+        model: str = "",
+        api_key: str = "",
+    ) -> Generator[str, None, None]:
+        try:
+            agent = _agent_for_call(
+                api_key.strip() or None, provider=provider, model=model.strip() or None
+            )
+        except _ByokRequiredError:
+            yield (
+                "This deployment has no default API key configured — "
+                "paste your own key above to chat."
+            )
+            return
         if agent is None:
             yield "Service not ready — agent is still loading. Please retry in a moment."
             return
@@ -109,13 +166,24 @@ def build_ui() -> gr.Blocks:
         messages: list = [("human", message)]
         if not history:
             today = date.today().strftime("%B %d, %Y")
-            messages = [SystemMessage(content=_DATE_CONTEXT_TEMPLATE.format(today=today))] + messages
+            date_message = SystemMessage(content=_DATE_CONTEXT_TEMPLATE.format(today=today))
+            messages = [date_message] + messages
 
-        partial = ""
-        for chunk, _ in agent.stream({"messages": messages}, config=config, stream_mode="messages"):
-            if isinstance(chunk, AIMessageChunk) and chunk.content:
-                partial += chunk.content
-                yield partial
+        try:
+            partial = ""
+            for chunk, _ in agent.stream(
+                {"messages": messages}, config=config, stream_mode="messages"
+            ):
+                if isinstance(chunk, AIMessageChunk) and chunk.content:
+                    partial += chunk.content
+                    yield partial
+        except Exception as exc:
+            logger.warning("Chat turn failed: %s", type(exc).__name__)
+            yield (
+                "The configured LLM provider rejected the request. "
+                "Check your API key and try again."
+            )
+            return
 
         if any(kw.lower() in partial.lower() for kw in CRITICAL_KEYWORDS):
             partial = partial + _CRITICAL_WARNING
@@ -141,43 +209,6 @@ def build_ui() -> gr.Blocks:
             len(partial), guard.passed, len(guard.warnings),
         )
 
-    # ── Evaluation Dashboard tab ──────────────────────────────────────────────
-
-    def refresh_scores():
-        data = _fetch_metrics()
-        if data is None:
-            return ("No scores yet — click **Run Evaluation** to generate them.",
-                    None, None, None, None)
-        m = data
-        status = (
-            f"**v{m['version']}** — evaluated {m['evaluated_at'][:10]} — "
-            f"{'✅ PASS' if m['acceptable'] else '❌ FAIL'}"
-        )
-        return status, m["faithfulness"], m["answer_relevancy"], m["context_precision"], m["context_recall"]
-
-    def trigger_eval():
-        from regulation_advisor.api import routes, metrics_store
-        import asyncio
-        if routes._evaluation_running:
-            return "⏳ Evaluation already running — check back in a few minutes."
-        routes._evaluation_running = True
-        try:
-            asyncio.get_event_loop().run_until_complete(routes._run_evaluation())
-        except RuntimeError:
-            # Already in a running event loop (can happen in Gradio's thread)
-            import threading
-            result_holder = {}
-            def run():
-                import asyncio as _asyncio
-                loop = _asyncio.new_event_loop()
-                _asyncio.set_event_loop(loop)
-                loop.run_until_complete(routes._run_evaluation())
-                loop.close()
-            t = threading.Thread(target=run)
-            t.start()
-            return "⏳ Evaluation started in background. Click **Refresh** in a few minutes."
-        return "✅ Evaluation complete. Click **Refresh** to see updated scores."
-
     # ── Layout ────────────────────────────────────────────────────────────────
 
     with gr.Blocks(title="RegulationAdvisor v0.4") as demo:
@@ -189,31 +220,48 @@ def build_ui() -> gr.Blocks:
                 "Every answer cites the relevant Article. "
                 "Critical findings are flagged for legal review."
             )
-            gr.ChatInterface(fn=respond, title="")
+            with gr.Accordion("Use your own API key (optional)", open=False):
+                gr.Markdown(
+                    "Supported: **OpenAI**, **Anthropic (Claude)**, **Groq**, "
+                    "**Google Gemini**, **OpenRouter** (OpenRouter can also reach "
+                    "Claude, GPT-4o, etc. by model name). Pick the provider your key "
+                    "is for, then a model for that provider — used only for your "
+                    "messages in this browser tab, never written to disk, and gone "
+                    "the moment you refresh or close."
+                )
+                provider_dropdown = gr.Dropdown(
+                    choices=["openai", "anthropic", "groq", "google", "openrouter"],
+                    value="openai",
+                    label="Provider",
+                )
+                model_dropdown = gr.Dropdown(
+                    choices=_BYOK_MODELS["openai"],
+                    value=_BYOK_MODELS["openai"][0],
+                    label="Model",
+                )
+                api_key_box = gr.Textbox(
+                    label="API key",
+                    type="password",
+                    placeholder="Leave blank to use the free default",
+                )
 
-        with gr.Tab("Evaluation Dashboard"):
-            gr.Markdown(
-                "## RAGAS Evaluation Scores\n"
-                "Measures how faithfully the agent answers from the regulation text.\n\n"
-                "**Targets:** Faithfulness ≥ 0.80 · All others ≥ 0.70"
+                def _update_model_choices(provider: str):
+                    choices = _BYOK_MODELS[provider]
+                    return gr.Dropdown(choices=choices, value=choices[0])
+
+                provider_dropdown.change(
+                    fn=_update_model_choices,
+                    inputs=[provider_dropdown],
+                    outputs=[model_dropdown],
+                )
+
+            gr.ChatInterface(
+                fn=respond,
+                title="",
+                additional_inputs=[provider_dropdown, model_dropdown, api_key_box],
             )
 
-            with gr.Row():
-                run_btn = gr.Button("Run Evaluation", variant="primary")
-                refresh_btn = gr.Button("Refresh Scores")
-
-            status_box = gr.Markdown("*No scores loaded yet.*")
-
-            with gr.Row():
-                faith_num  = gr.Number(label="Faithfulness",      precision=3)
-                rel_num    = gr.Number(label="Answer Relevancy",  precision=3)
-                prec_num   = gr.Number(label="Context Precision", precision=3)
-                recall_num = gr.Number(label="Context Recall",    precision=3)
-
-            score_outputs = [status_box, faith_num, rel_num, prec_num, recall_num]
-
-            run_btn.click(fn=trigger_eval, outputs=[status_box])
-            refresh_btn.click(fn=refresh_scores, outputs=score_outputs)
-            demo.load(fn=refresh_scores, outputs=score_outputs)
+        # Evaluation Dashboard tab intentionally not mounted here — parked in
+        # ui/eval_dashboard.py pending the eval-history rework (version_Plan.md).
 
     return demo

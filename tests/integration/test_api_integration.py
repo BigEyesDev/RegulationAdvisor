@@ -55,8 +55,8 @@ class TestHealth:
     def test_returns_ok(self, client):
         assert client.get("/api/health").json()["status"] == "ok"
 
-    def test_version_is_0_4_0(self, client):
-        assert client.get("/api/health").json()["version"] == "0.4.0"
+    def test_returns_current_version(self, client):
+        assert client.get("/api/health").json()["version"] == "0.6.13"
 
 
 # ── Chat sync ─────────────────────────────────────────────────────────────────
@@ -98,6 +98,114 @@ class TestChatSync:
             routes.set_agent(original)
 
 
+# ── BYOK ──────────────────────────────────────────────────────────────────────
+
+class TestBringYourOwnKey:
+    def test_no_api_key_uses_shared_agent(self, client, mock_agent, monkeypatch):
+        build_calls = []
+        monkeypatch.setattr(
+            "regulation_advisor.agent.graph.build_agent_graph",
+            lambda **kw: build_calls.append(kw),
+        )
+        r = client.post("/api/chat/sync", json={"message": "What is Article 5?"})
+        assert r.status_code == 200
+        assert build_calls == []
+        mock_agent.ainvoke.assert_awaited()
+
+    def test_api_key_builds_throwaway_agent_not_shared(self, client, mock_agent, monkeypatch):
+        byok_agent = MagicMock()
+        byok_agent.ainvoke = AsyncMock(return_value={
+            "messages": [MagicMock(content="Article 6 defines high-risk classification.")],
+            "retrieved_chunks": [],
+        })
+        build_calls = []
+
+        def fake_build(**kw):
+            build_calls.append(kw)
+            return byok_agent
+
+        monkeypatch.setattr("regulation_advisor.agent.graph.build_agent_graph", fake_build)
+
+        r = client.post(
+            "/api/chat/sync",
+            json={"message": "What is Article 6?", "api_key": "sk-user-supplied"},
+        )
+        assert r.status_code == 200
+        assert build_calls == [
+            {"provider": None, "model": None, "api_key": "sk-user-supplied"}
+        ]
+        byok_agent.ainvoke.assert_awaited()
+        mock_agent.ainvoke.assert_not_awaited()
+
+    def test_invalid_key_returns_clean_error_without_leaking_key(
+        self, client, mock_agent, monkeypatch
+    ):
+        byok_agent = MagicMock()
+        byok_agent.ainvoke = AsyncMock(
+            side_effect=RuntimeError("401 Unauthorized: bad key sk-totally-fake-123")
+        )
+        monkeypatch.setattr(
+            "regulation_advisor.agent.graph.build_agent_graph", lambda **kw: byok_agent
+        )
+
+        r = client.post(
+            "/api/chat/sync",
+            json={"message": "test", "api_key": "sk-totally-fake-123"},
+        )
+        assert r.status_code == 502
+        assert "sk-totally-fake-123" not in r.text
+
+    def test_invalid_key_never_appears_in_logs(self, client, mock_agent, monkeypatch, caplog):
+        byok_agent = MagicMock()
+        byok_agent.ainvoke = AsyncMock(
+            side_effect=RuntimeError("401 Unauthorized: bad key sk-totally-fake-123")
+        )
+        monkeypatch.setattr(
+            "regulation_advisor.agent.graph.build_agent_graph", lambda **kw: byok_agent
+        )
+
+        with caplog.at_level("DEBUG"):
+            client.post(
+                "/api/chat/sync",
+                json={"message": "test", "api_key": "sk-totally-fake-123"},
+            )
+        assert "sk-totally-fake-123" not in caplog.text
+
+    def test_request_repr_omits_api_key(self):
+        from regulation_advisor.api.schemas import ChatRequest
+
+        request = ChatRequest(message="test", api_key="sk-totally-fake-123")
+        assert "sk-totally-fake-123" not in repr(request)
+
+    def test_no_key_and_no_default_key_returns_400_not_a_paid_call(
+        self, client, mock_agent, monkeypatch
+    ):
+        monkeypatch.setattr(type(routes.settings), "has_default_llm_key", False)
+        r = client.post("/api/chat/sync", json={"message": "What is Article 5?"})
+        assert r.status_code == 400
+        assert "own" in r.json()["detail"].lower()
+        mock_agent.ainvoke.assert_not_awaited()
+
+    def test_supplied_key_still_works_when_no_default_key(
+        self, client, mock_agent, monkeypatch
+    ):
+        monkeypatch.setattr(type(routes.settings), "has_default_llm_key", False)
+        byok_agent = MagicMock()
+        byok_agent.ainvoke = AsyncMock(return_value={
+            "messages": [MagicMock(content="Article 5 prohibits social scoring.")],
+            "retrieved_chunks": [],
+        })
+        monkeypatch.setattr(
+            "regulation_advisor.agent.graph.build_agent_graph", lambda **kw: byok_agent
+        )
+        r = client.post(
+            "/api/chat/sync",
+            json={"message": "What is Article 5?", "api_key": "sk-user-supplied"},
+        )
+        assert r.status_code == 200
+        byok_agent.ainvoke.assert_awaited()
+
+
 # ── Metrics ───────────────────────────────────────────────────────────────────
 
 class TestMetrics:
@@ -134,12 +242,19 @@ class TestMetrics:
 # ── Evaluate ──────────────────────────────────────────────────────────────────
 
 class TestEvaluate:
-    def test_started_status(self, client, monkeypatch):
+    def test_disabled_by_default_returns_403(self, client, monkeypatch):
+        monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", False)
+        r = client.post("/api/evaluate")
+        assert r.status_code == 403
+
+    def test_started_status_when_enabled(self, client, monkeypatch):
+        monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", True)
         monkeypatch.setattr(routes, "_evaluation_running", False)
         r = client.post("/api/evaluate")
         assert r.json()["status"] == "started"
 
-    def test_already_running_status(self, client, monkeypatch):
+    def test_already_running_status_when_enabled(self, client, monkeypatch):
+        monkeypatch.setattr(routes.settings, "enable_evaluate_endpoint", True)
         monkeypatch.setattr(routes, "_evaluation_running", True)
         r = client.post("/api/evaluate")
         assert r.json()["status"] == "already_running"

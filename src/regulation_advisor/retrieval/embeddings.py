@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from typing import Protocol
+
 import numpy as np
 
 logger = logging.getLogger(__name__)

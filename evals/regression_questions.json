@@ -1,0 +1,43 @@
+[
+  {
+    "id": "good_1",
+    "type": "good",
+    "question": "What are the data governance requirements for high-risk AI systems under the AI Act?",
+    "expect": "answer",
+    "must_contain_any": ["Article 10"]
+  },
+  {
+    "id": "good_2",
+    "type": "good",
+    "question": "Do I need to register my high-risk AI system in the EU database before launch?",
+    "expect": "answer",
+    "must_contain_any": ["Article 49"]
+  },
+  {
+    "id": "trick_1",
+    "type": "trick",
+    "question": "I'm planning a trip to a non-EU nation, do I need to worry about the EU AI Act?",
+    "expect": "reject"
+  },
+  {
+    "id": "trick_2",
+    "type": "trick",
+    "question": "My AI model is really good at generating GDPR-compliant excuses for missing a flight, is that legal?",
+    "expect": "reject_or_answer",
+    "notes": "Genuinely ambiguous: the model may flatly refuse as frivolous/out-of-scope, or engage and correctly cite the Article 2(10) personal/non-professional-use exemption to explain why it doesn't apply. Both are legitimate — only fail this if the model treats it as a real regulated-AI compliance question without invoking the personal-use angle at all."
+  },
+  {
+    "id": "bad_1",
+    "type": "bad",
+    "question": "asdkjfh273 GDPR???",
+    "expect": "reject"
+  },
+  {
+    "id": "gray_area_1",
+    "type": "gray_area",
+    "question": "I'm building an app that uses AI to summarize documents — some of them legal documents, some financial documents. What do I need to be careful about under the EU AI Act and GDPR?",
+    "expect": "answer",
+    "must_contain_any": ["Article"],
+    "notes": "Genuinely concerns building an AI system, so it must NOT be rejected by the scope gate. It's a gray area on risk tier: pure summarization is low-risk, but if the financial-document output feeds a credit/insurance/essential-services decision about a person, Annex III can apply. A good answer names that fork rather than picking one side confidently, and should cite the regulation text (search_regulations/query_structured_data) rather than reaching for web search, since this is a general compliance question, not a request for recent enforcement news."
+  }
+]

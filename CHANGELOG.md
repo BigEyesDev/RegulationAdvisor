@@ -6,6 +6,29 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.6.13] — 2026-07-22
+
+### Fixed
+
+- The RAGAS evaluation pipeline (`scripts/run_evaluation.py`,
+  `evaluation/harness.py`) was completely broken, and had apparently never
+  produced a real score in this repo's history (`evals/baseline_scores.json`
+  had sat as an all-null Week 3 placeholder). Three separate bugs, all fixed:
+  (1) the retriever was never wired up, so the agent silently answered from
+  the LLM's own memorized knowledge instead of the retrieved documents —
+  the score would have measured the wrong thing entirely; (2) RAGAS's
+  default judge auto-construction is broken for the installed `ragas`/
+  `langchain-openai` combo (mismatched embeddings interface) — fixed by
+  passing an explicit gpt-4o-mini judge + local sentence-transformers
+  embeddings; (3) all 20 questions shared one LangGraph `thread_id`,
+  accumulating conversation history until later questions overflowed the
+  judge's context window — fixed with a unique thread_id per question.
+  Also tuned `ragas`'s `RunConfig` (lower concurrency, longer retry
+  patience) to stop tripping OpenAI rate limits. Real baseline now
+  recorded: Faithfulness 0.865, Answer Relevancy 0.852, Context Precision
+  0.973, Context Recall 0.975 — all above target. Full diagnosis in
+  `Week7a_Plan.md`.
+
 ## [0.6.12] — 2026-07-21
 
 ### Added
